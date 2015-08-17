@@ -1,12 +1,25 @@
 {
   "id":             "zen_utils",
   "name":           "JUCE Library Utilities",
-  "version":        "0.0.2",
+  "version":        "3.2.0",
   "description":    "Collection of Utility methods for Juce-common tasks",
   "website":        "http://www.soundcloud.com/zentropy",
   "license":        "GNU/GPL",
 
-  "dependencies":   [ { "id": "juce_core" } ],
+ 
+
+ "dependencies":   [ { "id": "juce_audio_basics",      "version": "matching" },
+		      { "id": "juce_audio_devices",     "version": "matching" },
+			  { "id": "juce_audio_processors",     "version": "matching" },
+		      { "id": "juce_audio_formats",     "version": "matching" },
+		      { "id": "juce_audio_utils",     	"version": "matching" },
+		      { "id": "juce_core",     		"version": "matching" },
+		      { "id": "juce_data_structures",   "version": "matching" },
+		      { "id": "juce_events",     	"version": "matching" },
+		      { "id": "juce_graphics",     	"version": "matching" },
+		      { "id": "juce_gui_basics",     	"version": "matching" } ],
+
+  "include":        "dRowAudio.h",
 
   "include":        "juce_zen_utils.h",
 

@@ -3,6 +3,7 @@
 #define JUCE_ZEN_UTILS_H_INCLUDED
 
 #include "../juce_core/juce_core.h"
+#include "../juce_audio_processors/juce_audio_processors.h"
 //=============================================================================
 //namespace juce
 //{
