@@ -13,7 +13,7 @@ namespace juce
 
 
 		static float testGainUtil(float inGain);
-		
+
 		float testGain(float inGain);
 
 		virtual bool isMetaParameter() const override;

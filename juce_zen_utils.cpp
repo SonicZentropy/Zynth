@@ -43,5 +43,6 @@ available: visit www.juce.com for more information.
 
 #include "imp\ZenParamUtils.cpp"
 #include "imp\ZenUtils.cpp"
+#include "imp\FloatParameter.cpp"
 
 //}

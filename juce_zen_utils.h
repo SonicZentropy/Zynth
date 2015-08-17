@@ -10,7 +10,7 @@
 
 #include "imp\ZenParamUtils.h"
 #include "imp\ZenUtils.h"
-
+#include "imp\FloatParameter.h"
 //}
 
 #endif   // JUCE_ZEN_UTILS_H_INCLUDED
