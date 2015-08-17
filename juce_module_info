@@ -1,0 +1,17 @@
+{
+  "id":             "zen_utils",
+  "name":           "JUCE Library Utilities",
+  "version":        "0.0.2",
+  "description":    "Collection of Utility methods for Juce-common tasks",
+  "website":        "http://www.soundcloud.com/zentropy",
+  "license":        "GNU/GPL",
+
+  "dependencies":   [ { "id": "juce_core" } ],
+
+  "include":        "juce_zen_utils.h",
+
+  "compile":        [ { "file": "juce_zen_utils.cpp", "target": "!xcode" } ],
+
+  "browse":         [ "imp/*" ]
+                       
+}
