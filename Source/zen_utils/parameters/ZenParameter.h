@@ -33,87 +33,56 @@ class ZenParameter : public AudioProcessorParameter
 
 public:
 
-	explicit ZenParameter(const String &inName) :
-		defaultValue(0.0), minValue(0.0), maxValue(1.0), precision(2), name(inName),
-		unitLabel(""), description("")
-	{
-		
-	}
+	explicit ZenParameter(const String &inName, const String& inLabel = "") :
+		value(0.5), defaultValue(0.0), minValue(0.0), maxValue(1.0), 
+		precision(2), name(inName),	unitLabel(inLabel), description("")
+	{	}
 
-	ZenParameter(const String &inName, const float& inDefaultValue) :
-		defaultValue(inDefaultValue), minValue(0.0), maxValue(1.0), precision(2), name(inName),
-		unitLabel(""), description("")
-	{
-	}
-	ZenParameter(const String &inName,
-		float inMinValue,
-		float inMaxValue,
-		float inDefaultValue) :
-		defaultValue(inDefaultValue), minValue(inMinValue), maxValue(inMaxValue), precision(2),
-		name(inName), unitLabel(""), description("")
-	{
-	}
+	ZenParameter(const String &inName, const float& inDefaultValue, const String& inLabel = "") :
+		value(inDefaultValue), defaultValue(inDefaultValue), minValue(0.0), maxValue(1.0), 
+		precision(2), name(inName), unitLabel(inLabel), description("")
+	{	}
+
+	ZenParameter(const String &inName, float inMinValue, float inMaxValue, float inDefaultValue, const String& inLabel = "") :
+		value(inDefaultValue), defaultValue(inDefaultValue), minValue(inMinValue), maxValue(inMaxValue), 
+		precision(2), name(inName), unitLabel(inLabel), description("")
+	{	}
+
 	virtual ~ZenParameter() {};
 
 	virtual void setValue(float inValue) override
 	{
 		DBG("In ZenParameter::setValue() with inValue: " + String(inValue));
 		value = inValue;
+		//processor->setParameter(getParameterIndex(), inValue);
 		requestUIUpdate = true;
 	}
 
 	//Juce's AudioProcessorParameter method changed to virtual
-	virtual void setValueNotifyingHost(float newValue) override
+	virtual void setValueNotifyingHost(float inValue) override
 	{
 		// This method can't be used until the parameter has been attached to a processor!
 		jassert(processor != nullptr && getParameterIndex() >= 0);
-		processor->setParameterNotifyingHost(getParameterIndex(), newValue);
+		processor->setParameterNotifyingHost(getParameterIndex(), inValue);
 		requestUIUpdate = false;  //set this to false because change came from GUI
-
 	}
 
-	virtual float getMinValue() const
-	{
-		return minValue;
-	}
+	virtual float getValue() const override { return value; }
 
-	/**
-	* @return Get the parameter's maximum value
-	*/
-	virtual float getMaxValue() const
-	{
-		return maxValue;
-	}
+	virtual float getMinValue() const {	return minValue; }
 
-	virtual float getDefaultValue() const override
-	{
-		return defaultValue;
-	}
+	virtual float getMaxValue() const {	return maxValue; }
+
+	virtual float getDefaultValue() const override { return defaultValue; }
 
 	virtual bool getBoolFromValue() const
-	{
-		DecibelConversions::convertDecibelsToLinear(0.5);
-		return ZenParamUtils::convertFloatToBoolean(value);
+	{		
+		return ZenParamUtils::convertFloatToBoolean(getValue());
 	}
 
-	/**
-	* Get the number of decimal places for displaying floating-point parameter values.
-	*/
-	virtual unsigned int getDisplayPrecision() const
-	{
-		return precision;
-	}
+	virtual unsigned int getDisplayPrecision() const { return precision; }
 
-	/**
-	* Number of floating point digits to be displayed, for parameters which support
-	* display precision.
-	*
-	* @param inPrecision Number of decimal digits to display
-	*/
-	virtual void setDisplayPrecision(unsigned int inPrecision)
-	{
-		this->precision = inPrecision;
-	}
+	virtual void setDisplayPrecision(unsigned int inPrecision) { precision = inPrecision; }
 
 	virtual bool needsUIUpdate()
 	{
@@ -125,6 +94,11 @@ public:
 		bool updateSet = requestUIUpdate;
 		requestUIUpdate = false;
 		return updateSet;
+	}
+
+	virtual void resetUIUpdate()
+	{
+		requestUIUpdate = false;
 	}
 
 	virtual String getText(float inValue, int maxStringLength) const override
@@ -146,10 +120,10 @@ public:
 
 	virtual float getValueForGUIComponent() const
 	{
-		return value;
+		return getValue();
 	}
 
-	virtual float getValue() const override { return value; };
+	
 	virtual String getName(int maximumStringLength) const override { return name; };
 	virtual String getLabel() const override { return unitLabel; };
 	virtual float getValueForText(const String& text) const override
@@ -157,7 +131,7 @@ public:
 		return text.getFloatValue();
 	}
 protected:
-	float defaultValue, minValue, maxValue;
+	float value, defaultValue, minValue, maxValue;
 	unsigned int precision;
 	bool requestUIUpdate = true;
 	String name, unitLabel, description;

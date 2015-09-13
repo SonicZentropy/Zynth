@@ -25,8 +25,8 @@ class AssociatedButton : virtual public Button, public AssociatedComponent
 {
 public:
 
-	AssociatedButton(const String& componentName, ZenParameter* associatedParam)
-		: Button(componentName), AssociatedComponent(associatedParam)
+	AssociatedButton(const String& componentName, ZenParameter* associatedParam, const String& inLabel = "")
+		: Button(componentName), AssociatedComponent(associatedParam, inLabel)
 	{
 		DBG("Entered method: AssociatedButton:AssociatedButton(componentName, associatedParam)");
 		// #TODO: add setToggleState conversion in associated button constructor

@@ -36,14 +36,13 @@ public:
 	FloatParameter(const String& paramName, const float& defaultfloat)
 		: ZenParameter(paramName, defaultfloat)
 	{
-	//	range = 1.0;
+		range = 1.0;
 	}
 
-	FloatParameter(const String& parameterName, const float& minfloat, 
-		const float& maxfloat, const float& defaultfloat)
+	FloatParameter(const String& parameterName, const float& minfloat, const float& maxfloat, const float& defaultfloat)
 		: ZenParameter(parameterName, minfloat, maxfloat, defaultfloat)
 	{
-	//	range = maxfloat - minfloat;
+		range = maxfloat - minfloat;
 	}
 
 	virtual ~FloatParameter()
@@ -51,13 +50,12 @@ public:
 
 	virtual float getScaledValue() const
 	{
-		//return (getValue() - getMinValue()) / range;
-		return 1.0;
+		return (getValue() - getMinValue()) / range;
 	}
 
 	virtual void setScaledValue(const float& inValue)
 	{
-	//	setValue(inValue * range + getMinValue());
+		setValue(inValue * range + getMinValue());
 	}
 
 protected:

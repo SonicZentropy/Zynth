@@ -23,8 +23,8 @@ class AssociatedComponent
 
 public:
 
-	explicit AssociatedComponent(AudioProcessorParameter* inAssocParam)
-		: associatedParameter(inAssocParam)
+	explicit AssociatedComponent(AudioProcessorParameter* inAssocParam, const String& inLabel = "")
+		: associatedParameter(inAssocParam), unitLabel(inLabel)
 	{
 		DBG("Entered method: AssociatedComponent:AssociatedComponent(inAssocParam)");
 	}
@@ -44,8 +44,12 @@ public:
 
 	void setDisplayPrecision(unsigned int inValue) { displayPrecision = inValue; }
 
+	String getUnitLabel() const { return unitLabel; }
+	void setUnitLabel(String inValue) { unitLabel = inValue; }
+
 protected:
 	AudioProcessorParameter* associatedParameter;
+	String unitLabel;
 	unsigned int displayPrecision = 2;
 
 };

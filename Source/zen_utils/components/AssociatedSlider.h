@@ -28,29 +28,43 @@ namespace Zen
 	{
 	public:
 
-		AssociatedSlider(const String& componentName, ZenParameter* associatedParam)
+		AssociatedSlider(const String& componentName, ZenParameter* associatedParam, const String& inLabel = "")
 			: Slider(componentName),
-			  AssociatedComponent(associatedParam)
+			  AssociatedComponent(associatedParam, inLabel)			 
 		{
 			DBG("Entered method: AssociatedSlider:AssociatedSlider(componentName, associatedParam)");
-			setValue(associatedParam->getValue());
+			setValue( associatedParam->getValueForGUIComponent() );			
 		}
 
 		virtual String getTextFromValue(double inValue) override
 		{
 			std::stringstream numberFormatter;
 			numberFormatter.precision(getDisplayPrecision());
-			numberFormatter << std::fixed << getValue();
+			numberFormatter << std::fixed << getValue() << unitLabel;
 			String result = numberFormatter.str();			
-			result.append(associatedParameter->getLabel(), 20);			
-			return result;
-		}	
+		//	result.append(unitLabel, 20);			
+			return result;			
+		}
+
+		virtual double getValueFromText(const String& text) override
+		{
+			//convert from decibel to skewed value here
+			String t(text.trimStart());
+
+			if (t.endsWith(getTextValueSuffix()))
+				t = t.substring(0, t.length() - unitLabel.length());
+
+			while (t.startsWithChar('+'))
+				t = t.substring(1).trimStart();
+
+			return t.initialSectionContainingOnly("0123456789.,-")
+				.getDoubleValue();
+		}
 
 		void setAssociatedParameterValue() override
 		{
 			DBG("Entered method: AssociatedSlider:setAssociatedParameterValue()");
-			associatedParameter->setValue(getValue());
-			
+			associatedParameter->setValue(getValue());			
 		}
 
 		void setAssociatedParameterValueNotifyingHost() override

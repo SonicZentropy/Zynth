@@ -35,7 +35,9 @@ public:
 		midFloat(inMidFloat),
 		range(inMaxDecibels - inMinDecibels)
 	{
-		unitLabel = ("dB");
+		// #TODO: change DecibelParameters getTextFromValue to convert to decibels from 0-1
+		//Unit Labels in parameters causes bitwig GUI to look weird due to value conversion
+		unitLabel = ("");
 	}
 
 	DecibelParameter(const String& paramName, const float& inMinDecibels, const float& inMaxDecibels, const float& inUnityDecibels)
@@ -46,7 +48,7 @@ public:
 		midFloat(0.5f),
 		range(inMaxDecibels - inMinDecibels)
 	{
-		unitLabel = ("dB");		
+		unitLabel = ("");		
 	}
 
 	virtual ~DecibelParameter()
@@ -65,7 +67,7 @@ public:
 
 	virtual float getRawDecibelGainValue() const
 	{
-		return DecibelConversions::decibelRangeGainToRawDecibelGain(value, minDecibels, maxDecibels);		
+		return DecibelConversions::decibelRangeGainToRawDecibelGain(this->getValue(), minDecibels, maxDecibels);		
 	}
 
 
@@ -81,7 +83,7 @@ public:
 
 	virtual float getValueInDecibels() const
 	{
-		return DecibelConversions::mapNormalizedValueToDecibels(value, minDecibels, maxDecibels);
+		return DecibelConversions::mapNormalizedValueToDecibels(getValue(), minDecibels, maxDecibels);
 	}
 
 	virtual float getValueForGUIComponent() const override

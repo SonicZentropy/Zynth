@@ -879,7 +879,7 @@ public:
     /** @internal */
     void colourChanged() override;
 
-private:
+protected:
     //==============================================================================
     JUCE_PUBLIC_IN_DLL_BUILD (class Pimpl)
     friend class Pimpl;

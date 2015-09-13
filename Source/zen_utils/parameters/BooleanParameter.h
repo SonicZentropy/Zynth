@@ -38,15 +38,12 @@ public:
 
 	BooleanParameter::BooleanParameter(const String& parameterName, const float& defaultParameterValue)
 		: ZenParameter(parameterName, defaultParameterValue)
-	{
-		
-	}
+	{	}
 
 	BooleanParameter(const String& parameterName, const bool& defaultBooleanValue)
-		: ZenParameter(parameterName, 0.0)
+		: ZenParameter(parameterName, ZenParamUtils::convertBooleanToFloat(defaultBooleanValue))
 	{
-		//defaultValue = ZenParamUtils::convertBooleanToFloat(defaultBooleanValue);
-		value = defaultValue;
+		//defaultValue = ZenParamUtils::convertBooleanToFloat(defaultBooleanValue);		
 	}
 
 	virtual BooleanParameter::~BooleanParameter()
@@ -55,18 +52,18 @@ public:
 
 	virtual void BooleanParameter::setValue(float newValue) override
 	{
+		// #TODO: Add jassert checking for setValue everywhere
 		//other values technically disallowed
-		//jassert(newValue == 0.0 || newValue == 1.0);
+		jassert(newValue >= 0.0 && newValue <= 1.0);
 
 		//compatibility transform such that anything != 0.0 is true
-		value = (newValue == 0.0) ? 0.0 : 1.0;		
+		setValue(static_cast<float>((newValue == 0.0) ? 0.0 : 1.0));
 		requestUIUpdate = true;
 	}
 
 	virtual void BooleanParameter::setValue(bool newBool)
-	{
-		//value = ZenParamUtils::convertBooleanToFloat(newBool);
-		
+	{		
+		setValue(static_cast<float>(ZenParamUtils::convertBooleanToFloat(newBool)));
 		requestUIUpdate = true;
 	}
 

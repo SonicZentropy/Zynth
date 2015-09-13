@@ -31,7 +31,7 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor (ZynthAudioProcessor& owner
     muteButton->addListener (this);
 
 	
-    addAndMakeVisible (gainSlider = new AssociatedSlider ("Gain Slider", processor->audioGainParam));
+    addAndMakeVisible (gainSlider = new AssociatedSlider ("Gain Slider", processor->audioGainParam, "dB"));
 	//setValue from processor->audioGainParam->getValueInDecibels
     gainSlider->setTooltip ("Adjusts audio gain");
     gainSlider->setRange (-96, 12, 0.01);
@@ -117,6 +117,7 @@ void ZynthAudioProcessorEditor::timerCallback()
 	if (processor->audioGainParam->needsUIUpdate())
 	{
 		gainSlider->setValue(processor->audioGainParam->getValueForGUIComponent(), dontSendNotification);
+		processor->audioGainParam->resetUIUpdate();
 	}
 }
 
