@@ -19,19 +19,22 @@
 #include "JuceHeader.h"
 #include <sstream>
 
-#include "../utilities/DecibelConversions.h"
 #include "../utilities/ZenParamUtils.h"
 
 
 namespace Zen
 {
 
-
-
 class ZenParameter : public AudioProcessorParameter
 {
 
 public:
+
+	// #TODO: Add smoothing from DrowAudio parameter
+	ZenParameter()
+	{
+		throw std::logic_error("ZenParameter Default Constructor should never be called");
+	}
 
 	explicit ZenParameter(const String &inName, const String& inLabel = "") :
 		value(0.5), defaultValue(0.0), minValue(0.0), maxValue(1.0), 
@@ -66,6 +69,11 @@ public:
 		processor->setParameterNotifyingHost(getParameterIndex(), inValue);
 		requestUIUpdate = false;  //set this to false because change came from GUI
 	}
+
+	/*virtual float getValueForGUIComponent() const
+	{
+		return value;
+	}*/
 
 	virtual float getValue() const override { return value; }
 

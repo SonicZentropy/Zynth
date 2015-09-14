@@ -21,6 +21,8 @@
 
   ==============================================================================
 */
+#pragma warning(disable:4717 4722)
+
 
 BufferingAudioSource::BufferingAudioSource (PositionableAudioSource* s,
                                             TimeSliceThread& thread,

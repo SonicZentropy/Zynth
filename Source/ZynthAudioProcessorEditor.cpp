@@ -1,19 +1,3 @@
-/*==============================================================================
-
-  This is an automatically generated GUI class created by the Introjucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Introjucer version: 3.2.0
-
-  ------------------------------------------------------------------------------
-
-  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
-
-==============================================================================*/
 #include "ZynthAudioProcessorEditor.h"
 
 //==============================================================================
@@ -24,15 +8,15 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor (ZynthAudioProcessor& owner
 
 	// #TODO: Change Is_Synth in AppConfig.h for Bitwig
     setName("ZynthMainComponent");
-	DBG("mutebutton:");
     addAndMakeVisible (muteButton = new AssociatedTextButton("Mute Button", processor->muteParam));
     muteButton->setTooltip ("Mute all audio");
     muteButton->setButtonText ("MUTE");
     muteButton->addListener (this);
 
 	
-    addAndMakeVisible (gainSlider = new AssociatedSlider ("Gain Slider", processor->audioGainParam, "dB"));
+    addAndMakeVisible (gainSlider = new AssociatedSlider ("Gain Slider", processor->audioGainParam, "dBC"));
 	//setValue from processor->audioGainParam->getValueInDecibels
+	// #TODO: construct AssociatedParameter set from value internal
     gainSlider->setTooltip ("Adjusts audio gain");
     gainSlider->setRange (-96, 12, 0.01);
     gainSlider->setSliderStyle (Slider::LinearHorizontal);
@@ -121,36 +105,3 @@ void ZynthAudioProcessorEditor::timerCallback()
 	}
 }
 
-//==============================================================================
-#if 0
-/*  -- Introjucer information section --
-
-    This is where the Introjucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="ZynthAudioProcessorEditor"
-                 componentName="ZynthMainComponent" parentClasses="public AudioProcessorEditor, public Timer"
-                 constructorParams="ZynthAudioProcessor&amp; ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter)"
-                 snapPixels="2" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
-  <BACKGROUND backgroundColour="ff303030"/>
-  <TEXTBUTTON name="Mute Button" id="bf3b325d1c639702" memberName="muteButton"
-              virtualName="AssociatedTextButton" explicitFocusOrder="0" pos="10 6 74 24"
-              tooltip="Mute all audio" buttonText="MUTE" connectedEdges="0"
-              needsCallback="1" radioGroupId="0"/>
-  <SLIDER name="Gain Slider" id="d2c6297df481a920" memberName="gainSlider"
-          virtualName="AssociatedSlider" explicitFocusOrder="0" pos="158 8 150 24"
-          tooltip="Adjusts audio gain" min="0" max="1" int="0.010000000000000000208"
-          style="LinearHorizontal" textBoxPos="TextBoxLeft" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1"/>
-  <TEXTBUTTON name="Bypass Button" id="2b30a4c7b3254496" memberName="bypassButton"
-              virtualName="AssociatedTextButton" explicitFocusOrder="0" pos="14 38 74 24"
-              tooltip="Bypass Plugin" buttonText="Bypass" connectedEdges="0"
-              needsCallback="1" radioGroupId="0"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

@@ -32,7 +32,7 @@
     text on it.
 
     @see Button, DrawableButton
-*/ // #Zentropy: Changed Button inheritance to virtual to coexist w/ AssociatedButton
+*/ // #Zentropy: Changed Button inheritance to virtual to coexist w/ AssociatedButton?
 
 class JUCE_API  TextButton  : virtual public Button
 {

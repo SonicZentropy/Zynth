@@ -15,6 +15,7 @@
 #ifndef ZEN_ASSOCIATED_COMPONENT_H_INCLUDED
 #define ZEN_ASSOCIATED_COMPONENT_H_INCLUDED
 #include "JuceHeader.h"
+#include "../parameters/ZenParameter.h"
 
 namespace Zen
 {
@@ -23,7 +24,7 @@ class AssociatedComponent
 
 public:
 
-	explicit AssociatedComponent(AudioProcessorParameter* inAssocParam, const String& inLabel = "")
+	explicit AssociatedComponent(ZenParameter* inAssocParam, const String& inLabel = "")
 		: associatedParameter(inAssocParam), unitLabel(inLabel)
 	{
 		DBG("Entered method: AssociatedComponent:AssociatedComponent(inAssocParam)");
@@ -33,12 +34,17 @@ public:
 	{
 	}
 
-	AudioProcessorParameter* getAssociatedParameter() const { return associatedParameter; }
-	void setAssociatedParameter(AudioProcessorParameter* inValue) { associatedParameter = inValue; }
+	ZenParameter* getAssociatedParameter() const { return associatedParameter; }
+	void setAssociatedParameter(ZenParameter* inValue) { associatedParameter = inValue; }
 
+	
 	virtual void setAssociatedParameterValue() = 0;
+
 	virtual void setAssociatedParameterValueNotifyingHost() = 0;
+
 	virtual float getAssociatedParameterValue() = 0;
+
+
 
 	unsigned int getDisplayPrecision() const { return displayPrecision; }
 
@@ -47,8 +53,13 @@ public:
 	String getUnitLabel() const { return unitLabel; }
 	void setUnitLabel(String inValue) { unitLabel = inValue; }
 
+	void setupComponentFromParameter()
+	{
+		// #TODO: Create setup from parameter
+	}
+
 protected:
-	AudioProcessorParameter* associatedParameter;
+	ZenParameter* associatedParameter;
 	String unitLabel;
 	unsigned int displayPrecision = 2;
 

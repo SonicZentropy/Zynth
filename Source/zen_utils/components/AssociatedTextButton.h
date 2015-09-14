@@ -25,23 +25,20 @@ class AssociatedTextButton : public AssociatedButton, public TextButton
 public:
 
 	AssociatedTextButton(const String& componentName, ZenParameter* associatedParam, const String& inLabel = "")
-		: Button(componentName), AssociatedButton(componentName, associatedParam, inLabel), TextButton(componentName)
+		: AssociatedButton(componentName, associatedParam), TextButton(componentName), Button(componentName)
 	{
 		DBG("Entered method: AssociatedTextButton:AssociatedTextButton(componentName, associatedParam)");
 	}
-
-
-	void setAssociatedParameterValue() override
+	/*void setAssociatedParameterValue() override
 	{
-		DBG("Entered method: AssociatedTextButton:setAssociatedParameterValue()");
+		DBG("Entered method: AssociatedSlider:setAssociatedParameterValue()");
 		associatedParameter->setValue(getValue());
-		//associatedParameter->setValue( getToggleState() );
+
 	}
 
 	void setAssociatedParameterValueNotifyingHost() override
 	{
-		DBG("Entered method: AssociatedTextButton:setAssociatedParameterValueNotifyingHost()");
-		DBG("CurrentValue to pass to parameter: " + String(getValue()));
+		DBG("Entered method: AssociatedSlider:setAssociatedParameterValueNotifyingHost() with value: " + String(getValue()));
 		associatedParameter->setValueNotifyingHost(getValue());
 	}
 
@@ -49,13 +46,7 @@ public:
 	{
 		DBG("Entered method: AssociatedTextButton:getAssociatedParameterValue()");
 		return associatedParameter->getValue();
-	}
-
-	float getValue()
-	{
-		DBG("Entered method: AssociatedTextButton:getValue() with getToggleState: " + String(getToggleState()));
-		return (getToggleState() == true) ? 1.0 : 0.0;
-	}
+	}*/
 
 };
 } // Namespace

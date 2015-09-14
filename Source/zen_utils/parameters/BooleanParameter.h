@@ -27,7 +27,6 @@
 #include "JuceHeader.h"
 #include "ZenParameter.h"
 
-
 namespace Zen
 {
 
@@ -36,46 +35,52 @@ class BooleanParameter : public ZenParameter
 
 public:
 
-	BooleanParameter::BooleanParameter(const String& parameterName, const float& defaultParameterValue)
+	BooleanParameter()
+	{
+		throw std::logic_error("Boolean Parameter Default Constructor should never be called");
+	}
+	BooleanParameter(const String& parameterName, const float& defaultParameterValue)
 		: ZenParameter(parameterName, defaultParameterValue)
 	{	}
 
 	BooleanParameter(const String& parameterName, const bool& defaultBooleanValue)
 		: ZenParameter(parameterName, ZenParamUtils::convertBooleanToFloat(defaultBooleanValue))
-	{
-		//defaultValue = ZenParamUtils::convertBooleanToFloat(defaultBooleanValue);		
-	}
+	{	}
 
-	virtual BooleanParameter::~BooleanParameter()
-	{
-	}
+	virtual ~BooleanParameter()
+	{	}
 
-	virtual void BooleanParameter::setValue(float newValue) override
+	/*virtual void BooleanParameter::setValue(float newValue) override
 	{
 		// #TODO: Add jassert checking for setValue everywhere
 		//other values technically disallowed
 		jassert(newValue >= 0.0 && newValue <= 1.0);
 
 		//compatibility transform such that anything != 0.0 is true
-		setValue(static_cast<float>((newValue == 0.0) ? 0.0 : 1.0));
+		value = ((newValue == 0.0f) ? 0.0f : 1.0f);
+		booleanValue = ZenParamUtils::convertFloatToBoolean(newValue);
 		requestUIUpdate = true;
-	}
+	}*/
 
 	virtual void BooleanParameter::setValue(bool newBool)
-	{		
-		setValue(static_cast<float>(ZenParamUtils::convertBooleanToFloat(newBool)));
+	{	
+		value = ZenParamUtils::convertBooleanToFloat(newBool);
 		requestUIUpdate = true;
 	}
 
 	virtual void BooleanParameter::setValueNotifyingHost(bool newBoolValue) 
 	{
 		ZenParameter::setValueNotifyingHost(ZenParamUtils::convertBooleanToFloat(newBoolValue));
+		requestUIUpdate = false;
+		
 	}
 
 	virtual bool isOn() const
 	{
-		return getBoolFromValue();		
+		return ZenParamUtils::convertFloatToBoolean(value);
 	}
+
+protected:
 
 };
 }//namespace

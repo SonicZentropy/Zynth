@@ -42,9 +42,10 @@ using namespace Zen;
 
 		
 		//DO NOT USE SCOPED POINTERS FOR PARAMETERS
-		DecibelParameter* audioGainParam;
+		DecibelParameter* audioGainParam;		
 		BooleanParameter* muteParam;
 		BooleanParameter* bypassParam;
+		
 
 #pragma region overrides
 		//==============================================================================

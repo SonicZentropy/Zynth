@@ -15,14 +15,19 @@
 
 #include "ZynthAudioProcessor.h"
 #include "ZynthAudioProcessorEditor.h"
+#include <memory>
+#include "zen_utils/ZenHeader.h"
+
 
 using namespace Zen;
 
 //==============================================================================
 	ZynthAudioProcessor::ZynthAudioProcessor()
-	{
-		addParameter(audioGainParam = new DecibelParameter("Gain", -96.0f, 12.0f, 0.0f));
-		addParameter(muteParam = new BooleanParameter("Mute", false));
+	{				
+		FloatParameter myParam("Test", 0.5);
+		AssociatedSlider mySlider("TestSlider", &myParam);
+		addParameter(audioGainParam = new DecibelParameter("Gain", -96.0f, 12.0f, 0.0f, "dBp"));		
+ 		addParameter(muteParam = new BooleanParameter("Mute", false));
 		addParameter(bypassParam = new BooleanParameter("Bypass", false));
 	}
 
@@ -42,9 +47,11 @@ using namespace Zen;
 		float* leftData = buffer.getWritePointer(0);  //leftData references left channel now
 		float* rightData = buffer.getWritePointer(1); //right data references right channel now		
 
+		bool muted = muteParam->isOn();
+
 		if (muteParam->isOn())
 		{
-			TIMEDPRINT("Mute is on");
+			
 			for (int i = 0; i < buffer.getNumSamples() ; i++)
 			{
 				leftData[i] = rightData[i] = 0;
@@ -55,6 +62,7 @@ using namespace Zen;
 		// #TODO: getRawDecGainValue is the issue
 		// Turn 0.0->1.0 decibel range (scaled) into raw decibel gain
 		float audioGainRaw = audioGainParam->getRawDecibelGainValue();
+		
 		for (long i = 0; i < buffer.getNumSamples(); i++)
 		{
 			leftData[i] *= audioGainRaw;

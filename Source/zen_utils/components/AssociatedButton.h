@@ -28,14 +28,41 @@ public:
 	AssociatedButton(const String& componentName, ZenParameter* associatedParam, const String& inLabel = "")
 		: Button(componentName), AssociatedComponent(associatedParam, inLabel)
 	{
-		DBG("Entered method: AssociatedButton:AssociatedButton(componentName, associatedParam)");
+		DBG("In AssociatedButton::AssociatedButton() ");
 		// #TODO: add setToggleState conversion in associated button constructor
 		setToggleState(associatedParam->getBoolFromValue(), sendNotification);
 	}
+	void setAssociatedParameterValue() override
+	{
+		DBG("Entered method: AssociatedSlider:setAssociatedParameterValue()");
+		associatedParameter->setValue(getValueFromToggle());
 
-	virtual void setAssociatedParameterValue() override = 0;
-	virtual void setAssociatedParameterValueNotifyingHost() override = 0;
-	virtual float getAssociatedParameterValue() override = 0;
+	}
+
+	void setAssociatedParameterValueNotifyingHost() override
+	{
+		DBG("Entered method: AssociatedSlider:setAssociatedParameterValueNotifyingHost() with value: " + String(getValueFromToggle()));
+		associatedParameter->setValueNotifyingHost(this->getValueFromToggle());
+	}
+
+	float getAssociatedParameterValue() override
+	{
+		DBG("Entered method: AssociatedTextButton:getAssociatedParameterValue()");
+		return associatedParameter->getValue();
+	}
+	float getValueFromToggle()
+	{
+		DBG("Entered method: AssociatedButton:getValue() with getToggleState: " + String(getToggleState()));
+		float test = (getToggleState() == true) ? 1.0 : 0.0;
+		return test;
+	}
+/*
+
+	virtual bool isOn() const
+	{
+		return getToggleState();
+	}*/
+
 
 };
 }

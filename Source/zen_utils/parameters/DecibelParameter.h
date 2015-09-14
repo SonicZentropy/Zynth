@@ -15,41 +15,46 @@
 #ifndef ZEN_DECIBEL_PARAMETER_H_INCLUDED
 #define ZEN_DECIBEL_PARAMETER_H_INCLUDED
 
-#include "FloatParameter.h"
+//#include "FloatParameter.h"
 
 namespace Zen
 {
-
+using namespace juce;
 class DecibelParameter : public FloatParameter
 {
 
 public:
 
+	DecibelParameter()
+	{
+		throw std::logic_error("Decibel Parameter Default Constructor should never be called");
+	}
+
 	DecibelParameter(const String& paramName, 
 		const float& inMinDecibels, const float& inMaxDecibels, const float& inUnityDecibels, 
-		const float& minFloat, const float& maxFloat, const float& inMidFloat, const float& defaultFloat)
-		: FloatParameter(paramName,	minFloat, maxFloat, defaultFloat), 
+		const float& minFloat, const float& maxFloat, const float& inMidFloat, const float& defaultFloat, const String& inLabel = "")
+		: FloatParameter(paramName,	minFloat, maxFloat, defaultFloat, inLabel), 
 		minDecibels(inMinDecibels),
 		maxDecibels(inMaxDecibels),
 		unityDecibels(inUnityDecibels),
 		midFloat(inMidFloat),
 		range(inMaxDecibels - inMinDecibels)
 	{
-		// #TODO: change DecibelParameters getTextFromValue to convert to decibels from 0-1
-		//Unit Labels in parameters causes bitwig GUI to look weird due to value conversion
-		unitLabel = ("");
+		requestUIUpdate = true;
 	}
 
-	DecibelParameter(const String& paramName, const float& inMinDecibels, const float& inMaxDecibels, const float& inUnityDecibels)
-		: FloatParameter(paramName, 0.0f, 1.0f, 0.5f),
+	DecibelParameter(const String& paramName, const float& inMinDecibels, const float& inMaxDecibels, const float& inUnityDecibels, const String& inLabel = "")
+		: FloatParameter(paramName, 0.0f, 1.0f, 0.5f, inLabel),
 		minDecibels(inMinDecibels),
 		maxDecibels(inMaxDecibels),
 		unityDecibels(inUnityDecibels),
 		midFloat(0.5f),
 		range(inMaxDecibels - inMinDecibels)
-	{
-		unitLabel = ("");		
+	{	
+		requestUIUpdate = true;
 	}
+
+
 
 	virtual ~DecibelParameter()
 	{
@@ -91,12 +96,19 @@ public:
 		return getValueInDecibels();
 	}
 
+	virtual String getText(float inValue, int maxStringLength) const override
+	{
+		jassert(maxStringLength >= 0);
+		std::stringstream numberFormatter;
+		numberFormatter.precision(getDisplayPrecision());
+		numberFormatter << std::fixed << inValue;
+		String result = numberFormatter.str();
+		result.append( " z"+getLabel(), 20);
+		
+		return (String(getValueInDecibels()) + " " + String(unitLabel));
+	}
+
 #pragma region GET/SET
-
-	bool getRequestUiUpdate() const { return requestUIUpdate; }
-
-	void setRequestUiUpdate(const bool inRequestUiUpdate) { requestUIUpdate = inRequestUiUpdate; }
-
 	float getMinDecibels() const { return minDecibels; }
 
 	void setMinDecibels(const float inMinDecibels) { minDecibels = inMinDecibels; }
@@ -120,9 +132,9 @@ public:
 #pragma endregion
 
 protected:
-	bool requestUIUpdate = true;
+
 	float minDecibels, maxDecibels;	
-	float unityDecibels = 0;
+	float unityDecibels;
 	float midFloat;
 	float range;
 };

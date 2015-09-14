@@ -30,17 +30,21 @@ namespace Zen
 using namespace juce;
 class FloatParameter : public ZenParameter
 {
-
 public:
 
-	FloatParameter(const String& paramName, const float& defaultfloat)
-		: ZenParameter(paramName, defaultfloat)
+	FloatParameter()
+	{
+		std::logic_error("Float Parameter Default Constructor should never be called");
+	}
+
+	FloatParameter(const String& paramName, const float& defaultfloat, const String& inLabel = "")
+		: ZenParameter(paramName, defaultfloat, inLabel)
 	{
 		range = 1.0;
 	}
 
-	FloatParameter(const String& parameterName, const float& minfloat, const float& maxfloat, const float& defaultfloat)
-		: ZenParameter(parameterName, minfloat, maxfloat, defaultfloat)
+	FloatParameter(const String& parameterName, const float& minfloat, const float& maxfloat, const float& defaultfloat, const String& inLabel = "")
+		: ZenParameter(parameterName, minfloat, maxfloat, defaultfloat, inLabel)
 	{
 		range = maxfloat - minfloat;
 	}

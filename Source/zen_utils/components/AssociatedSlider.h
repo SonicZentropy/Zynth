@@ -27,13 +27,31 @@ namespace Zen
 	class AssociatedSlider : virtual public Slider, public AssociatedComponent
 	{
 	public:
-
 		AssociatedSlider(const String& componentName, ZenParameter* associatedParam, const String& inLabel = "")
 			: Slider(componentName),
 			  AssociatedComponent(associatedParam, inLabel)			 
 		{
 			DBG("Entered method: AssociatedSlider:AssociatedSlider(componentName, associatedParam)");
 			setValue( associatedParam->getValueForGUIComponent() );			
+		}
+
+		void setAssociatedParameterValue() override
+		{
+			DBG("Entered method: AssociatedSlider:setAssociatedParameterValue()");
+			associatedParameter->setValue(getValue());
+
+		}
+
+		void setAssociatedParameterValueNotifyingHost() override
+		{
+			DBG("Entered method: AssociatedSlider:setAssociatedParameterValueNotifyingHost() with value: " + String(getValue()));
+			associatedParameter->setValueNotifyingHost(getValue());
+		}
+
+		float getAssociatedParameterValue() override
+		{
+			DBG("Entered method: AssociatedTextButton:getAssociatedParameterValue()");
+			return associatedParameter->getValue();
 		}
 
 		virtual String getTextFromValue(double inValue) override
@@ -59,25 +77,8 @@ namespace Zen
 
 			return t.initialSectionContainingOnly("0123456789.,-")
 				.getDoubleValue();
-		}
-
-		void setAssociatedParameterValue() override
-		{
-			DBG("Entered method: AssociatedSlider:setAssociatedParameterValue()");
-			associatedParameter->setValue(getValue());			
-		}
-
-		void setAssociatedParameterValueNotifyingHost() override
-		{
-			DBG("Entered method: AssociatedSlider:setAssociatedParameterValueNotifyingHost() with value: " + String(getValue()));			
-			associatedParameter->setValueNotifyingHost(getValue());
-		}
-
-		float getAssociatedParameterValue() override
-		{
-			DBG("Entered method: AssociatedTextButton:getAssociatedParameterValue()");
-			return associatedParameter->getValue();
-		}
+		}		
+		
 
 		void setValueFromLinearNormalized(const float& inValue, NotificationType notification)
 		{
@@ -93,8 +94,7 @@ namespace Zen
 		}
 
 	protected:
-	private:
-		
+
 	
 	};
 }
