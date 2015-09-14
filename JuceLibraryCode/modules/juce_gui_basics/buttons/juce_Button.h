@@ -36,7 +36,7 @@
 
     @see TextButton, DrawableButton, ToggleButton
 */
-class JUCE_API  Button  : public Component,
+class JUCE_API  Button  : virtual public Component,
                           public SettableTooltipClient
 {
 protected:

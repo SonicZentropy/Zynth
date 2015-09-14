@@ -395,7 +395,6 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\zen_utils\components\derived\GainCtrlSlider.cpp" />
     <ClCompile Include="..\..\Source\zen_utils\processing\BufferSampleProcesses.cpp" />
     <ClCompile Include="..\..\Source\zen_utils\utilities\ZenDebug.cpp" />
     <ClCompile Include="..\..\Source\zen_utils\utilities\ZenParamUtils.cpp" />
@@ -1468,7 +1467,6 @@
     <ClInclude Include="..\..\Source\zen_utils\components\AssociatedComponent.h" />
     <ClInclude Include="..\..\Source\zen_utils\components\AssociatedSlider.h" />
     <ClInclude Include="..\..\Source\zen_utils\components\AssociatedTextButton.h" />
-    <ClInclude Include="..\..\Source\zen_utils\components\derived\GainCtrlSlider.h" />
     <ClInclude Include="..\..\Source\zen_utils\parameters\BooleanParameter.h" />
     <ClInclude Include="..\..\Source\zen_utils\parameters\DecibelParameter.h" />
     <ClInclude Include="..\..\Source\zen_utils\parameters\FloatParameter.h" />

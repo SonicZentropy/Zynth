@@ -19,13 +19,14 @@
 
 namespace Zen
 {
-class AssociatedComponent
+class AssociatedComponent : virtual public Component
 {
 
 public:
 
 	explicit AssociatedComponent(ZenParameter* inAssocParam, const String& inLabel = "")
-		: associatedParameter(inAssocParam), unitLabel(inLabel)
+		: Component(inAssocParam->getName(50)),
+		associatedParameter(inAssocParam), unitLabel(inLabel)
 	{
 		DBG("Entered method: AssociatedComponent:AssociatedComponent(inAssocParam)");
 	}

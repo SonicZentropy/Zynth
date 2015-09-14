@@ -25,7 +25,7 @@ class AssociatedTextButton : public AssociatedButton, public TextButton
 public:
 
 	AssociatedTextButton(const String& componentName, ZenParameter* associatedParam, const String& inLabel = "")
-		: AssociatedButton(componentName, associatedParam), TextButton(componentName), Button(componentName)
+		: AssociatedButton(componentName, associatedParam), TextButton(componentName), Button(componentName), Component(componentName)
 	{
 		DBG("Entered method: AssociatedTextButton:AssociatedTextButton(componentName, associatedParam)");
 	}

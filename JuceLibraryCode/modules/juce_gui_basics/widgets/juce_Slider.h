@@ -47,7 +47,7 @@
 
     @see Slider::Listener
 */
-class JUCE_API  Slider  : public Component,
+class JUCE_API  Slider  : virtual public Component,
                           public SettableTooltipClient
 {
 public:

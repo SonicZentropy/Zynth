@@ -24,11 +24,12 @@
 namespace Zen
 {
 
-	class AssociatedSlider : virtual public Slider, public AssociatedComponent
+	class AssociatedSlider : public Slider, public AssociatedComponent
 	{
 	public:
 		AssociatedSlider(const String& componentName, ZenParameter* associatedParam, const String& inLabel = "")
 			: Slider(componentName),
+			  Component(componentName),
 			  AssociatedComponent(associatedParam, inLabel)			 
 		{
 			DBG("Entered method: AssociatedSlider:AssociatedSlider(componentName, associatedParam)");

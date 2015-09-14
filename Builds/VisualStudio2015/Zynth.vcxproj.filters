@@ -289,9 +289,6 @@
     <Filter Include="Zynth\Source\zen_utils\parameters">
       <UniqueIdentifier>{ff64f6d2-c8e2-4f61-9439-3cde931edbbd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Zynth\Source\zen_utils\components\derived">
-      <UniqueIdentifier>{faf1db8c-e75a-44be-80f4-2d23f4a0d537}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\ZynthAudioProcessorEditor.cpp">
@@ -1388,9 +1385,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\zen_utils\processing\BufferSampleProcesses.cpp">
       <Filter>Zynth\Source\zen_utils\processing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\zen_utils\components\derived\GainCtrlSlider.cpp">
-      <Filter>Zynth\Source\zen_utils\components\derived</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2707,9 +2701,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\zen_utils\components\AssociatedComponent.h">
       <Filter>Zynth\Source\zen_utils\components</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\zen_utils\components\derived\GainCtrlSlider.h">
-      <Filter>Zynth\Source\zen_utils\components\derived</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\zen_utils\parameters\ZenParameter.h">
       <Filter>Zynth\Source\zen_utils\parameters</Filter>

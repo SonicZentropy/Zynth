@@ -63,30 +63,12 @@ void ZynthAudioProcessorEditor::resized()
 
 void ZynthAudioProcessorEditor::buttonClicked(Button* buttonThatWasClicked)
 {	
-	AssociatedButton* clickedBtn = dynamic_cast<AssociatedButton*>(buttonThatWasClicked);
-
-    if (buttonThatWasClicked == muteButton)
-    {		
-		//clickedBtn->setAssociatedParameterValueNotifyingHost();
-		//processor->muteParam->setValueNotifyingHost(static_cast<AssociatedTextButton*>(buttonThatWasClicked)->);
-	    //muteButton->getAssociatedParameter()->setValueNotifyingHost(muteButton->getValue());
-		clickedBtn->setAssociatedParameterValueNotifyingHost();
-    }
-    else if (buttonThatWasClicked == bypassButton)
-    {
-		clickedBtn->setAssociatedParameterValueNotifyingHost();   
-    }
+	dynamic_cast<AssociatedButton*>(buttonThatWasClicked)->setAssociatedParameterValueNotifyingHost();
 }
 
-void ZynthAudioProcessorEditor::sliderValueChanged (Slider* inSliderThatWasMoved)
-{
-	AssociatedSlider* sliderThatWasMoved = dynamic_cast<AssociatedSlider*>(inSliderThatWasMoved);
-
-    if (sliderThatWasMoved == gainSlider)
-    {		
-		sliderThatWasMoved->setAssociatedParameterValueNotifyingHost();		
-    }
-
+void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
+{    		
+	dynamic_cast<AssociatedSlider*>(sliderThatWasMoved)->setAssociatedParameterValueNotifyingHost();
 }
 
 void ZynthAudioProcessorEditor::timerCallback()
@@ -94,10 +76,21 @@ void ZynthAudioProcessorEditor::timerCallback()
 	// #TODO: FIX AUTOMATION and parameters changing without notification
 
 	//exchange data between UI Elements and the Plugin (ourProcessor)
-
+	AssociatedComponent* currentComponent;
+	ZenParameter* currentParameter;
 //	if (processor->muteParam->needsUIUpdate())
 //		muteButton->setToggleState(0.0f != processor->muteParam->getValue(), dontSendNotification);
-
+	int numComponents = this->getNumChildComponents();
+	for (int i = 0; i < numComponents; i++)
+	{
+		currentComponent = dynamic_cast<AssociatedComponent*>(this->getChildComponent(i));
+		currentParameter = currentComponent->getAssociatedParameter();
+		if (currentParameter->needsUIUpdate())
+		{
+			//currentComponent->
+		}
+		
+	}
 	if (processor->audioGainParam->needsUIUpdate())
 	{
 		gainSlider->setValue(processor->audioGainParam->getValueForGUIComponent(), dontSendNotification);
