@@ -47,7 +47,7 @@ using namespace Zen;
 		float* leftData = buffer.getWritePointer(0);  //leftData references left channel now
 		float* rightData = buffer.getWritePointer(1); //right data references right channel now		
 
-		bool muted = muteParam->isOn();
+		
 
 		if (muteParam->isOn())
 		{

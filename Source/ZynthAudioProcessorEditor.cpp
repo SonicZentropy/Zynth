@@ -76,25 +76,43 @@ void ZynthAudioProcessorEditor::timerCallback()
 	// #TODO: FIX AUTOMATION and parameters changing without notification
 
 	//exchange data between UI Elements and the Plugin (ourProcessor)
+	
+	AssociatedSlider* currentSlider;
+	AssociatedButton* currentButton;
 	AssociatedComponent* currentComponent;
 	ZenParameter* currentParameter;
-//	if (processor->muteParam->needsUIUpdate())
-//		muteButton->setToggleState(0.0f != processor->muteParam->getValue(), dontSendNotification);
+
 	int numComponents = this->getNumChildComponents();
 	for (int i = 0; i < numComponents; i++)
 	{
 		currentComponent = dynamic_cast<AssociatedComponent*>(this->getChildComponent(i));
 		currentParameter = currentComponent->getAssociatedParameter();
-		if (currentParameter->needsUIUpdate())
+		if (!currentParameter->needsUIUpdate()) //Don't need to keep going if the Component doesn't need to be updated
 		{
-			//currentComponent->
+			continue;
 		}
-		
-	}
-	if (processor->audioGainParam->needsUIUpdate())
-	{
-		gainSlider->setValue(processor->audioGainParam->getValueForGUIComponent(), dontSendNotification);
-		processor->audioGainParam->resetUIUpdate();
+
+		currentSlider = dynamic_cast<AssociatedSlider*>(currentComponent);
+		if(currentSlider != nullptr)
+		{
+			currentSlider->setValue(currentParameter->getValueForGUIComponent(), dontSendNotification);
+			DBG("Setting current slider " + String(currentParameter->getName()) + " in GUI Update");
+		} 
+		else 
+		{
+			currentButton = dynamic_cast<AssociatedButton*>(this->getChildComponent(i));
+			if (currentButton != nullptr)
+			{
+				currentButton->setToggleState(currentParameter->getBoolFromValue(), dontSendNotification);
+				DBG("Setting current button " + String(currentParameter->getName()) + " in GUI Update");
+			}
+			else
+			{
+				throw std::logic_error("Somehow a component is of no detected type!");
+			}
+			
+		}
+		currentParameter->resetUIUpdate();
 	}
 }
 

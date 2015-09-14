@@ -75,6 +75,9 @@ public:
 		return value;
 	}*/
 
+	String getName() const { return name; };
+
+
 	virtual float getValue() const override { return value; }
 
 	virtual float getMinValue() const {	return minValue; }

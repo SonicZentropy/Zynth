@@ -56,9 +56,8 @@ public:
 		float test = (getToggleState() == true) ? 1.0 : 0.0;
 		return test;
 	}
-/*
 
-	virtual bool isOn() const
+	/*virtual bool isOn() const
 	{
 		return getToggleState();
 	}*/

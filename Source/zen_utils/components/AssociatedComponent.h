@@ -45,7 +45,7 @@ public:
 
 	virtual float getAssociatedParameterValue() = 0;
 
-
+//	virtual void setValue() = 0;
 
 	unsigned int getDisplayPrecision() const { return displayPrecision; }
 
