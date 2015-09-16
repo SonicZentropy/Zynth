@@ -55,6 +55,7 @@ namespace Zen
 			return associatedParameter->getValue();
 		}
 
+		
 		virtual String getTextFromValue(double inValue) override
 		{
 			std::stringstream numberFormatter;

@@ -29,7 +29,6 @@ public:
 		: Button(componentName), AssociatedComponent(associatedParam, inLabel)
 	{
 		DBG("In AssociatedButton::AssociatedButton() ");
-		// #TODO: add setToggleState conversion in associated button constructor
 		setToggleState(associatedParam->getBoolFromValue(), sendNotification);
 	}
 	void setAssociatedParameterValue() override

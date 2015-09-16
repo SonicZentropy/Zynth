@@ -15,11 +15,12 @@
 #ifndef ZEN_DECIBEL_PARAMETER_H_INCLUDED
 #define ZEN_DECIBEL_PARAMETER_H_INCLUDED
 
-//#include "FloatParameter.h"
+#include "FloatParameter.h"
+#include "..\utilities\DecibelConversions.h"
 
 namespace Zen
 {
-using namespace juce;
+
 class DecibelParameter : public FloatParameter
 {
 
@@ -75,15 +76,16 @@ public:
 		return DecibelConversions::decibelRangeGainToRawDecibelGain(this->getValue(), minDecibels, maxDecibels);		
 	}
 
+	virtual float getSmoothedRawDecibelGainValue()
+	{
+		return DecibelConversions::decibelRangeGainToRawDecibelGain(lsValue.getNextValue(), minDecibels, maxDecibels);
+	}
 
 	virtual void setValueNotifyingHost(float newValue) override
-	{		
-		// This method can't be used until the parameter has been attached to a processor!
-		jassert(processor != nullptr && getParameterIndex() >= 0);
-		
-		float newerValue = convertDecibelsToLinearWithSetMidpoint(newValue);		
-		processor->setParameterNotifyingHost(getParameterIndex(), newerValue);
-		requestUIUpdate = false;  //set this to false because change came from GUI
+	{			
+		float dbConvertedToLinear = convertDecibelsToLinearWithSetMidpoint(newValue);
+		ZenParameter::setValueNotifyingHost(dbConvertedToLinear);
+
 	}
 
 	virtual float getValueInDecibels() const
@@ -103,7 +105,7 @@ public:
 		numberFormatter.precision(getDisplayPrecision());
 		numberFormatter << std::fixed << inValue;
 		String result = numberFormatter.str();
-		result.append( " z"+getLabel(), 20);
+		result.append( " "+getLabel(), 20);
 		
 		return (String(getValueInDecibels()) + " " + String(unitLabel));
 	}

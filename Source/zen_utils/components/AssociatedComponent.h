@@ -54,10 +54,6 @@ public:
 	String getUnitLabel() const { return unitLabel; }
 	void setUnitLabel(String inValue) { unitLabel = inValue; }
 
-	void setupComponentFromParameter()
-	{
-		// #TODO: Create setup from parameter
-	}
 
 protected:
 	ZenParameter* associatedParameter;

@@ -16,19 +16,19 @@
 #include "ZynthAudioProcessor.h"
 #include "ZynthAudioProcessorEditor.h"
 #include <memory>
-#include "zen_utils/ZenHeader.h"
+//#include "zen_utils/ZenHeader.h"
 
 
-using namespace Zen;
 
 //==============================================================================
 	ZynthAudioProcessor::ZynthAudioProcessor()
-	{				
-		FloatParameter myParam("Test", 0.5);
-		AssociatedSlider mySlider("TestSlider", &myParam);
+	{		
+		setCurrentSampleRate(44100.0);
 		addParameter(audioGainParam = new DecibelParameter("Gain", -96.0f, 12.0f, 0.0f, "dBp"));		
  		addParameter(muteParam = new BooleanParameter("Mute", false));
 		addParameter(bypassParam = new BooleanParameter("Bypass", false));
+		get
+		//if sample rate != 44100 change params here
 	}
 
 	ZynthAudioProcessor::~ZynthAudioProcessor()
@@ -39,15 +39,21 @@ using namespace Zen;
 	}
 	
 	//==============================================================================
-
+	/**Note that if you have more outputs than inputs, then only those channels that 
+	correspond to an input channel are guaranteed to contain sensible data - 
+	e.g. in the case of 2 inputs and 4 outputs, the first two channels contain the input, 
+	but the last two channels may contain garbage, so you should be careful NOT to let 
+	this pass through without being overwritten or cleared.*/
 	void ZynthAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 	{
+		//Eventually check this to see if SR changed, then reset applicable parameter smoothing if so
+		setCurrentSampleRate(getSampleRate());
+
+
 		if (bypassParam->isOn()) return;
 
 		float* leftData = buffer.getWritePointer(0);  //leftData references left channel now
 		float* rightData = buffer.getWritePointer(1); //right data references right channel now		
-
-		
 
 		if (muteParam->isOn())
 		{
@@ -58,13 +64,13 @@ using namespace Zen;
 			}
 			return;
 		}
-													  
-		// #TODO: getRawDecGainValue is the issue
-		// Turn 0.0->1.0 decibel range (scaled) into raw decibel gain
-		float audioGainRaw = audioGainParam->getRawDecibelGainValue();
+		
+//		audioGainParam->resetSmoothedValue(this->getSampleRate(), 12.0);
+	
 		
 		for (long i = 0; i < buffer.getNumSamples(); i++)
 		{
+			float audioGainRaw = audioGainParam->getSmoothedRawDecibelGainValue();
 			leftData[i] *= audioGainRaw;
 			rightData[i] *= audioGainRaw;
 			

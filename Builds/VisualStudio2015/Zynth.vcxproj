@@ -125,7 +125,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
-      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderFile />
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
@@ -1470,6 +1470,7 @@
     <ClInclude Include="..\..\Source\zen_utils\parameters\BooleanParameter.h" />
     <ClInclude Include="..\..\Source\zen_utils\parameters\DecibelParameter.h" />
     <ClInclude Include="..\..\Source\zen_utils\parameters\FloatParameter.h" />
+    <ClInclude Include="..\..\Source\zen_utils\parameters\LinearSmoothedValue.h" />
     <ClInclude Include="..\..\Source\zen_utils\parameters\ZenParameter.h" />
     <ClInclude Include="..\..\Source\zen_utils\processing\BufferSampleProcesses.h" />
     <ClInclude Include="..\..\Source\zen_utils\utilities\DecibelConversions.h" />
@@ -1915,7 +1916,11 @@
     <None Include="..\..\JuceLibraryCode\modules\juce_graphics\juce_module_info" />
     <None Include="..\..\JuceLibraryCode\modules\juce_gui_basics\juce_module_info" />
     <None Include="..\..\JuceLibraryCode\modules\juce_gui_extra\juce_module_info" />
-    <None Include="ClassDiagram.cd" />
+    <None Include="..\..\UMLDiagrams\juce_AudioProcessors.cd" />
+    <None Include="..\..\UMLDiagrams\juce_core.cd" />
+    <None Include="..\..\UMLDiagrams\juce_DataStructures.cd" />
+    <None Include="..\..\UMLDiagrams\juce_gui_basics.cd" />
+    <None Include="..\JuceModeling\juce_AudioProcessors.cd" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc" />

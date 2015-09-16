@@ -20,6 +20,7 @@
 namespace Zen
 {
 using namespace std;
+// #TODO: remove all 'using namespace std"
 
 /*
 	float ZenParamUtils::warp(float x, float max, float min, float mid)
@@ -79,24 +80,7 @@ using namespace std;
 	}
 
 
-	bool ZenParamUtils::convertFloatToBoolean(const float& inValue)
-	{
-		return (0.0 == inValue) ? false : true;
-	}
 
-
-	float ZenParamUtils::convertBooleanToFloat(const bool& inBool)
-	{
-		return (false == inBool) ? 0.0 : 1.0;
-	}
-
-	bool ZenParamUtils::convertFloatToBooleanViaRange(float inputValue)
-	{
-		if (inputValue < 0.5)
-			return false;
-		else
-			return true;
-	}
 
 	/// <summary>Given input value in an arbitrary range, convert it to a linear normalized version warped around a desired midpoint.
 	///	Example: Given a decibel value in a decibel range -96 to +12, convert it to a normalized (0.0 to 1.0) value
@@ -165,6 +149,5 @@ using namespace std;
 		y = ((y1 - y0)*((inValue - x0) / (x1 - x0))) + y0;
 		return y;
 	}
-
-
 }
+

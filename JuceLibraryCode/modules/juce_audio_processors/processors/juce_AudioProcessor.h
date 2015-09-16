@@ -718,6 +718,17 @@ public:
     /** @internal */
     static void JUCE_CALLTYPE setTypeOfNextNewPlugin (WrapperType);
 
+	//ZENTROPY ADDED
+	double getCurrentSampleRate() const
+	{
+		return currentSampleRate;
+	}
+
+	void setCurrentSampleRate(const double& inRate)
+	{
+		currentSampleRate = inRate;
+	}
+
 protected:
     /** @internal */
     AudioPlayHead* playHead;
@@ -728,7 +739,7 @@ protected:
 private:
     Array<AudioProcessorListener*> listeners;
     Component::SafePointer<AudioProcessorEditor> activeEditor;
-    double sampleRate;
+    double sampleRate, currentSampleRate;
     int blockSize, numInputChannels, numOutputChannels, latencySamples;
     bool suspended, nonRealtime;
     CriticalSection callbackLock, listenerLock;

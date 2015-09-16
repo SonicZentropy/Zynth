@@ -89,7 +89,7 @@ namespace Zen
 		//float leftRatio = sqrt(1.0f - panRatio);
 		//float rightRatio = sqrt(panRatio);
 
-		// #TODO: fix sinusoidal ratio to work properly in middle
+		// #FUTURE: fix sinusoidal ratio to work properly in middle
 		// also not linear but perceived as such
 		float pan = panRatio * M_PI_2;
 		*leftSample *= cos(pan);

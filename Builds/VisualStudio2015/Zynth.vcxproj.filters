@@ -289,6 +289,15 @@
     <Filter Include="Zynth\Source\zen_utils\parameters">
       <UniqueIdentifier>{ff64f6d2-c8e2-4f61-9439-3cde931edbbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Zynth\UMLDiagrams">
+      <UniqueIdentifier>{75d3f2a9-83d5-44c5-8da1-ad5d1bae26c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Zynth\UMLDiagrams\JUCE">
+      <UniqueIdentifier>{92315964-bdb0-41d7-a34f-1bcbee23ff02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Zynth\UMLDiagrams\zen_utils">
+      <UniqueIdentifier>{df787520-9695-48d4-a952-5100a3ad81f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\ZynthAudioProcessorEditor.cpp">
@@ -2705,6 +2714,9 @@
     <ClInclude Include="..\..\Source\zen_utils\parameters\ZenParameter.h">
       <Filter>Zynth\Source\zen_utils\parameters</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\zen_utils\parameters\LinearSmoothedValue.h">
+      <Filter>Zynth\Source\zen_utils\parameters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_basics\juce_module_info">
@@ -2740,7 +2752,21 @@
     <None Include="..\..\JuceLibraryCode\modules\juce_gui_extra\juce_module_info">
       <Filter>Juce Modules\juce_gui_extra</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
+    <None Include="..\JuceModeling\juce_AudioProcessors.cd">
+      <Filter>Zynth\Source</Filter>
+    </None>
+    <None Include="..\..\UMLDiagrams\juce_core.cd">
+      <Filter>Zynth\UMLDiagrams\JUCE</Filter>
+    </None>
+    <None Include="..\..\UMLDiagrams\juce_AudioProcessors.cd">
+      <Filter>Zynth\UMLDiagrams\JUCE</Filter>
+    </None>
+    <None Include="..\..\UMLDiagrams\juce_DataStructures.cd">
+      <Filter>Zynth\UMLDiagrams\JUCE</Filter>
+    </None>
+    <None Include="..\..\UMLDiagrams\juce_gui_basics.cd">
+      <Filter>Zynth\UMLDiagrams\JUCE</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc">

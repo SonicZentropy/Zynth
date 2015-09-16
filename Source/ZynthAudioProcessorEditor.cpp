@@ -6,7 +6,7 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor (ZynthAudioProcessor& owner
 {
 	processor = &ownerFilter;
 
-	// #TODO: Change Is_Synth in AppConfig.h for Bitwig
+	// #NOTES: Change Is_Synth in AppConfig.h for Bitwig
     setName("ZynthMainComponent");
     addAndMakeVisible (muteButton = new AssociatedTextButton("Mute Button", processor->muteParam));
     muteButton->setTooltip ("Mute all audio");
@@ -16,7 +16,6 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor (ZynthAudioProcessor& owner
 	
     addAndMakeVisible (gainSlider = new AssociatedSlider ("Gain Slider", processor->audioGainParam, "dBC"));
 	//setValue from processor->audioGainParam->getValueInDecibels
-	// #TODO: construct AssociatedParameter set from value internal
     gainSlider->setTooltip ("Adjusts audio gain");
     gainSlider->setRange (-96, 12, 0.01);
     gainSlider->setSliderStyle (Slider::LinearHorizontal);
@@ -73,8 +72,6 @@ void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 
 void ZynthAudioProcessorEditor::timerCallback()
 {
-	// #TODO: FIX AUTOMATION and parameters changing without notification
-
 	//exchange data between UI Elements and the Plugin (ourProcessor)
 	
 	AssociatedSlider* currentSlider;
@@ -83,6 +80,8 @@ void ZynthAudioProcessorEditor::timerCallback()
 	ZenParameter* currentParameter;
 
 	int numComponents = this->getNumChildComponents();
+	// #TODO: Eventually change GUI updates to messages rather than polling
+	//This looks ugly, but it's a whole lot better than a massive if chain checking EVERY param individually
 	for (int i = 0; i < numComponents; i++)
 	{
 		currentComponent = dynamic_cast<AssociatedComponent*>(this->getChildComponent(i));

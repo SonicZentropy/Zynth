@@ -40,11 +40,11 @@ public:
 		throw std::logic_error("Boolean Parameter Default Constructor should never be called");
 	}
 	BooleanParameter(const String& parameterName, const float& defaultParameterValue)
-		: ZenParameter(parameterName, defaultParameterValue)
+		: ZenParameter(parameterName, defaultParameterValue, 0.01f)
 	{	}
 
 	BooleanParameter(const String& parameterName, const bool& defaultBooleanValue)
-		: ZenParameter(parameterName, ZenParamUtils::convertBooleanToFloat(defaultBooleanValue))
+		: ZenParameter(parameterName, convertBooleanToFloat(defaultBooleanValue), 0.01f)
 	{	}
 
 	virtual ~BooleanParameter()
@@ -64,20 +64,20 @@ public:
 
 	virtual void BooleanParameter::setValue(bool newBool)
 	{	
-		value = ZenParamUtils::convertBooleanToFloat(newBool);
+		value = convertBooleanToFloat(newBool);
 		requestUIUpdate = true;
 	}
 
 	virtual void BooleanParameter::setValueNotifyingHost(bool newBoolValue) 
 	{
-		ZenParameter::setValueNotifyingHost(ZenParamUtils::convertBooleanToFloat(newBoolValue));
+		ZenParameter::setValueNotifyingHost(convertBooleanToFloat(newBoolValue));
 		requestUIUpdate = false;
 		
 	}
 
 	virtual bool isOn() const
 	{
-		return ZenParamUtils::convertFloatToBoolean(value);
+		return convertFloatToBoolean(value.getValue());
 	}
 
 protected:

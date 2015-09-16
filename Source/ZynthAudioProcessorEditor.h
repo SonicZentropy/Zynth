@@ -1,40 +1,29 @@
-/*
-  ==============================================================================
+/*==============================================================================
+//  ZynthAudioProcessorEditor.h
+//  Part of the Zentropia JUCE Collection
+//  @author Casey Bailey (<a href="SonicZentropy@gmail.com">email</a>)
+//  @version 0.1
+//  @date 2015/09/14
+//  Copyright (C) 2015 by Casey Bailey
+//  Provided under the [GNU license]
+//
+//  Details: Main GUI Component Controller
+//
+//  Zentropia is hosted on Github at [https://github.com/SonicZentropy]
+===============================================================================*/
 
-  This is an automatically generated GUI class created by the Introjucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Introjucer version: 3.2.0
-
-  ------------------------------------------------------------------------------
-
-  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
-
-  ==============================================================================
-*/
 
 #ifndef __JUCE_HEADER_E0F368D2F71ED5FC__
 #define __JUCE_HEADER_E0F368D2F71ED5FC__
 
-//[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
 #include "ZynthAudioProcessor.h"
 #include "zen_utils/ZenHeader.h"
+
+
 using namespace Zen;
-//[/Headers]
 
-
-
-//==============================================================================
-/**
-                                                                    //[Comments]
-Main GUI Handler
-                                                                    //[/Comments]
-*/
+/// <summary> GUI Editor for zynth audio processor. </summary>
 class ZynthAudioProcessorEditor  : public AudioProcessorEditor,
                                    public Timer,
                                    public ButtonListener,
@@ -45,11 +34,10 @@ public:
 	explicit ZynthAudioProcessorEditor (ZynthAudioProcessor& ownerFilter);
     ~ZynthAudioProcessorEditor();
 
-    //==============================================================================
-    //[UserMethods]     -- You can add your own custom methods in this section.
-		void timerCallback() override;
-    //[/UserMethods]
+    
+	void timerCallback() override;    
 
+	//==============================================================================
     void paint (Graphics& g) override;
     void resized() override;
     void buttonClicked (Button* buttonThatWasClicked) override;
@@ -58,22 +46,17 @@ public:
 
 
 private:
-    //[UserVariables]   -- You can add your own custom variables in this section.
 	ZynthAudioProcessor* processor;
-    //[/UserVariables]
-
+    
     //==============================================================================
     ScopedPointer<AssociatedTextButton> muteButton;
     ScopedPointer<AssociatedSlider> gainSlider;
     ScopedPointer<AssociatedTextButton> bypassButton;
 
+	
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ZynthAudioProcessorEditor)
 };
-
-//[EndFile] You can add extra defines here...
-
-//[/EndFile]
 
 #endif   // __JUCE_HEADER_E0F368D2F71ED5FC__

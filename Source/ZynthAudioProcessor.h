@@ -18,72 +18,71 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "JuceHeader.h"
-#include "zen_utils/ZenHeader.h"
-
-using namespace Zen;
+#include "zen_utils\parameters\DecibelParameter.h"
+#include "zen_utils\parameters\BooleanParameter.h"
 
 //==============================================================================
 /**
 */
-	class ZynthAudioProcessor : public AudioProcessor
-	{
-	public:
-		//==============================================================================
-		ZynthAudioProcessor();
-		~ZynthAudioProcessor();
+class ZynthAudioProcessor : public AudioProcessor
+{
+public:
+	//==============================================================================
+	ZynthAudioProcessor();
+	~ZynthAudioProcessor();
 
-		//==============================================================================
+	//==============================================================================
 		
 
-		void processBlock(AudioSampleBuffer&, MidiBuffer&) override;
+	void processBlock(AudioSampleBuffer&, MidiBuffer&) override;
 
-		void getStateInformation(MemoryBlock& destData) override;
-		void setStateInformation(const void* data, int sizeInBytes) override;
+	void getStateInformation(MemoryBlock& destData) override;
+	void setStateInformation(const void* data, int sizeInBytes) override;
 
 		
-		//DO NOT USE SCOPED POINTERS FOR PARAMETERS
-		DecibelParameter* audioGainParam;		
-		BooleanParameter* muteParam;
-		BooleanParameter* bypassParam;
+	//DO NOT USE SCOPED POINTERS FOR PARAMETERS
+	Zen::DecibelParameter* audioGainParam;		
+	Zen::BooleanParameter* muteParam;
+	Zen::BooleanParameter* bypassParam;
 		
 
 #pragma region overrides
-		//==============================================================================
-		void prepareToPlay(double inSampleRate, int samplesPerBlock) override;
-		void releaseResources() override;
+	//==============================================================================
+	void prepareToPlay(double inSampleRate, int samplesPerBlock) override;
+	void releaseResources() override;
 
-		//==============================================================================
-		AudioProcessorEditor* createEditor() override;
-		bool hasEditor() const override;
+	//==============================================================================
+	AudioProcessorEditor* createEditor() override;
+	bool hasEditor() const override;
 
-		//==============================================================================
-		const String getName() const override;
+	//==============================================================================
+	const String getName() const override;
 
-		const String getInputChannelName(int channelIndex) const override;
-		const String getOutputChannelName(int channelIndex) const override;
-		bool isInputChannelStereoPair(int index) const override;
-		bool isOutputChannelStereoPair(int index) const override;
+	const String getInputChannelName(int channelIndex) const override;
+	const String getOutputChannelName(int channelIndex) const override;
+	bool isInputChannelStereoPair(int index) const override;
+	bool isOutputChannelStereoPair(int index) const override;
 
-		bool acceptsMidi() const override;
-		bool producesMidi() const override;
-		bool silenceInProducesSilenceOut() const override;
-		double getTailLengthSeconds() const override;
+	bool acceptsMidi() const override;
+	bool producesMidi() const override;
+	bool silenceInProducesSilenceOut() const override;
+	double getTailLengthSeconds() const override;
 
-		//==============================================================================
-		int getNumPrograms() override;
-		int getCurrentProgram() override;
-		void setCurrentProgram(int index) override;
-		const String getProgramName(int index) override;
-		void changeProgramName(int index, const String& newName) override;
+	//==============================================================================
+	int getNumPrograms() override;
+	int getCurrentProgram() override;
+	void setCurrentProgram(int index) override;
+	const String getProgramName(int index) override;
+	void changeProgramName(int index, const String& newName) override;
 
-		//==============================================================================
+	//==============================================================================
+	
 #pragma endregion 
-	private:
-		
-		//==============================================================================
-		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ZynthAudioProcessor)
+private:
+	//==============================================================================
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ZynthAudioProcessor)
 
-	};
+};
 
 
 #endif  // PLUGINPROCESSOR_H_INCLUDED
