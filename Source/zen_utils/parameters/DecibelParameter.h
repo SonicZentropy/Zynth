@@ -76,9 +76,13 @@ public:
 		return DecibelConversions::decibelRangeGainToRawDecibelGain(this->getValue(), minDecibels, maxDecibels);		
 	}
 
+	/// <summary> Processes one sample worth of value smoothing and returns the raw decibel gain representing it.
+	/// This should be called once for every sample's process block and the result considered 
+	/// that sample's gain adjustment</summary>
+	/// <returns> The smoothed raw decibel gain value. </returns>
 	virtual float getSmoothedRawDecibelGainValue()
 	{
-		return DecibelConversions::decibelRangeGainToRawDecibelGain(lsValue.getNextValue(), minDecibels, maxDecibels);
+		return DecibelConversions::decibelRangeGainToRawDecibelGain(smoothedValue.getNextValue(), minDecibels, maxDecibels);
 	}
 
 	virtual void setValueNotifyingHost(float newValue) override

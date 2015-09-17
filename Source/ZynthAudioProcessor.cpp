@@ -16,18 +16,21 @@
 #include "ZynthAudioProcessor.h"
 #include "ZynthAudioProcessorEditor.h"
 #include <memory>
-//#include "zen_utils/ZenHeader.h"
+// #TODO: add JUCE_TRACK_OBJECT macro to bottom of my params/components
+// #TODO: add noexcept where needed
+// #TODO: add copy constructors
+// #TODO: make base class destructors virtual
 
 
 
 //==============================================================================
 	ZynthAudioProcessor::ZynthAudioProcessor()
-	{		
-		setCurrentSampleRate(44100.0);
+	{	
+		
 		addParameter(audioGainParam = new DecibelParameter("Gain", -96.0f, 12.0f, 0.0f, "dBp"));		
  		addParameter(muteParam = new BooleanParameter("Mute", false));
 		addParameter(bypassParam = new BooleanParameter("Bypass", false));
-		get
+	
 		//if sample rate != 44100 change params here
 	}
 
@@ -46,7 +49,7 @@
 	this pass through without being overwritten or cleared.*/
 	void ZynthAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 	{
-		//Eventually check this to see if SR changed, then reset applicable parameter smoothing if so
+		// #TODO: Eventually check this to see if SR changed, then reset applicable parameter smoothing if so
 		setCurrentSampleRate(getSampleRate());
 
 
@@ -64,9 +67,6 @@
 			}
 			return;
 		}
-		
-//		audioGainParam->resetSmoothedValue(this->getSampleRate(), 12.0);
-	
 		
 		for (long i = 0; i < buffer.getNumSamples(); i++)
 		{

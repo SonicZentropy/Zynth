@@ -36,7 +36,7 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor (ZynthAudioProcessor& owner
 	bypassButton->setClickingTogglesState(true);
 
     //processor->RequestUIUpdate(); //UI Update must be performed every time a new editor is constructed - fix this?
-	startTimer(20); // Start timer poll with 20ms rate
+	startTimer(50); // Start timer poll with 50ms rate
 
 }
 
