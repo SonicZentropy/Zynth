@@ -20,7 +20,7 @@
 
 namespace Zen
 {
-
+using juce::String;
 class DecibelParameter : public FloatParameter
 {
 
@@ -31,29 +31,34 @@ public:
 		throw std::logic_error("Decibel Parameter Default Constructor should never be called");
 	}
 
-	DecibelParameter(const String& paramName, 
-		const float& inMinDecibels, const float& inMaxDecibels, const float& inUnityDecibels, 
-		const float& minFloat, const float& maxFloat, const float& inMidFloat, const float& defaultFloat, const String& inLabel = "")
-		: FloatParameter(paramName,	minFloat, maxFloat, defaultFloat, inLabel), 
+	explicit DecibelParameter(const String& paramName, const bool& inShouldBeSmoothed = false,
+		const float& inMinDecibels = -96.0f, const float& inMaxDecibels = 12.0f, const float& inUnityDecibels = 0.0f, 
+		const float& minValue=0.0f, const float& maxValue = 1.0f, const float& inMidValue = 0.5f, 
+		const float& defaultValue = 0.5f, const float& inStep = 0.01f, const String& inLabel = "")
+		: FloatParameter(paramName,	minValue, maxValue, defaultValue, inStep, inShouldBeSmoothed, inLabel), 
 		minDecibels(inMinDecibels),
 		maxDecibels(inMaxDecibels),
 		unityDecibels(inUnityDecibels),
-		midFloat(inMidFloat),
+		midValue(inMidValue),
 		range(inMaxDecibels - inMinDecibels)
 	{
 		requestUIUpdate = true;
 	}
 
-	DecibelParameter(const String& paramName, const float& inMinDecibels, const float& inMaxDecibels, const float& inUnityDecibels, const String& inLabel = "")
-		: FloatParameter(paramName, 0.0f, 1.0f, 0.5f, inLabel),
+	//new DecibelParameter("Gain", 0.0f, -96.0f, 12.0f, 0.0f, true, 0.01, "dB")
+
+/*
+	DecibelParameter(const String& paramName, const float& inDefaultValue, const float& inMinDecibels, const float& inMaxDecibels, const float& inUnityDecibels,
+		     const bool& inShouldBeSmoothed = false, const float& inStep = 0.01f, const String& inLabel = "")
+		: FloatParameter(paramName, minValue, maxValue, inDefaultValue, inStep, inShouldBeSmoothed, inLabel),
 		minDecibels(inMinDecibels),
 		maxDecibels(inMaxDecibels),
 		unityDecibels(inUnityDecibels),
-		midFloat(0.5f),
+		midValue(0.5f),
 		range(inMaxDecibels - inMinDecibels)
 	{	
 		requestUIUpdate = true;
-	}
+	}*/
 
 
 
@@ -82,7 +87,7 @@ public:
 	/// <returns> The smoothed raw decibel gain value. </returns>
 	virtual float getSmoothedRawDecibelGainValue()
 	{
-		return DecibelConversions::decibelRangeGainToRawDecibelGain(smoothedValue.getNextValue(), minDecibels, maxDecibels);
+		return DecibelConversions::decibelRangeGainToRawDecibelGain(getNextSmoothedValue(), minDecibels, maxDecibels);
 	}
 
 	virtual void setValueNotifyingHost(float newValue) override
@@ -127,9 +132,9 @@ public:
 
 	void setUnityDecibels(const float inUnityDecibels) { unityDecibels = inUnityDecibels; }
 
-	float getMidFloat() const { return midFloat; }
+	float getmidValue() const { return midValue; }
 
-	void setMidFloat(const float inMidFloat) { midFloat = inMidFloat; }
+	void setmidValue(const float inMidValue) { midValue = inMidValue; }
 
 	float getRange() const { return range; }
 
@@ -141,7 +146,7 @@ protected:
 
 	float minDecibels, maxDecibels;	
 	float unityDecibels;
-	float midFloat;
+	float midValue;
 	float range;
 };
 }

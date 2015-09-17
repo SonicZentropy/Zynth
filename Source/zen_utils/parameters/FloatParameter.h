@@ -37,16 +37,17 @@ public:
 		std::logic_error("Float Parameter Default Constructor should never be called");
 	}
 
-	FloatParameter(const String& paramName, const float& defaultfloat, const String& inLabel = "")
-		: ZenParameter(paramName, defaultfloat, inLabel)
+	FloatParameter(const String& paramName, const float& inDefaultValue, const bool& inShouldBeSmoothed = false, const String& inLabel = "")
+		: ZenParameter(paramName, inDefaultValue, inShouldBeSmoothed, inLabel)
 	{
 		range = 1.0;
 	}
 
-	FloatParameter(const String& parameterName, const float& minfloat, const float& maxfloat, const float& defaultfloat, const String& inLabel = "")
-		: ZenParameter(parameterName, minfloat, maxfloat, defaultfloat, inLabel)
+	explicit FloatParameter(const String& inParameterName, const float& inMinValue = 0.0f, const float& inMaxValue = 1.0f, const float& inDefaultValue = 0.5f, 
+		           const float& inStep = 0.01f, const bool& inShouldBeSmoothed = false, const String& inLabel = "")
+		: ZenParameter(inParameterName, inMinValue, inMaxValue, inDefaultValue, inStep, inShouldBeSmoothed, inLabel)
 	{
-		range = maxfloat - minfloat;
+		range = maxValue - minValue;
 	}
 
 	virtual ~FloatParameter()
@@ -65,6 +66,8 @@ public:
 protected:
 	
 	float range;
+
+private:
 
 };
 }//namespace

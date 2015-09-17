@@ -20,8 +20,8 @@
 #include <sstream>
 
 #include "../utilities/ZenParamUtils.h"
-#include "LinearSmoothedValue.h"
-#include "../../ZynthAudioProcessor.h"
+//#include "LinearSmoothedValue.h"
+
 
 namespace Zen {
 using namespace juce;
@@ -31,30 +31,33 @@ class ZenParameter : public AudioProcessorParameter
 public:
 	// #TODO: add copy constructors
 	// #TODO: change parameter Value to a Value object that refersTo(the parameter value obj)
-	// #TODO: Add smoothedValue.reset to prepareToPlay
+	// #TODO: Add currentSmoothedValue.reset to prepareToPlay
 
-
-
-	explicit ZenParameter(const String &inName) :
-		value(0.5), name(inName)
+	ZenParameter()
 	{
-		smoothedValue.setValue(0.5);
-		smoothedValue.reset(processor->getCurrentSampleRate(), 0.01);
+		throw std::logic_error("ZenParameter Default Constructor should never be called");
 	}
 
-	ZenParameter(const String &inName, const float& inDefaultValue, const float& inStep = 0.01f, const String& inLabel = "") :
-		value(inDefaultValue), name(inName), defaultValue(inDefaultValue)
+	explicit ZenParameter(const String &inName, const bool& inShouldBeSmoothed = false) :
+		value(0.5), name(inName), shouldBeSmoothed(inShouldBeSmoothed)
 	{
-		smoothedValue.setValue(inDefaultValue);
-		smoothedValue.reset(44100, 0.01);
+		setSmoothedValue(0.5);
+	//	currentSmoothedValue.reset(processor->getCurrentSampleRate(), 0.01);
 	}
 
-	ZenParameter(const String &inName, float inMinValue, float inMaxValue, float inDefaultValue, const String& inLabel = "") :
+	ZenParameter(const String &inName, const float& inDefaultValue, const bool& inShouldBeSmoothed = false, const String& inLabel = "") :
+		value(inDefaultValue), defaultValue(inDefaultValue), name(inName), unitLabel(inLabel), shouldBeSmoothed(inShouldBeSmoothed)
+	{
+		setSmoothedValue(inDefaultValue);
+	//	currentSmoothedValue.reset(44100, 0.01);
+	}
+
+	ZenParameter(const String &inName, const float& inMinValue, const float& inMaxValue, const float& inDefaultValue, const float& inStep = 0.01f, const bool& inShouldBeSmoothed = false, const String& inLabel = "") :
 		value(inDefaultValue), defaultValue(inDefaultValue), minValue(inMinValue), 
-		maxValue(inMaxValue), name(inName), unitLabel(inLabel)
+		maxValue(inMaxValue), intervalStep(inStep), name(inName), unitLabel(inLabel), shouldBeSmoothed(inShouldBeSmoothed)
 	{
-		smoothedValue.setValue(inDefaultValue);
-		smoothedValue.reset(44100, 0.01);
+		setSmoothedValue(inDefaultValue);
+		//currentSmoothedValue.reset(44100, 0.01);
 	}
 
 	
@@ -77,6 +80,7 @@ public:
 		requestUIUpdate = false;  //set this to false because change came from GUI
 	}
 
+	// #TODO: eliminate need for UIUpdate byconnecting params w/ ReferTo
 	virtual bool needsUIUpdate()
 	{
 		return requestUIUpdate;
@@ -92,6 +96,68 @@ public:
 	virtual void resetUIUpdate()
 	{
 		requestUIUpdate = false;
+	}
+
+	/// <summary> Re-initializes the smoothed value parameter configuration.  Should be called from
+	/// parameter constructors in parameters that allow smoothing.  Should also be called on any change
+	/// of sample rate or desired smoothing time.  This can all be done within the processor's prepareToPlay()</summary>
+	/// <param name="inSampleRate"> The in sample rate. </param>
+	/// <param name="inSmoothTime"> The in smooth time. </param>
+	void resetSmoothedValue(float inSampleRate, float inSmoothTime)
+	{
+		jassert(inSampleRate > 0 && inSmoothTime >= 0);
+		stepsToTarget = static_cast<int>(std::floor(inSmoothTime * inSampleRate));
+		currentSmoothedValue = target;
+		countdown = 0;
+		smoothTime = inSmoothTime;
+	}
+
+	/// <summary> Re-initializes the smoothed value parameter configuration.  Should be called from
+	/// parameter constructors in parameters that allow smoothing.  Should also be called on any change
+	/// of sample rate or desired smoothing time.  This can all be done within the processor's prepareToPlay()
+	/// Smooth Time does not change.</summary>
+	/// <param name="inSampleRate"> The in sample rate. </param>
+	void resetSmoothedValue(float inSampleRate)
+	{
+		jassert(inSampleRate > 0 && smoothTime >= 0);
+		stepsToTarget = static_cast<int>(std::floor(smoothTime * inSampleRate));
+		currentSmoothedValue = target;
+		countdown = 0;
+		
+	}
+
+	/// <summary> Sets smoothed value. Should be called every time value is set/changed to a new value 
+	/// (Inside setvalue method)</summary>
+	/// <param name="newValue"> The new value that the smoothing is TARGETING. </param>
+	void setSmoothedValue(float newValue)
+	{
+		if (!areAlmostEqual(target, newValue))
+		{
+			target = newValue;
+			countdown = stepsToTarget;
+
+			if (countdown <= 0)
+				currentSmoothedValue = target;
+			else
+				step = (target - currentSmoothedValue) / static_cast<float>(countdown);
+		}
+	}
+
+	/// <summary> Processes one sample worth of smoothing and returns the next (smoothed) value.
+	/// Should be called ONCE on EVERY sample's process cycle.</summary>
+	float getNextSmoothedValue() noexcept
+	{
+		if (countdown <= 0)
+			return target;
+
+		--countdown;
+		currentSmoothedValue += step;
+		return currentSmoothedValue;
+	}
+
+	bool checkShouldBeSmoothed() const
+	{
+		return shouldBeSmoothed;
 	}
 
 
@@ -149,50 +215,32 @@ public:
 	float getIntervalStep() const { return intervalStep; }
 	void setIntervalStep(float inValue) { intervalStep = inValue; }
 
-	/// <summary> Re-initializes the smoothed value parameter configuration.  Should be called from
-	/// parameter constructors in parameters that allow smoothing.  Should also be called on any change
-	/// of sample rate or desired smoothing time.  This can all be done within the processor's prepareToPlay()</summary>
-	/// <param name="inSampleRate"> The in sample rate. </param>
-	/// <param name="inSmoothTime"> The in smooth time. </param>
-	void resetSmoothedValue(float inSampleRate, float inSmoothTime)
-	{
-		smoothedValue.reset(inSampleRate, inSmoothTime);
-	}
+	double getSmoothTime() const { return smoothTime; }
+	void setSmoothTime(double inValue) { smoothTime = inValue; }
 
-	/// <summary> Sets smoothed value. Should be called every time value is set/changed to a new value 
-	/// (Inside setvalue method)</summary>
-	/// <param name="newValue"> The new value that the smoothing is TARGETING. </param>
-	void setSmoothedValue(float newValue)
-	{
-		smoothedValue.setValue(newValue);
-	}
-
-	/// <summary> Processes one sample worth of smoothing and returns the next (smoothed) value.
-	/// Should be called ONCE on EVERY sample's process cycle.</summary>
-	float getNextSmoothedValue() noexcept
-	{
-		return smoothedValue.getNextValue();
-	}
-
+	bool getShouldBeSmoothed() const { return shouldBeSmoothed; }
+	void setShouldBeSmoothed(bool inValue) { shouldBeSmoothed = inValue; }
 #pragma endregion
+
 protected:
 	Value value;
-	LinearSmoothedValue smoothedValue;
+	
 	float defaultValue=0.0, minValue=0.0, maxValue=1.0, intervalStep= 0.01f;
 	unsigned int precision=2;
 	String name, unitLabel = "", description = "";
-	bool requestUIUpdate = true, shouldBeSmoothed = false;
+	bool requestUIUpdate = true;
+
+	// Smoothing fields
+	
+	double currentSmoothedValue = 0, stepsToTarget = 0, target = 0, step = 0, countdown = 0, smoothTime = 0.01;
+	bool shouldBeSmoothed = false;
 
 
 		
 	
 	//==============================================================================
 private:
-	ZenParameter()
-	{
-		throw std::logic_error("ZenParameter Default Constructor should never be called");
-	}
-
+	
 	JUCE_LEAK_DETECTOR(ZenParameter);
 };
 

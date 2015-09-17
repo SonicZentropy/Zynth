@@ -736,6 +736,9 @@ protected:
     /** @internal */
     void sendParamChangeMessageToListeners (int parameterIndex, float newValue);
 
+	// Zentropy - moved to protected from private so I can iterate across params in derived processor
+	OwnedArray<AudioProcessorParameter> managedParameters;
+
 private:
     Array<AudioProcessorListener*> listeners;
     Component::SafePointer<AudioProcessorEditor> activeEditor;
@@ -745,7 +748,7 @@ private:
     CriticalSection callbackLock, listenerLock;
     String inputSpeakerArrangement, outputSpeakerArrangement;
 
-    OwnedArray<AudioProcessorParameter> managedParameters;
+    
     AudioProcessorParameter* getParamChecked (int) const noexcept;
 
    #if JUCE_DEBUG && ! JUCE_DISABLE_AUDIOPROCESSOR_BEGIN_END_GESTURE_CHECKING

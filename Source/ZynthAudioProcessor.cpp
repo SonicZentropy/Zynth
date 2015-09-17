@@ -15,23 +15,21 @@
 
 #include "ZynthAudioProcessor.h"
 #include "ZynthAudioProcessorEditor.h"
+#include "boost/algorithm/clamp.hpp"
 #include <memory>
 // #TODO: add JUCE_TRACK_OBJECT macro to bottom of my params/components
 // #TODO: add noexcept where needed
 // #TODO: add copy constructors
 // #TODO: make base class destructors virtual
 
-
+using boost::algorithm::clamp;
 
 //==============================================================================
 	ZynthAudioProcessor::ZynthAudioProcessor()
-	{	
-		
-		addParameter(audioGainParam = new DecibelParameter("Gain", -96.0f, 12.0f, 0.0f, "dBp"));		
+	{			
+		addParameter(audioGainParam = new DecibelParameter("Gain", true, -96.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.01f, "dB"));
  		addParameter(muteParam = new BooleanParameter("Mute", false));
-		addParameter(bypassParam = new BooleanParameter("Bypass", false));
-	
-		//if sample rate != 44100 change params here
+		addParameter(bypassParam = new BooleanParameter("Bypass", false));		
 	}
 
 	ZynthAudioProcessor::~ZynthAudioProcessor()
@@ -70,7 +68,7 @@
 		
 		for (long i = 0; i < buffer.getNumSamples(); i++)
 		{
-			float audioGainRaw = audioGainParam->getSmoothedRawDecibelGainValue();
+			auto audioGainRaw = clamp<float>(audioGainParam->getSmoothedRawDecibelGainValue(), -4.0f, 4.0f); //Make sure screwups don't blow up speakers
 			leftData[i] *= audioGainRaw;
 			rightData[i] *= audioGainRaw;
 			
@@ -179,6 +177,17 @@
 	{
 		// Use this method as the place to do any pre-playback
 		// initialisation that you need..
+	
+		// Iterates over parameters and resets Smooth for the ones who need it
+		for (auto &param : getParameters())
+		{			
+			ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
+			if (zenParam->checkShouldBeSmoothed())
+			{				
+				zenParam->resetSmoothedValue(inSampleRate, 6.01f);
+			}
+		}
+
 	}
 
 	void ZynthAudioProcessor::releaseResources()
