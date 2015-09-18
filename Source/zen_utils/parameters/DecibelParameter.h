@@ -28,7 +28,8 @@ public:
 
 	DecibelParameter()
 	{
-		throw std::logic_error("Decibel Parameter Default Constructor should never be called");
+		DBG("Decibel Parameter Default Constructor should never be called");
+		jassertfalse;
 	}
 
 	explicit DecibelParameter(const String& paramName, const bool& inShouldBeSmoothed = false,
@@ -44,23 +45,6 @@ public:
 	{
 		requestUIUpdate = true;
 	}
-
-	//new DecibelParameter("Gain", 0.0f, -96.0f, 12.0f, 0.0f, true, 0.01, "dB")
-
-/*
-	DecibelParameter(const String& paramName, const float& inDefaultValue, const float& inMinDecibels, const float& inMaxDecibels, const float& inUnityDecibels,
-		     const bool& inShouldBeSmoothed = false, const float& inStep = 0.01f, const String& inLabel = "")
-		: FloatParameter(paramName, minValue, maxValue, inDefaultValue, inStep, inShouldBeSmoothed, inLabel),
-		minDecibels(inMinDecibels),
-		maxDecibels(inMaxDecibels),
-		unityDecibels(inUnityDecibels),
-		midValue(0.5f),
-		range(inMaxDecibels - inMinDecibels)
-	{	
-		requestUIUpdate = true;
-	}*/
-
-
 
 	virtual ~DecibelParameter()
 	{

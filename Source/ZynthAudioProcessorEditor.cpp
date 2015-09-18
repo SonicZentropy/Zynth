@@ -95,19 +95,18 @@ void ZynthAudioProcessorEditor::timerCallback()
 		if(currentSlider != nullptr)
 		{
 			currentSlider->setValue(currentParameter->getValueForGUIComponent(), dontSendNotification);
-			DBG("Setting current slider " + String(currentParameter->getName()) + " in GUI Update");
-		} 
+ 		} 
 		else 
 		{
 			currentButton = dynamic_cast<AssociatedButton*>(this->getChildComponent(i));
 			if (currentButton != nullptr)
 			{
 				currentButton->setToggleState(currentParameter->getBoolFromValue(), dontSendNotification);
-				DBG("Setting current button " + String(currentParameter->getName()) + " in GUI Update");
-			}
+ 			}
 			else
 			{
-				throw std::logic_error("Somehow a component is of no detected type!");
+				DBG("In ZynthAudioProcessorEditor::timerCallback() component with unknown type detected!");
+				jassertfalse;
 			}
 			
 		}

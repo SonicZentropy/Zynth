@@ -20,13 +20,14 @@
 // #TODO: add JUCE_TRACK_OBJECT macro to bottom of my params/components
 // #TODO: add noexcept where needed
 // #TODO: add copy constructors
-// #TODO: make base class destructors virtual
 
 using boost::algorithm::clamp;
 
 //==============================================================================
 	ZynthAudioProcessor::ZynthAudioProcessor()
+		:rootTree("Root")
 	{			
+		
 		addParameter(audioGainParam = new DecibelParameter("Gain", true, -96.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.01f, "dB"));
  		addParameter(muteParam = new BooleanParameter("Mute", false));
 		addParameter(bypassParam = new BooleanParameter("Bypass", false));		
@@ -82,6 +83,38 @@ using boost::algorithm::clamp;
 		// You should use this method to store your parameterSet in the memory block.
 		// You could do that either as raw data, or use the XML or ValueTree classes
 		// as intermediaries to make it easy to save and load complex data.
+		// You should use this method to store your parameters in the memory block.
+		// You could do that either as raw data, or use the XML or ValueTree classes
+		// as intermediaries to make it easy to save and load complex data.
+
+		XmlElement root("Root");
+	//	XmlElement* el;
+
+/*
+		for (ZenParameter theParam : managedParameters)
+		{
+			theParam.writeXML(root);
+		}*/
+
+		/*
+		el = root.createNewChildElement("Bypass");
+		el->addTextElement(String(masterBypassParam->getValue()));
+		el = root.createNewChildElement("StereoWidth");
+		el->addTextElement(String(stereoWidthParam->getValue()));
+		el = root.createNewChildElement("MuteAudio");
+		el->addTextElement(String(muteAudioParam->getValue()));
+		el = root.createNewChildElement("Gain");
+		el->addTextElement(String(audioGainParam->getValue()));
+		el = root.createNewChildElement("InvertLeft");
+		el->addTextElement(String(invertLeftParam->getValue()));
+		el = root.createNewChildElement("InvertRight");
+		el->addTextElement(String(invertRightParam->getValue()));
+		el = root.createNewChildElement("LockGain");
+		el->addTextElement(String(lockGainParam->getValue()));
+		el = root.createNewChildElement("StereoPan");
+		el->addTextElement(String(stereoPanParam->getValue()));
+		*/
+		copyXmlToBinary(root, destData);
 	}
 
 	void ZynthAudioProcessor::setStateInformation(const void* data, int sizeInBytes)

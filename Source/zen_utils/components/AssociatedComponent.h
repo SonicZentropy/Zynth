@@ -16,7 +16,7 @@
 #define ZEN_ASSOCIATED_COMPONENT_H_INCLUDED
 #include "JuceHeader.h"
 #include "../parameters/ZenParameter.h"
-
+ 
 namespace Zen
 {
 class AssociatedComponent : virtual public Component
@@ -28,7 +28,7 @@ public:
 		: Component(inAssocParam->getName(50)),
 		associatedParameter(inAssocParam), unitLabel(inLabel)
 	{
-		DBG("Entered method: AssociatedComponent:AssociatedComponent(inAssocParam)");
+ 		
 	}
 
 	virtual ~AssociatedComponent()
@@ -44,8 +44,6 @@ public:
 	virtual void setAssociatedParameterValueNotifyingHost() = 0;
 
 	virtual float getAssociatedParameterValue() = 0;
-
-//	virtual void setValue() = 0;
 
 	unsigned int getDisplayPrecision() const { return displayPrecision; }
 

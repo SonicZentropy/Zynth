@@ -19,10 +19,7 @@
 
 namespace Zen
 {
-using namespace std;
-// #TODO: remove all 'using namespace std"
 
-/*
 	float ZenParamUtils::warp(float x, float max, float min, float mid)
 	{
 		float sf = warpCoefficients(max, min, mid);
@@ -45,9 +42,6 @@ using namespace std;
 		return log(0.5f) / log((mid - min)
 			/ (max - min));
 	}
-	*/
-
-
 	
 	float ZenParamUtils::normalizeValueLinear(
 		const float& value, const float& minValue, const float& maxValue)
@@ -65,7 +59,6 @@ using namespace std;
 	{
 		jassert(normalized >= 0.0f && normalized <= 1.0f);
 		jassert(maxValue > minValue);
-
 		return minValue + normalized * (maxValue - minValue);
 	}
 
@@ -109,7 +102,9 @@ using namespace std;
 			y1 = maxOfRange;
 		} else
 		{
-			throw std::logic_error("NOPE");
+			DBG("In ZenParamUtils::convertValueToWarpedLinearBasedOnMidpoint() input value is out of range");
+			jassertfalse;
+			return -9000.0f;
 		}
 		if ((y1 - y0) == 0) return 0;  //prevent divide by 0
 		x = (((inValue - y0) / (y1 - y0)) * (x1 - x0)) + x0;
@@ -142,8 +137,9 @@ using namespace std;
 
 		} else
 		{
-			std::cout << "SOMETHING TERRIBLE THIS WAY COMES" << std::endl;
-			throw std::logic_error("NOPE");
+			DBG("In ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue() input value is out of range");
+			jassertfalse;
+			return -9000.0f;
 		}
 		if ((x1 - x0) == 0) return 0; //prevent divide by zero
 		y = ((y1 - y0)*((inValue - x0) / (x1 - x0))) + y0;

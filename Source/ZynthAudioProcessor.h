@@ -79,6 +79,8 @@ public:
 	
 #pragma endregion 
 private:
+	// Change to scoped pointer
+	ValueTree rootTree;
 	//==============================================================================
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ZynthAudioProcessor)
 

@@ -37,7 +37,8 @@ public:
 
 	BooleanParameter()
 	{
-		throw std::logic_error("Boolean Parameter Default Constructor should never be called");
+		DBG("Boolean Parameter Default Constructor should never be called");
+		jassertfalse;
 	}
 	BooleanParameter(const String& parameterName, const float& defaultParameterValue)
 		: ZenParameter(parameterName, defaultParameterValue, 0.01f)

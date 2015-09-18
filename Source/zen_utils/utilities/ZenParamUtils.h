@@ -36,7 +36,7 @@ namespace Zen
 		/// <param name="min">Min of Range</param>
 		/// <param name="mid">Midpoint for 0.5 skew</param>
 		/// <returns>Post-normalized value</returns>
-		//static float warp(float x, float max, float min, float mid);
+		static float warp(float x, float max, float min, float mid);
 
 		/// Warps Audio normalization from juce_zen_utils.h 
 		/// fixed. Use in setParameterNotifyingHost and getParameter
@@ -45,7 +45,7 @@ namespace Zen
 		/// <param name="min"> Minimum of range </param>
 		/// <param name="mid"> The middle of range </param>
 		/// <returns>Re-warped value </returns>
-		//static float inverseWarp(float x, float max, float min, float mid);
+		static float inverseWarp(float x, float max, float min, float mid);
 
 		/// <summary>
 		/// Returns skew coeff
@@ -54,7 +54,7 @@ namespace Zen
 		/// <param name="min">The minimum.</param>
 		/// <param name="mid">The mid.</param>
 		/// <returns>float.</returns>
-		//static float warpCoefficients(float max, float min, float mid);
+		static float warpCoefficients(float max, float min, float mid);
 
 		/// <summary>
 		/// Given a float value normalized in the range 0-1, return the value linearly rescaled/denormalized

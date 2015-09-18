@@ -64,8 +64,9 @@ namespace Zen
 		/// <returns>Decibel representation of the input value, between -96 and maximumDecibels</returns>
 		static float gainToDecibelRange(const float& gain, const float& maximumDecibels, const float& minusInfinityDb)
 		{
-			throw std::logic_error("This method (DecibelConversions::gainToDecibelRange()  is INCORRECT as currently written because: Does not actually use a range.");
-			//return gain > Type() ? (static_cast<Type>(std::log10(gain) * static_cast<Type>(20.0) + static_cast<Type>(maximumDecibels) ) ) : minusInfinityDb;
+			DBG("This method (DecibelConversions::gainToDecibelRange()  is INCORRECT as currently written because: Does not actually use a range.");
+			jassertfalse;		
+			return -9000.0f;
 		}
 
 
@@ -80,34 +81,8 @@ namespace Zen
 		/// <returns>Decibel input normalized to value between 0 and 1.0 for VST host use</returns>
 		static float mapDecibelsToProperNormalizedValue(const float& inDecibels, const float& decibelMinimum, const float& decibelMaximum, const float& decibelValueForMidpoint)
 		{
-			//DBG("In DecibelConversions::mapDecibelsToProperNormalizedValue() with inDecibels:");
-
-			return ZenParamUtils::convertValueToWarpedLinearBasedOnMidpoint(inDecibels, decibelMinimum, decibelMaximum, decibelValueForMidpoint);
-			/*float x, x0, x1, y0, y1;
-			if (y < 0)
-			{
-				x0 = normalizedMin;
-				y0 = decibelMinimum;
-				x1 = normalizedMidpoint;
-				y1 = decibelUnityForMid;
-
-			} else if (y >= 0)
-			{
-				x0 = normalizedMidpoint;
-				y0 = decibelUnityForMid;
-				x1 = normalizedMax;
-				y1 = decibelMaximum;
-			} else
-			{
-				std::cout << "SOMETHING TERRIBLE THIS WAY COMES" << std::endl;
-				throw std::logic_error("NOPE");
-			}
-			if ((y1 - y0) == 0) return 0;  //prevent divide by 0
-			x = (((y - y0) / (y1 - y0)) * (x1 - x0)) + x0;
-			return x;*/
 			// #TODO: add jasserts to param/decibel conversion
-
-			
+			return ZenParamUtils::convertValueToWarpedLinearBasedOnMidpoint(inDecibels, decibelMinimum, decibelMaximum, decibelValueForMidpoint);
 		}
 
 
@@ -122,32 +97,6 @@ namespace Zen
 		/// <returns>Decibel value of the input normalized value</returns>
 		static float mapNormalizedValueToDecibels(const float& inValue, const float& decibelMinimum, const float& decibelMaximum)
 		{
-/*
-			Type y, x0, x1, y0, y1;
-			// Given value between 0 and 1.0, map to decibels
-			if (x <= normalizedMidpoint)
-			{
-				x0 = normalizedMin;
-				y0 = decibelMinimum;
-				x1 = normalizedMidpoint;
-				y1 = decibelUnityForMid;
-
-			} else if (x > normalizedMidpoint)
-			{
-				x0 = normalizedMidpoint;
-				y0 = decibelUnityForMid;
-				x1 = normalizedMax;
-				y1 = decibelMaximum;
-
-			} else
-			{
-				std::cout << "SOMETHING TERRIBLE THIS WAY COMES" << std::endl;
-				return -1;
-			}
-			if ((x1 - x0) == 0) return 0; //prevent divide by zero
-			y = ((y1 - y0)*((x - x0) / (x1 - x0))) + y0;
-			return y;*/
-
 			return ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(inValue, decibelMinimum, decibelMaximum, 0.0f);
 		}
 

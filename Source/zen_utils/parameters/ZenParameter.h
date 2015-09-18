@@ -31,11 +31,11 @@ class ZenParameter : public AudioProcessorParameter
 public:
 	// #TODO: add copy constructors
 	// #TODO: change parameter Value to a Value object that refersTo(the parameter value obj)
-	// #TODO: Add currentSmoothedValue.reset to prepareToPlay
 
 	ZenParameter()
 	{
-		throw std::logic_error("ZenParameter Default Constructor should never be called");
+		DBG("ZenParameter Default Constructor should never be called");
+		jassertfalse;
 	}
 
 	explicit ZenParameter(const String &inName, const bool& inShouldBeSmoothed = false) :
@@ -160,7 +160,6 @@ public:
 		return shouldBeSmoothed;
 	}
 
-
 	virtual String getText(float inValue, int maxStringLength) const override
 	{
 		jassert(maxStringLength >= 0);
@@ -171,6 +170,16 @@ public:
 		result.append(getLabel(), 20);
 		
 		return result;
+	}
+
+	virtual void writeXML(XmlElement &xmlElem)
+	{
+		xmlElem.setAttribute(name, getValue());
+	}
+
+	virtual void readXML(const XmlElement* xmlState)
+	{
+		setValue(xmlState->getDoubleAttribute(name, getDefaultValue()));
 	}
 
 #pragma region Getters/Setters
