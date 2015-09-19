@@ -738,11 +738,11 @@ protected:
 
 	// Zentropy - moved to protected from private so I can iterate across params in derived processor
 	OwnedArray<AudioProcessorParameter> managedParameters;
+	double sampleRate, currentSampleRate;
 
 private:
     Array<AudioProcessorListener*> listeners;
     Component::SafePointer<AudioProcessorEditor> activeEditor;
-    double sampleRate, currentSampleRate;
     int blockSize, numInputChannels, numOutputChannels, latencySamples;
     bool suspended, nonRealtime;
     CriticalSection callbackLock, listenerLock;

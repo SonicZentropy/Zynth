@@ -28,14 +28,15 @@ public:
 
 	DecibelParameter()
 	{
+		DBG("In DecibelParameter::DecibelParameter() SHOULD NEVER BE CALLED!");
 		jassertfalse;
 	}
 
-	explicit DecibelParameter(const String& paramName, const bool& inShouldBeSmoothed = false,
+	explicit DecibelParameter(const String& paramName, const bool& inShouldBeSmoothed = false, const float& inSmoothingTime = 0.01f,
 		const float& inMinDecibels = -96.0f, const float& inMaxDecibels = 12.0f, const float& inUnityDecibels = 0.0f, 
 		const float& minValue=0.0f, const float& maxValue = 1.0f, const float& inMidValue = 0.5f, 
-		const float& defaultValue = 0.5f, const float& inStep = 0.01f, const String& inLabel = "")
-		: FloatParameter(paramName,	minValue, maxValue, defaultValue, inStep, inShouldBeSmoothed, inLabel), 
+		const float& defaultValue = 0.5f, const float& inStep = 0.01f,  const String& inLabel = "")
+		: FloatParameter(paramName,	minValue, maxValue, defaultValue, inStep, inShouldBeSmoothed, inSmoothingTime, inLabel), 
 		minDecibels(inMinDecibels),
 		maxDecibels(inMaxDecibels),
 		unityDecibels(inUnityDecibels),

@@ -27,13 +27,10 @@ public:
 	explicit AssociatedComponent(ZenParameter* inAssocParam, const String& inLabel = "")
 		: Component(inAssocParam->getName(50)),
 		associatedParameter(inAssocParam), unitLabel(inLabel)
-	{
- 		
-	}
+	{	}
 
 	virtual ~AssociatedComponent()
-	{
-	}
+	{	}
 
 	ZenParameter* getAssociatedParameter() const { return associatedParameter; }
 	void setAssociatedParameter(ZenParameter* inValue) { associatedParameter = inValue; }

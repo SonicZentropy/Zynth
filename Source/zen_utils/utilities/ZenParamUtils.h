@@ -105,7 +105,6 @@ namespace Zen
 
 namespace
 {
-// #TODO: Implement drowaudio's state variable holding current/prev values
 inline bool areAlmostEqual(const double& x, const double& y, const double& precision = 0.00001)
 {
 	return (x - y < precision || y - x < precision) ? false : true;

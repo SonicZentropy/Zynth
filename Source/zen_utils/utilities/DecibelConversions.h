@@ -20,12 +20,11 @@
 namespace Zen
 {
 
-/// <summary>Decibel Conversion Utilities</summary>
-/// <remarks>	Zentropy, 8/30/2015. </remarks>
+    /// <summary>Decibel Conversion Utilities</summary>
+    /// <remarks>	Zentropy, 8/30/2015. </remarks>
 	class DecibelConversions
 	{
 	public:
-
 		/// <summary>Converts a dBFS value to its equivalent raw (NON-normalized) gain level.</summary>
 		/// <param name="decibels">		  Input value in decibels</param>
 		/// <param name="minusInfinityDb">Value below which 0 is always returned, represents bottom of decibel range</param>
@@ -64,10 +63,10 @@ namespace Zen
 		/// <returns>Decibel representation of the input value, between -96 and maximumDecibels</returns>
 		static float gainToDecibelRange(const float& gain, const float& maximumDecibels, const float& minusInfinityDb)
 		{
+			DBG("In DecibelConversions::gainToDecibelRange(): Method shouldn't be called, it's busted.");
 			jassertfalse;		
 			return -9000.0f;
 		}
-
 
 		/// <summary>Map an input decibel value in a chosen finite range to a normalized, linear scaled Gain value such that decibelUnityGain maps to given normalizedMidpoint (ex: 0.0dB maps to 0.5 normalized in host)</summary>
 		/// <param name="x">				 The input decibel value to be mapped (Between decibelMinimum and decibelMaximum)</param>
@@ -80,10 +79,9 @@ namespace Zen
 		/// <returns>Decibel input normalized to value between 0 and 1.0 for VST host use</returns>
 		static float mapDecibelsToProperNormalizedValue(const float& inDecibels, const float& decibelMinimum, const float& decibelMaximum, const float& decibelValueForMidpoint)
 		{
-			// #TODO: add jasserts to param/decibel conversion
+			jassert(inDecibels >= decibelMinimum && inDecibels <= decibelMaximum && decibelValueForMidpoint >= decibelMinimum && decibelValueForMidpoint <= decibelMaximum);
 			return ZenParamUtils::convertValueToWarpedLinearBasedOnMidpoint(inDecibels, decibelMinimum, decibelMaximum, decibelValueForMidpoint);
 		}
-
 
 		/// <summary>Map a normalized, linearly scaled input value between 0.0 and 1.0 to decibels in a given range (ex: -96 to 12)</summary>
 		/// <param name="x">				 The input value (Between 0.0 and 1.0)</param>
@@ -96,10 +94,9 @@ namespace Zen
 		/// <returns>Decibel value of the input normalized value</returns>
 		static float mapNormalizedValueToDecibels(const float& inValue, const float& decibelMinimum, const float& decibelMaximum)
 		{
+			jassert(inValue >= 0.0f && inValue <= 1.0f);
 			return ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(inValue, decibelMinimum, decibelMaximum, 0.0f);
 		}
-
-
 
 		/// <summary>Takes a normalized gain value representing an arbitrary Decibel range and converts it to a raw decibel gain value where 1.0 = 0dB</summary>
 		/// <param name="normGainValue">Value between 0 and 1.0 that represents a converted decibel from arbitrary range</param>
@@ -108,7 +105,7 @@ namespace Zen
 		/// <returns>A de-normalized Gain value that can be used to process audio samples</returns>
 		static float decibelRangeGainToRawDecibelGain(const float& normGainValue, const float& minusInfinityDb, const float& maximumDecibels)
 		{
-			//Type valueInDecibels = DecibelConversions::mapNormalizedValueToDecibels<Type>(normGainValue, 0.0, 1.0, 0.5, minusInfinityDb, maximumDecibels, 0.0);			
+			jassert(normGainValue >= 0.0f && normGainValue <= 1.0f);
 			auto valueInDecibels = ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(normGainValue, minusInfinityDb, maximumDecibels, 0.0);
 			return decibelsToDBGain(valueInDecibels, minusInfinityDb);
 		}

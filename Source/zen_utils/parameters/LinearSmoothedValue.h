@@ -14,8 +14,6 @@
 #ifndef LINEARSMOOTHEDVALUE_H_INCLUDED
 #define LINEARSMOOTHEDVALUE_H_INCLUDED
 
-
-
 #include "JuceHeader.h"
 #include "../utilities/ZenParamUtils.h"
 

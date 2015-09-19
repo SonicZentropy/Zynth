@@ -22,7 +22,7 @@ clock_t ZenDebug::inTime = clock();
 
 int ZenDebug::numSecondsBetweenDebugPrints = 1;
 
-void ZenDebug::setSecondsBetweenDebugPrints(const int& inSeconds)
+void ZenDebug::setSecondsBetweenDebugPrints(const unsigned int& inSeconds)
 {
 	numSecondsBetweenDebugPrints = inSeconds;
 }
@@ -34,7 +34,6 @@ int ZenDebug::getSecondsBetweenDebugPrints()
 
 bool ZenDebug::isPrintTimerThresholdReached()
 {
-
 	if (((clock() - inTime) / CLOCKS_PER_SEC) > numSecondsBetweenDebugPrints)
 	{
 		inTime = clock();
@@ -43,10 +42,11 @@ bool ZenDebug::isPrintTimerThresholdReached()
 	return false;
 }
 
-void ZenDebug::timedPrint(juce::String inString)
+void ZenDebug::timedPrint(String inString)
 {
-	if (ZenDebug::isPrintTimerThresholdReached())
+	if (isPrintTimerThresholdReached())
 	{
+		DBG(inString);
 	}
 }
 

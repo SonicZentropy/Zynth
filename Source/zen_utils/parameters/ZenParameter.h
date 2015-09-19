@@ -29,34 +29,31 @@ class ZenParameter : public AudioProcessorParameter
 {
 	
 public:
-	// #TODO: add copy constructors
-	// #TODO: change parameter Value to a Value object that refersTo(the parameter value obj)
+	// #ENHANCE: add copy constructors
 
 	ZenParameter()
 	{
 		jassertfalse;
 	}
 
-	explicit ZenParameter(const String &inName, const bool& inShouldBeSmoothed = false) :
-		value(0.5), name(inName), shouldBeSmoothed(inShouldBeSmoothed)
+	explicit ZenParameter(const String &inName, const bool& inShouldBeSmoothed = false, const float& smoothingTime=0.01f) :
+		value(0.5), name(inName), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
 		setSmoothedValue(0.5);
-	//	currentSmoothedValue.reset(processor->getCurrentSampleRate(), 0.01);
 	}
 
-	ZenParameter(const String &inName, const float& inDefaultValue, const bool& inShouldBeSmoothed = false, const String& inLabel = "") :
-		value(inDefaultValue), defaultValue(inDefaultValue), name(inName), unitLabel(inLabel), shouldBeSmoothed(inShouldBeSmoothed)
+	ZenParameter(const String &inName, const float& inDefaultValue, const bool& inShouldBeSmoothed = false, const float& smoothingTime=0.01f, const String& inLabel = "") :
+		value(inDefaultValue), defaultValue(inDefaultValue), name(inName), unitLabel(inLabel), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
 		setSmoothedValue(inDefaultValue);
-	//	currentSmoothedValue.reset(44100, 0.01);
 	}
 
-	ZenParameter(const String &inName, const float& inMinValue, const float& inMaxValue, const float& inDefaultValue, const float& inStep = 0.01f, const bool& inShouldBeSmoothed = false, const String& inLabel = "") :
-		value(inDefaultValue), defaultValue(inDefaultValue), minValue(inMinValue), 
-		maxValue(inMaxValue), intervalStep(inStep), name(inName), unitLabel(inLabel), shouldBeSmoothed(inShouldBeSmoothed)
+	ZenParameter(const String &inName, const float& inMinValue, const float& inMaxValue, const float& inDefaultValue, 
+		const float& inStep = 0.01f, const bool& inShouldBeSmoothed = false, const float& smoothingTime=0.01f, const String& inLabel = "") 
+		:value(inDefaultValue), defaultValue(inDefaultValue), minValue(inMinValue), 
+		maxValue(inMaxValue), intervalStep(inStep), name(inName), unitLabel(inLabel), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
 		setSmoothedValue(inDefaultValue);
-		//currentSmoothedValue.reset(44100, 0.01);
 	}
 
 	
@@ -79,7 +76,6 @@ public:
 		requestUIUpdate = false;  //set this to false because change came from GUI
 	}
 
-	// #TODO: eliminate need for UIUpdate byconnecting params w/ ReferTo
 	virtual bool needsUIUpdate()
 	{
 		return requestUIUpdate;
@@ -217,8 +213,7 @@ public:
 	virtual String getLabel() const override { return unitLabel; };
 	virtual float getValueForText(const String& text) const override
 	{
-		return text.getFloatValue();
-		
+		return text.getFloatValue();		
 	}
 
 	float getIntervalStep() const { return intervalStep; }

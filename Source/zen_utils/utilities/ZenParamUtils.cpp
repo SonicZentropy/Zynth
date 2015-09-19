@@ -85,6 +85,7 @@ namespace Zen
 	/// <returns> Normalized (0.0 to 1.0) value corresponding to the input value</returns>
 	float ZenParamUtils::convertValueToWarpedLinearBasedOnMidpoint(const float& inValue, const float& minOfRange, const float& maxOfRange, const float& mappedMidpointOfRange)
 	{
+		jassert(inValue >= minOfRange && inValue <= maxOfRange && mappedMidpointOfRange >= minOfRange && mappedMidpointOfRange <= maxOfRange);
 		//equation parameters that match the piece of paper I wrote this out on :)
 		float x, x0, x1, y0, y1;
 		if (inValue < 0)
@@ -119,6 +120,7 @@ namespace Zen
 	/// <returns>Full range value of the input normalized value</returns>
 	float ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(float inValue, float minOfRange, float maxOfRange, float mappedMidpointOfRange)
 	{
+		jassert(inValue >= 0.0f && inValue <= 1.0f && mappedMidpointOfRange >= minOfRange && mappedMidpointOfRange <= maxOfRange);
 		float y, x0, x1, y0, y1;
 		if (inValue <= 0.5)
 		{

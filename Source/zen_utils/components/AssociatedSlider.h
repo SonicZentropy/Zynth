@@ -80,6 +80,7 @@ namespace Zen
 
 		void setValueFromLinearNormalized(const float& inValue, NotificationType notification)
 		{
+			jassert(inValue <= 1.0f && inValue >= -1.0f);
 			float rawMin = getMinimum();
 			setValue((rawMin + (getMaximum() - rawMin) * inValue), notification);
 		}

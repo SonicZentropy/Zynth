@@ -39,7 +39,7 @@ namespace Zen
 
 		/// <summary>Sets desired time threshold between debug prints.</summary>
 		/// <param name="inSeconds">The desired number of seconds between prints.</param>
-		static void setSecondsBetweenDebugPrints(const int& inSeconds);
+		static void setSecondsBetweenDebugPrints(const unsigned int& inSeconds);
 
 		/// <summary> Gets seconds between debug prints. </summary>
 		/// <returns> The seconds between debug prints. </returns>

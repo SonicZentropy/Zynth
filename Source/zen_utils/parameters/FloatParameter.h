@@ -35,19 +35,19 @@ public:
 	FloatParameter()
 	{
 		std::logic_error("Float Parameter Default Constructor should never be called");
+		jassertfalse;
 	}
 
-	FloatParameter(const String& paramName, const float& inDefaultValue, const bool& inShouldBeSmoothed = false, const String& inLabel = "")
-		: ZenParameter(paramName, inDefaultValue, inShouldBeSmoothed, inLabel)
-	{
-		range = 1.0;
-	}
+	FloatParameter(const String& paramName, const float& inDefaultValue, const bool& inShouldBeSmoothed = false, const float& smoothingTime = 0.01f, const String& inLabel = "")
+		: ZenParameter(paramName, inDefaultValue, inShouldBeSmoothed, smoothingTime, inLabel)
+	{	}
 
 	explicit FloatParameter(const String& inParameterName, const float& inMinValue = 0.0f, const float& inMaxValue = 1.0f, const float& inDefaultValue = 0.5f, 
-		           const float& inStep = 0.01f, const bool& inShouldBeSmoothed = false, const String& inLabel = "")
-		: ZenParameter(inParameterName, inMinValue, inMaxValue, inDefaultValue, inStep, inShouldBeSmoothed, inLabel)
+		           const float& inStep = 0.01f, const bool& inShouldBeSmoothed = false, const float& smoothingTime = 0.01f, const String& inLabel = "")
+		: ZenParameter(inParameterName, inMinValue, inMaxValue, inDefaultValue, inStep, inShouldBeSmoothed, smoothingTime, inLabel)
 	{
 		range = maxValue - minValue;
+		jassert(range >= 0);
 	}
 
 	virtual ~FloatParameter()
@@ -65,7 +65,7 @@ public:
 
 protected:
 	
-	float range;
+	float range=1.0f;
 
 private:
 

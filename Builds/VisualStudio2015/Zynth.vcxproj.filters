@@ -2717,6 +2717,9 @@
     <ClInclude Include="..\..\Source\zen_utils\parameters\LinearSmoothedValue.h">
       <Filter>Zynth\Source\zen_utils\parameters</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\zen_utils\utilities\ZenUtils.h">
+      <Filter>Zynth\Source\zen_utils\utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_basics\juce_module_info">

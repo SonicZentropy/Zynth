@@ -1476,6 +1476,7 @@
     <ClInclude Include="..\..\Source\zen_utils\utilities\DecibelConversions.h" />
     <ClInclude Include="..\..\Source\zen_utils\utilities\ZenDebug.h" />
     <ClInclude Include="..\..\Source\zen_utils\utilities\ZenParamUtils.h" />
+    <ClInclude Include="..\..\Source\zen_utils\utilities\ZenUtils.h" />
     <ClInclude Include="..\..\Source\zen_utils\ZenHeader.h" />
     <ClInclude Include="..\..\Source\ZynthAudioProcessorEditor.h" />
     <ClInclude Include="..\..\Source\ZynthAudioProcessor.h" />

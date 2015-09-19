@@ -16,16 +16,16 @@
 #include "ZynthAudioProcessor.h"
 #include "ZynthAudioProcessorEditor.h"
 #include <memory>
-// #TODO: add JUCE_TRACK_OBJECT macro to bottom of my params/components
-// #TODO: add noexcept where needed
-// #TODO: add copy constructors
+#include "zen_utils\utilities\ZenUtils.h"
+// #ENHANCE:  add JUCE_TRACK_OBJECT macro to bottom of my params/components
+// #ENHANCE: add copy constructors
 
 
 //==============================================================================
 	ZynthAudioProcessor::ZynthAudioProcessor()
 		:rootTree("Root")
 	{			
-		addParameter(audioGainParam = new DecibelParameter("Gain", true, -96.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.01f, "dB"));
+		addParameter(audioGainParam = new DecibelParameter("Gain", true, 0.01f, -96.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.01f, "dB"));
  		addParameter(muteParam = new BooleanParameter("Mute", false));
 		addParameter(bypassParam = new BooleanParameter("Bypass", false));		
 	}
@@ -45,9 +45,8 @@
 	this pass through without being overwritten or cleared.*/
 	void ZynthAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 	{
-		// #TODO: Eventually check this to see if SR changed, then reset applicable parameter smoothing if so
 		setCurrentSampleRate(getSampleRate());
-
+		jassert(currentSampleRate >= 0);
 
 		if (bypassParam->isOn()) return;
 
@@ -64,13 +63,12 @@
 			return;
 		}
 		
+		//Main Processing Loop
 		for (long i = 0; i < buffer.getNumSamples(); i++)
 		{
-			auto audioGainRaw = audioGainParam->getSmoothedRawDecibelGainValue(); //Make sure screwups don't blow up speakers
-			leftData[i] *= audioGainRaw;
-			rightData[i] *= audioGainRaw;
-			
-			//TIMEDPRINT("Value in processBlock is: " + String(audioGainRaw) + " In decibels: " + String(DecibelConversions::mapNormalizedValueToDecibels<float>(audioGainParam->getValue(), 0.0, 1.0, 0.5, -96.0, 12.0, 0.0)) );			
+			auto audioGainRaw = getClamped(audioGainParam->getSmoothedRawDecibelGainValue(), 0, 4.0f); //Make sure screwups don't blow up speakers
+			jassert(audioGainRaw >= 0);
+			BufferSampleProcesses::processGain(&leftData[i], &rightData[i], audioGainRaw);
 		}
 		
 	}
@@ -136,7 +134,7 @@
 			ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
 			if (zenParam->checkShouldBeSmoothed())
 			{				
-				zenParam->resetSmoothedValue(inSampleRate, 0.01f);
+				zenParam->resetSmoothedValue(inSampleRate);
 			}
 		}
 

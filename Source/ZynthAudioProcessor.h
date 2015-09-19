@@ -78,8 +78,12 @@ public:
 	//==============================================================================
 	
 #pragma endregion 
+	float getCurrSampleRate() const { return currSampleRate; }
+	void setCurrSampleRate(float inValue) { currSampleRate = inValue; }
+
 private:
 	// Change to scoped pointer
+	float currSampleRate = 44100.0f;
 	ValueTree rootTree;
 	//==============================================================================
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ZynthAudioProcessor)

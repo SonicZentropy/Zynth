@@ -30,7 +30,7 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor (ZynthAudioProcessor& owner
 	bypassButton->setClickingTogglesState(true);
     bypassButton->addListener (this);
 
-    setSize (300, 200);
+    setSize (350, 200);
 	startTimer(50); // Start timer poll with 50ms rate
 
 }

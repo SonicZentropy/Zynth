@@ -40,11 +40,11 @@ public:
 		jassertfalse;
 	}
 	BooleanParameter(const String& parameterName, const float& defaultParameterValue)
-		: ZenParameter(parameterName, defaultParameterValue, 0.01f)
+		: ZenParameter(parameterName, defaultParameterValue, false)
 	{	}
 
 	BooleanParameter(const String& parameterName, const bool& defaultBooleanValue)
-		: ZenParameter(parameterName, convertBooleanToFloat(defaultBooleanValue), 0.01f)
+		: ZenParameter(parameterName, convertBooleanToFloat(defaultBooleanValue), false)
 	{	}
 
 	virtual ~BooleanParameter()
@@ -52,7 +52,7 @@ public:
 
 	/*virtual void BooleanParameter::setValue(float newValue) override
 	{
-		// #TODO: Add jassert checking for setValue everywhere
+		
 		//other values technically disallowed
 		jassert(newValue >= 0.0 && newValue <= 1.0);
 

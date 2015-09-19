@@ -33,7 +33,6 @@ public:
 	void setAssociatedParameterValue() override
 	{
 		associatedParameter->setValue(getValueFromToggle());
-
 	}
 
 	void setAssociatedParameterValueNotifyingHost() override
@@ -45,16 +44,16 @@ public:
 	{
 		return associatedParameter->getValue();
 	}
+
 	float getValueFromToggle()
 	{
-		float test = (getToggleState() == true) ? 1.0 : 0.0;
-		return test;
+		return (getToggleState() == true) ? 1.0 : 0.0;
 	}
 
-	/*virtual bool isOn() const
+	virtual bool isOn() const
 	{
 		return getToggleState();
-	}*/
+	}
 
 
 };
