@@ -169,7 +169,10 @@ public:
 
 	virtual void writeXML(XmlElement &xmlElem)
 	{
+		//el = root.createNewChildElement("Bypass");
+		//el->addTextElement(String(masterBypassParam->getValue()));
 		xmlElem.setAttribute(name, getValue());
+		xmlElem.createNewChildElement(name)->addTextElement(String(getValue()));
 	}
 
 	virtual void readXML(const XmlElement* xmlState)

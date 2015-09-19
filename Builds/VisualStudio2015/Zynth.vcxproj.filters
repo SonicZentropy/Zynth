@@ -2720,6 +2720,9 @@
     <ClInclude Include="..\..\Source\zen_utils\utilities\ZenUtils.h">
       <Filter>Zynth\Source\zen_utils\utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\zen_utils\utilities\ValueTreeWindow.h">
+      <Filter>Zynth\Source\zen_utils\utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_basics\juce_module_info">

@@ -84,12 +84,11 @@
 
 		XmlElement root("Root");
 	//	XmlElement* el;
-
-/*
-		for (ZenParameter theParam : managedParameters)
+		
+		for (auto &theParam : managedParameters)
 		{
-			theParam.writeXML(root);
-		}*/
+			dynamic_cast<ZenParameter*>(theParam)->writeXML(root);
+		}
 
 		/*
 		el = root.createNewChildElement("Bypass");
