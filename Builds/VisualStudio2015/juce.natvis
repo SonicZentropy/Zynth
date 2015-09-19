@@ -57,7 +57,7 @@ See http://github.com/jcredland/juce-toys
       <Item Name="Value">value</Item>
       <Item Name="Min Decibels">minDecibels</Item>
       <Item Name="Max Decibels">maxDecibels</Item>
-      <Item Name="Req. UI Update">requestUIUpdate</Item>
+      <Item Name="Req UI Update">requestUIUpdate</Item>
     </Expand>
   </Type>
 

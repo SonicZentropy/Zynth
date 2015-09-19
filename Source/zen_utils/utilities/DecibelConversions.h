@@ -32,7 +32,7 @@ namespace Zen
 		/// <returns>A raw Gain value such that 0.0 gain = minusInfinityDb, 1.0 Gain = 0.0dB, and Gain > 1.0 is decibel increase</returns>
 		static float decibelsToDBGain(const float& decibels, const float& minusInfinityDb = static_cast<float>(defaultMinusInfinitydB))
 		{
-			float dbGain =(decibels > minusInfinityDb) ? pow(10.0, decibels * 0.05) : minusInfinityDb;
+			float dbGain =(decibels > minusInfinityDb) ? pow(10.0, decibels * 0.05) : 0.0f;
 			return dbGain;
 		}
 
@@ -64,7 +64,6 @@ namespace Zen
 		/// <returns>Decibel representation of the input value, between -96 and maximumDecibels</returns>
 		static float gainToDecibelRange(const float& gain, const float& maximumDecibels, const float& minusInfinityDb)
 		{
-			DBG("This method (DecibelConversions::gainToDecibelRange()  is INCORRECT as currently written because: Does not actually use a range.");
 			jassertfalse;		
 			return -9000.0f;
 		}

@@ -34,7 +34,6 @@ public:
 
 	ZenParameter()
 	{
-		DBG("ZenParameter Default Constructor should never be called");
 		jassertfalse;
 	}
 
@@ -219,6 +218,7 @@ public:
 	virtual float getValueForText(const String& text) const override
 	{
 		return text.getFloatValue();
+		
 	}
 
 	float getIntervalStep() const { return intervalStep; }

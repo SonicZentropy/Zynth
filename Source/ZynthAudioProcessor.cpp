@@ -15,19 +15,16 @@
 
 #include "ZynthAudioProcessor.h"
 #include "ZynthAudioProcessorEditor.h"
-#include "boost/algorithm/clamp.hpp"
 #include <memory>
 // #TODO: add JUCE_TRACK_OBJECT macro to bottom of my params/components
 // #TODO: add noexcept where needed
 // #TODO: add copy constructors
 
-using boost::algorithm::clamp;
 
 //==============================================================================
 	ZynthAudioProcessor::ZynthAudioProcessor()
 		:rootTree("Root")
 	{			
-		
 		addParameter(audioGainParam = new DecibelParameter("Gain", true, -96.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.01f, "dB"));
  		addParameter(muteParam = new BooleanParameter("Mute", false));
 		addParameter(bypassParam = new BooleanParameter("Bypass", false));		
@@ -69,7 +66,7 @@ using boost::algorithm::clamp;
 		
 		for (long i = 0; i < buffer.getNumSamples(); i++)
 		{
-			auto audioGainRaw = clamp<float>(audioGainParam->getSmoothedRawDecibelGainValue(), -4.0f, 4.0f); //Make sure screwups don't blow up speakers
+			auto audioGainRaw = audioGainParam->getSmoothedRawDecibelGainValue(); //Make sure screwups don't blow up speakers
 			leftData[i] *= audioGainRaw;
 			rightData[i] *= audioGainRaw;
 			
@@ -128,6 +125,24 @@ using boost::algorithm::clamp;
 
 #pragma region overrides
 	//==============================================================================
+	void ZynthAudioProcessor::prepareToPlay(double inSampleRate, int samplesPerBlock)
+	{
+		// Use this method as the place to do any pre-playback
+		// initialisation that you need..
+	
+		// Iterates over parameters and resets Smooth for the ones who need it
+		for (auto &param : getParameters())
+		{			
+			ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
+			if (zenParam->checkShouldBeSmoothed())
+			{				
+				zenParam->resetSmoothedValue(inSampleRate, 0.01f);
+			}
+		}
+
+	}
+
+	//==============================================================================
 	const String ZynthAudioProcessor::getName() const
 	{
 		return JucePlugin_Name;
@@ -137,6 +152,7 @@ using boost::algorithm::clamp;
 	{
 		return String(channelIndex + 1);
 	}
+
 
 	const String ZynthAudioProcessor::getOutputChannelName(int channelIndex) const
 	{
@@ -203,24 +219,6 @@ using boost::algorithm::clamp;
 
 	void ZynthAudioProcessor::changeProgramName(int index, const String& newName)
 	{
-	}
-
-	//==============================================================================
-	void ZynthAudioProcessor::prepareToPlay(double inSampleRate, int samplesPerBlock)
-	{
-		// Use this method as the place to do any pre-playback
-		// initialisation that you need..
-	
-		// Iterates over parameters and resets Smooth for the ones who need it
-		for (auto &param : getParameters())
-		{			
-			ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
-			if (zenParam->checkShouldBeSmoothed())
-			{				
-				zenParam->resetSmoothedValue(inSampleRate, 6.01f);
-			}
-		}
-
 	}
 
 	void ZynthAudioProcessor::releaseResources()

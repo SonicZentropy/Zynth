@@ -102,7 +102,6 @@ namespace Zen
 			y1 = maxOfRange;
 		} else
 		{
-			DBG("In ZenParamUtils::convertValueToWarpedLinearBasedOnMidpoint() input value is out of range");
 			jassertfalse;
 			return -9000.0f;
 		}
@@ -137,7 +136,6 @@ namespace Zen
 
 		} else
 		{
-			DBG("In ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue() input value is out of range");
 			jassertfalse;
 			return -9000.0f;
 		}

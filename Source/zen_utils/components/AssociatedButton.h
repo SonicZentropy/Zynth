@@ -28,30 +28,25 @@ public:
 	AssociatedButton(const String& componentName, ZenParameter* associatedParam, const String& inLabel = "")
 		: Button(componentName), AssociatedComponent(associatedParam, inLabel)
 	{
-		DBG("In AssociatedButton::AssociatedButton() ");
 		setToggleState(associatedParam->getBoolFromValue(), sendNotification);
 	}
 	void setAssociatedParameterValue() override
 	{
-		DBG("Entered method: AssociatedSlider:setAssociatedParameterValue()");
 		associatedParameter->setValue(getValueFromToggle());
 
 	}
 
 	void setAssociatedParameterValueNotifyingHost() override
 	{
-		DBG("Entered method: AssociatedSlider:setAssociatedParameterValueNotifyingHost() with value: " + String(getValueFromToggle()));
 		associatedParameter->setValueNotifyingHost(this->getValueFromToggle());
 	}
 
 	float getAssociatedParameterValue() override
 	{
-		DBG("Entered method: AssociatedTextButton:getAssociatedParameterValue()");
 		return associatedParameter->getValue();
 	}
 	float getValueFromToggle()
 	{
-		DBG("Entered method: AssociatedButton:getValue() with getToggleState: " + String(getToggleState()));
 		float test = (getToggleState() == true) ? 1.0 : 0.0;
 		return test;
 	}

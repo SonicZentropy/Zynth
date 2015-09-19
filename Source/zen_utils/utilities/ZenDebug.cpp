@@ -47,7 +47,6 @@ void ZenDebug::timedPrint(juce::String inString)
 {
 	if (ZenDebug::isPrintTimerThresholdReached())
 	{
-		DBG(inString);
 	}
 }
 

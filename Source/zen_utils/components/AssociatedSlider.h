@@ -32,26 +32,22 @@ namespace Zen
 			  Component(componentName),
 			  AssociatedComponent(associatedParam, inLabel)			 
 		{
-			DBG("Entered method: AssociatedSlider:AssociatedSlider(componentName, associatedParam)");
 			setValue( associatedParam->getValueForGUIComponent() );			
 		}
 
 		void setAssociatedParameterValue() override
 		{
-			DBG("Entered method: AssociatedSlider:setAssociatedParameterValue()");
 			associatedParameter->setValue(getValue());
 
 		}
 
 		void setAssociatedParameterValueNotifyingHost() override
 		{
-			DBG("Entered method: AssociatedSlider:setAssociatedParameterValueNotifyingHost() with value: " + String(getValue()));
 			associatedParameter->setValueNotifyingHost(getValue());
 		}
 
 		float getAssociatedParameterValue() override
 		{
-			DBG("Entered method: AssociatedTextButton:getAssociatedParameterValue()");
 			return associatedParameter->getValue();
 		}
 

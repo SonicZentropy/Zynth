@@ -28,7 +28,6 @@ public:
 
 	DecibelParameter()
 	{
-		DBG("Decibel Parameter Default Constructor should never be called");
 		jassertfalse;
 	}
 

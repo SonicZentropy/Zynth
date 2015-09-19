@@ -11,31 +11,26 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor (ZynthAudioProcessor& owner
     addAndMakeVisible (muteButton = new AssociatedTextButton("Mute Button", processor->muteParam));
     muteButton->setTooltip ("Mute all audio");
     muteButton->setButtonText ("MUTE");
+	muteButton->setClickingTogglesState(true);
     muteButton->addListener (this);
 
 	
     addAndMakeVisible (gainSlider = new AssociatedSlider ("Gain Slider", processor->audioGainParam, "dBC"));
-	//setValue from processor->audioGainParam->getValueInDecibels
     gainSlider->setTooltip ("Adjusts audio gain");
     gainSlider->setRange (-96, 12, 0.01);
     gainSlider->setSliderStyle (Slider::LinearHorizontal);
     gainSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
-    gainSlider->addListener (this);
+	gainSlider->setTextValueSuffix("dB");
+	gainSlider->setDoubleClickReturnValue(true, 0.0);
+	gainSlider->addListener (this);
 	
     addAndMakeVisible (bypassButton = new AssociatedTextButton ("Bypass Button", processor->bypassParam));
     bypassButton->setTooltip ("Bypass Plugin");
     bypassButton->setButtonText ("Bypass");
+	bypassButton->setClickingTogglesState(true);
     bypassButton->addListener (this);
 
-    setSize (600, 400);
-
-	gainSlider->setTextValueSuffix("dB");
-	gainSlider->setDoubleClickReturnValue(true, 0.0);
-
-	muteButton->setClickingTogglesState(true);
-	bypassButton->setClickingTogglesState(true);
-
-    //processor->RequestUIUpdate(); //UI Update must be performed every time a new editor is constructed - fix this?
+    setSize (300, 200);
 	startTimer(50); // Start timer poll with 50ms rate
 
 }
@@ -73,15 +68,15 @@ void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 void ZynthAudioProcessorEditor::timerCallback()
 {
 	//exchange data between UI Elements and the Plugin (ourProcessor)
-	
 	AssociatedSlider* currentSlider;
 	AssociatedButton* currentButton;
 	AssociatedComponent* currentComponent;
 	ZenParameter* currentParameter;
 
 	int numComponents = this->getNumChildComponents();
-	// #TODO: Eventually change GUI updates to messages rather than polling
+	// #ENHANCE:  Eventually change GUI updates to messages rather than polling
 	//This looks ugly, but it's a whole lot better than a massive if chain checking EVERY param individually
+	//This should handle every component's GUI updates automatically
 	for (int i = 0; i < numComponents; i++)
 	{
 		currentComponent = dynamic_cast<AssociatedComponent*>(this->getChildComponent(i));
@@ -105,12 +100,11 @@ void ZynthAudioProcessorEditor::timerCallback()
  			}
 			else
 			{
-				DBG("In ZynthAudioProcessorEditor::timerCallback() component with unknown type detected!");
+				DBG("In ZynthAudioProcessorEditor::timerCallback() ");
 				jassertfalse;
 			}
-			
 		}
-		currentParameter->resetUIUpdate();
+		currentParameter->resetUIUpdate(); //Finished Updating UI
 	}
 }
 

@@ -27,24 +27,20 @@ public:
 	AssociatedTextButton(const String& componentName, ZenParameter* associatedParam, const String& inLabel = "")
 		: AssociatedButton(componentName, associatedParam), TextButton(componentName), Button(componentName), Component(componentName)
 	{
-		DBG("Entered method: AssociatedTextButton:AssociatedTextButton(componentName, associatedParam)");
 	}
 	/*void setAssociatedParameterValue() override
 	{
-		DBG("Entered method: AssociatedSlider:setAssociatedParameterValue()");
 		associatedParameter->setValue(getValue());
 
 	}
 
 	void setAssociatedParameterValueNotifyingHost() override
 	{
-		DBG("Entered method: AssociatedSlider:setAssociatedParameterValueNotifyingHost() with value: " + String(getValue()));
 		associatedParameter->setValueNotifyingHost(getValue());
 	}
 
 	float getAssociatedParameterValue() override
 	{
-		DBG("Entered method: AssociatedTextButton:getAssociatedParameterValue()");
 		return associatedParameter->getValue();
 	}*/
 
