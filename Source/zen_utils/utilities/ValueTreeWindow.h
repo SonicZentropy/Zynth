@@ -13,12 +13,285 @@
 ===============================================================================*/
 #ifndef VALUETREEWINDOW_H_INCLUDED
 #define VALUETREEWINDOW_H_INCLUDED
+
 #include "JuceHeader.h"
-/** Display a separate desktop window for viewed and editing a value tree's
-property fields.
-*/
+// Display a separate desktop window for viewed and editing a value tree's property fields.
+
+//==============================================================================
+class ValueTreeItem : public TreeViewItem,
+	private ValueTree::Listener
+{
+public:
+	ValueTreeItem(const ValueTree& v, UndoManager& um)
+		: tree(v), undoManager(um)
+	{
+		tree.addListener(this);
+	}
+
+	String getUniqueName() const override
+	{
+		return tree["name"].toString();
+	}
+
+	bool mightContainSubItems() override
+	{
+		return tree.getNumChildren() > 0;
+	}
+
+	void paintItem(Graphics& g, int width, int height) override
+	{
+		g.setColour(Colours::black);
+		g.setFont(15.0f);
+
+		g.drawText(tree["name"].toString(),
+			4, 0, width - 4, height,
+			Justification::centredLeft, true);
+	}
+
+	void itemOpennessChanged(bool isNowOpen) override
+	{
+		if (isNowOpen && getNumSubItems() == 0)
+			refreshSubItems();
+		else
+			clearSubItems();
+	}
+
+	var getDragSourceDescription() override
+	{
+		return "Drag Demo";
+	}
+
+	bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails& dragSourceDetails) override
+	{
+		return dragSourceDetails.description == "Drag Demo";
+	}
+
+	void itemDropped(const DragAndDropTarget::SourceDetails&, int insertIndex) override
+	{
+		moveItems(*getOwnerView(),
+			getSelectedTreeViewItems(*getOwnerView()),
+			tree, insertIndex, undoManager);
+	}
+
+	static void moveItems(TreeView& treeView, const Array<ValueTree>& items,
+		ValueTree newParent, int insertIndex, UndoManager& undoManager)
+	{
+		if (items.size() > 0)
+		{
+			ScopedPointer<XmlElement> oldOpenness(treeView.getOpennessState(false));
+
+			for (int i = items.size(); --i >= 0;)
+			{
+				ValueTree& v = items.getReference(i);
+
+				if (v.getParent().isValid() && newParent != v && !newParent.isAChildOf(v))
+				{
+					if (v.getParent() == newParent && newParent.indexOf(v) < insertIndex)
+						--insertIndex;
+
+					v.getParent().removeChild(v, &undoManager);
+					newParent.addChild(v, insertIndex, &undoManager);
+				}
+			}
+
+			if (oldOpenness != nullptr)
+				treeView.restoreOpennessState(*oldOpenness, false);
+		}
+	}
+
+	static Array<ValueTree> getSelectedTreeViewItems(TreeView& treeView)
+	{
+		Array<ValueTree> items;
+
+		const int numSelected = treeView.getNumSelectedItems();
+
+		for (int i = 0; i < numSelected; ++i)
+			if (const ValueTreeItem* vti = dynamic_cast<ValueTreeItem*> (treeView.getSelectedItem(i)))
+				items.add(vti->tree);
+
+		return items;
+	}
+
+private:
+	ValueTree tree;
+	UndoManager& undoManager;
+
+	void refreshSubItems()
+	{
+		clearSubItems();
+
+		for (int i = 0; i < tree.getNumChildren(); ++i)
+			addSubItem(new ValueTreeItem(tree.getChild(i), undoManager));
+	}
+
+	void valueTreePropertyChanged(ValueTree&, const Identifier&) override
+	{
+		repaintItem();
+	}
+
+	void valueTreeChildAdded(ValueTree& parentTree, ValueTree&) override { treeChildrenChanged(parentTree); }
+	void valueTreeChildRemoved(ValueTree& parentTree, ValueTree&, int) override { treeChildrenChanged(parentTree); }
+	void valueTreeChildOrderChanged(ValueTree& parentTree, int, int) override { treeChildrenChanged(parentTree); }
+	void valueTreeParentChanged(ValueTree&) override {}
+
+	void treeChildrenChanged(const ValueTree& parentTree)
+	{
+		if (parentTree == tree)
+		{
+			refreshSubItems();
+			treeHasChanged();
+			setOpen(true);
+		}
+	}
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ValueTreeItem)
+};
+
+//==============================================================================
+class ValueTreesDemo : public Component,
+	public DragAndDropContainer,
+	private ButtonListener,
+	private Timer
+{
+public:
+	ValueTreesDemo()
+		: undoButton("Undo"),
+		redoButton("Redo")
+	{
+		addAndMakeVisible(tree);
+
+		tree.setDefaultOpenness(true);
+		tree.setMultiSelectEnabled(true);
+		tree.setRootItem(rootItem = new ValueTreeItem(createRootValueTree(), undoManager));
+		tree.setColour(TreeView::backgroundColourId, Colours::white);
+
+		addAndMakeVisible(undoButton);
+		addAndMakeVisible(redoButton);
+		undoButton.addListener(this);
+		redoButton.addListener(this);
+
+		startTimer(500);
+	}
+
+	~ValueTreesDemo()
+	{
+		tree.setRootItem(nullptr);
+	}
+
+	void paint(Graphics& g) override
+	{
+		//fillTiledBackground(g);
+	//	g.fillAll(Colour(0xff303030));
+	}
+
+	void resized() override
+	{
+		Rectangle<int> r(getLocalBounds().reduced(8));
+
+		Rectangle<int> buttons(r.removeFromBottom(22));
+		undoButton.setBounds(buttons.removeFromLeft(100));
+		buttons.removeFromLeft(6);
+		redoButton.setBounds(buttons.removeFromLeft(100));
+
+		r.removeFromBottom(4);
+		tree.setBounds(r);
+	}
+
+	static ValueTree createTree(const String& desc)
+	{
+		ValueTree t("Item");
+		t.setProperty("name", desc, nullptr);
+		return t;
+	}
+
+	static ValueTree createRootValueTree()
+	{
+		ValueTree vt = createTree("This demo displays a ValueTree as a treeview.");
+		vt.addChild(createTree("You can drag around the nodes to rearrange them"), -1, nullptr);
+		vt.addChild(createTree("..and press 'delete' to delete them"), -1, nullptr);
+		vt.addChild(createTree("Then, you can use the undo/redo buttons to undo these changes"), -1, nullptr);
+
+		int n = 1;
+		vt.addChild(createRandomTree(n, 0), -1, nullptr);
+
+		return vt;
+	}
+
+	static ValueTree createRandomTree(int& counter, int depth)
+	{
+		ValueTree t = createTree("Item " + String(counter++));
+
+		if (depth < 3)
+			for (int i = 1 + Random::getSystemRandom().nextInt(7); --i >= 0;)
+				t.addChild(createRandomTree(counter, depth + 1), -1, nullptr);
+
+		return t;
+	}
+
+	void deleteSelectedItems()
+	{
+		Array<ValueTree> selectedItems(ValueTreeItem::getSelectedTreeViewItems(tree));
+
+		for (int i = selectedItems.size(); --i >= 0;)
+		{
+			ValueTree& v = selectedItems.getReference(i);
+
+			if (v.getParent().isValid())
+				v.getParent().removeChild(v, &undoManager);
+		}
+	}
+
+	bool keyPressed(const KeyPress& key) override
+	{
+		if (key == KeyPress::deleteKey)
+		{
+			deleteSelectedItems();
+			return true;
+		}
+
+		if (key == KeyPress('z', ModifierKeys::commandModifier, 0))
+		{
+			undoManager.undo();
+			return true;
+		}
+
+		if (key == KeyPress('z', ModifierKeys::commandModifier | ModifierKeys::shiftModifier, 0))
+		{
+			undoManager.redo();
+			return true;
+		}
+
+		return Component::keyPressed(key);
+	}
+
+	void buttonClicked(Button* b) override
+	{
+		if (b == &undoButton)
+			undoManager.undo();
+		else if (b == &redoButton)
+			undoManager.redo();
+	}
+
+private:
+	TreeView tree;
+	TextButton undoButton, redoButton;
+	ScopedPointer<ValueTreeItem> rootItem;
+	UndoManager undoManager;
+
+	void timerCallback() override
+	{
+		undoManager.beginNewTransaction();
+	}
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ValueTreesDemo);
+};
+
+//==============================================================================
+//==============================================================================
+
 class ValueTreeEditor : public DocumentWindow
 {
+//==============================================================================
 	/** Display properties for a tree. */
 	class PropertyEditor : public PropertyPanel
 	{
@@ -27,9 +300,20 @@ class ValueTreeEditor : public DocumentWindow
 		{
 			noEditValue = "not editable";
 		}
+		virtual ~PropertyEditor()
+		{
+			DBG( "Property editor child component #: " + String(this->getNumChildComponents()) );
+			
+			//noEditValue.
+			
+
+			this->clear();
+			
+		}
 
 		void setSource(ValueTree& tree)
 		{
+			DBG("SetSource");
 			clear();
 			t = tree;
 			const int maxChars = 200;
@@ -51,31 +335,36 @@ class ValueTreeEditor : public DocumentWindow
 				}
 
 				pc.add(tpc);
+				delete tpc;
+				tpc = nullptr;
 			}
 
 			addProperties(pc);
+			pc.clear();
+			DBG("End SetSource");
 		}
 
-	private:
+	///private:
 		Value noEditValue;
 		ValueTree t;
-		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PropertyEditor);
+		JUCE_DECLARE_NON_COPYABLE(PropertyEditor);
 	};
-
+//==============================================================================
 	class Item : public TreeViewItem,
 		public ValueTree::Listener
 	{
 	public:
-		Item(PropertyEditor* propertiesEditor, ValueTree tree)
-			:propertiesEditor(propertiesEditor),
-			t(tree)
+		Item(PropertyEditor* inPropertiesEditor, ValueTree tree)
+			:t(tree)
 		{
+			propertiesEditor = inPropertiesEditor;
 			t.addListener(this);
 		}
 
 		~Item()
 		{
 			clearSubItems();
+			propertiesEditor = nullptr;
 		}
 
 		bool mightContainSubItems() override
@@ -94,16 +383,12 @@ class ValueTreeEditor : public DocumentWindow
 			}
 		}
 
-		virtual void valueTreeChildRemoved(ValueTree& parentTree,
-			ValueTree& childWhichHasBeenRemoved,
-			int indexFromWhichChildWasRemoved) override
+		virtual void valueTreeChildRemoved(ValueTree& parentTree, ValueTree& childWhichHasBeenRemoved, int indexFromWhichChildWasRemoved) override
 		{
-			
+
 		}
 
-		virtual void valueTreeChildOrderChanged(ValueTree& parentTree,
-			int oldIndex,
-			int newIndex) override
+		virtual void valueTreeChildOrderChanged(ValueTree& parentTreeWhoseChildrenHaveMoved, int oldIndex, int newIndex) override
 		{
 
 		}
@@ -181,10 +466,10 @@ class ValueTreeEditor : public DocumentWindow
 		}
 
 	private:
-		PropertyEditor* propertiesEditor;
+		ScopedPointer<PropertyEditor> propertiesEditor;
 		ValueTree t;
 		Array<Identifier> currentProperties;
-		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Item);
+		JUCE_DECLARE_NON_COPYABLE(Item);
 	};
 
 	/** Display a tree. */
@@ -197,14 +482,20 @@ class ValueTreeEditor : public DocumentWindow
 			layout.setItemLayout(1, 5, 5, 5);
 			layout.setItemLayout(2, -0.1, -0.9, -0.4);
 			setSize(1000, 700);
-			addAndMakeVisible(treeView);
+			vtDemo = new ValueTreesDemo();
+			addAndMakeVisible(vtDemo);
+			/*addAndMakeVisible(treeView);
 			addAndMakeVisible(propertyEditor);
-			addAndMakeVisible(layoutResizer);
+			addAndMakeVisible(layoutResizer);*/
 		}
 
 		~Editor()
 		{
-			treeView.setRootItem(nullptr);
+			//treeView.deleteAllChildren();
+			//treeView.getNumChildComponents();
+			
+			//HERE HERE
+			//treeView.deleteRootItem();
 		}
 
 		void resized() override
@@ -221,11 +512,13 @@ class ValueTreeEditor : public DocumentWindow
 			} else if (tree != newTree)
 			{
 				tree = newTree;
+				// HERE HERE
 				treeView.setRootItem(new Item(&propertyEditor, tree));
 			}
 		}
 	public:
-		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Editor);
+		JUCE_DECLARE_NON_COPYABLE(Editor);
+		ScopedPointer<ValueTreesDemo> vtDemo;
 		ValueTree tree;
 		TreeView treeView;
 		PropertyEditor propertyEditor;
@@ -236,10 +529,11 @@ public:
 	ValueTreeEditor()
 		: DocumentWindow("Value Tree Editor",
 			Colours::lightgrey,
-			DocumentWindow::allButtons)
+			DocumentWindow::allButtons),
+		    editor()
 	{
-		editor = new Editor();
-		setContentNonOwned(editor, true);
+		//HERE HERE HERE
+		setContentNonOwned(&editor, true);
 		setResizable(true, false);
 		setUsingNativeTitleBar(true);
 		centreWithSize(getWidth(), getHeight());
@@ -248,7 +542,7 @@ public:
 
 	~ValueTreeEditor()
 	{
-		editor->setTree(ValueTree::invalid);
+		editor.setTree(ValueTree::invalid);
 	}
 
 	void closeButtonPressed() override
@@ -258,11 +552,12 @@ public:
 
 	void setSource(ValueTree& v)
 	{
-		editor->setTree(v);
+		editor.setTree(v);
 	}
 
 private:
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ValueTreeEditor);
-	ScopedPointer<Editor> editor;
+	JUCE_DECLARE_NON_COPYABLE(ValueTreeEditor);
+	Editor editor;
 };
+
 #endif // VALUETREEWINDOW_H_INCLUDED

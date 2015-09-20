@@ -1,8 +1,10 @@
 #include "ZynthAudioProcessorEditor.h"
 
 //==============================================================================
-ZynthAudioProcessorEditor::ZynthAudioProcessorEditor (ZynthAudioProcessor& ownerFilter)
-    : AudioProcessorEditor(ownerFilter)
+ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerFilter)
+	: AudioProcessorEditor(ownerFilter),
+	undoButton("Undo"),
+	redoButton("Redo")
 {
 	processor = &ownerFilter;
 
@@ -30,7 +32,43 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor (ZynthAudioProcessor& owner
 	bypassButton->setClickingTogglesState(true);
     bypassButton->addListener (this);
 
-    setSize (350, 200);
+	Component* treeComps = new Component();
+	treeComps->setSize(800, 800);
+	treeComps->setVisible(true);
+	
+
+	vtEditor = new ValueTreeEditor();
+	//vtEditor->setContentOwned(&tree, true);
+	//vtEditor->addAndMakeVisible(tree);
+
+	tree.setDefaultOpenness(true);
+	tree.setMultiSelectEnabled(true);
+	tree.setRootItem(rootItem = new ValueTreeItem(createRootValueTree(), undoManager));
+	tree.setColour(TreeView::backgroundColourId, Colours::white);
+
+	treeComps->addAndMakeVisible(tree);
+	treeComps->addAndMakeVisible(undoButton);
+	treeComps->addAndMakeVisible(redoButton);
+	undoButton.addListener(this);
+	redoButton.addListener(this);
+	vtEditor->setContentNonOwned(treeComps, true);
+
+//	addAndMakeVisible(vTree = new ValueTreesDemo());
+	
+
+/*
+	Identifier testRoot("TestRoot");
+	vTree = new ValueTree(testRoot);
+	Identifier testIdent("TestID");
+	Identifier testIdent2("TestID2");
+	vTree->setProperty(testIdent, 123, nullptr);
+	vTree->setProperty(testIdent2, 545, nullptr);
+
+	
+	vtEditor->setSource(*vTree);*/
+	//vtEditor->addToDesktop();
+
+    this->setSize (600, 600);
 	startTimer(50); // Start timer poll with 50ms rate
 
 }
@@ -40,6 +78,10 @@ ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
     muteButton = nullptr;
     gainSlider = nullptr;
     bypassButton = nullptr;
+//	vtEditor = nullptr;
+	vTree = nullptr;
+	tree.setRootItem(nullptr);
+
 }
 
 //==============================================================================
@@ -53,11 +95,42 @@ void ZynthAudioProcessorEditor::resized()
     muteButton->setBounds (10, 6, 74, 24);
     gainSlider->setBounds (158, 8, 150, 24);
     bypassButton->setBounds (10, 38, 74, 24);
+
+	Rectangle<int> r(getLocalBounds().reduced(8));
+
+	Rectangle<int> buttons(r.removeFromBottom(22));
+	undoButton.setBounds(buttons.removeFromLeft(100));
+	buttons.removeFromLeft(6);
+	redoButton.setBounds(buttons.removeFromLeft(100));
+
+	r.removeFromBottom(4);
+	tree.setBounds(r);
+}
+
+
+
+
+
+void ZynthAudioProcessorEditor::deleteSelectedItems()
+{
+	Array<ValueTree> selectedItems(ValueTreeItem::getSelectedTreeViewItems(tree));
+
+	for (int i = selectedItems.size(); --i >= 0;)
+	{
+		ValueTree& v = selectedItems.getReference(i);
+
+		if (v.getParent().isValid())
+			v.getParent().removeChild(v, &undoManager);
+	}
 }
 
 void ZynthAudioProcessorEditor::buttonClicked(Button* buttonThatWasClicked)
 {	
-	dynamic_cast<AssociatedButton*>(buttonThatWasClicked)->setAssociatedParameterValueNotifyingHost();
+	if (buttonThatWasClicked == &undoButton)
+		undoManager.undo();
+	else if (buttonThatWasClicked == &redoButton)
+		undoManager.redo();
+	else dynamic_cast<AssociatedButton*>(buttonThatWasClicked)->setAssociatedParameterValueNotifyingHost();
 }
 
 void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
@@ -65,8 +138,32 @@ void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 	dynamic_cast<AssociatedSlider*>(sliderThatWasMoved)->setAssociatedParameterValueNotifyingHost();
 }
 
+bool ZynthAudioProcessorEditor::keyPressed(const KeyPress& key)
+{
+	if (key == KeyPress::deleteKey)
+	{
+		deleteSelectedItems();
+		return true;
+	}
+
+	if (key == KeyPress('z', ModifierKeys::commandModifier, 0))
+	{
+		undoManager.undo();
+		return true;
+	}
+
+	if (key == KeyPress('z', ModifierKeys::commandModifier | ModifierKeys::shiftModifier, 0))
+	{
+		undoManager.redo();
+		return true;
+	}
+
+	return Component::keyPressed(key);
+}
+
 void ZynthAudioProcessorEditor::timerCallback()
 {
+	undoManager.beginNewTransaction();
 	//exchange data between UI Elements and the Plugin (ourProcessor)
 	AssociatedSlider* currentSlider;
 	AssociatedButton* currentButton;
@@ -80,6 +177,8 @@ void ZynthAudioProcessorEditor::timerCallback()
 	for (int i = 0; i < numComponents; i++)
 	{
 		currentComponent = dynamic_cast<AssociatedComponent*>(this->getChildComponent(i));
+		if (nullptr == currentComponent) continue;
+
 		currentParameter = currentComponent->getAssociatedParameter();
 		if (!currentParameter->needsUIUpdate()) //Don't need to keep going if the Component doesn't need to be updated
 		{
