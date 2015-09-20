@@ -32,41 +32,45 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
 	bypassButton->setClickingTogglesState(true);
     bypassButton->addListener (this);
 
-	Component* treeComps = new Component();
-	treeComps->setSize(800, 800);
-	treeComps->setVisible(true);
-	
 
-	vtEditor = new ValueTreeEditor();
+	vTreeComponent = new Component();
+	vTreeComponent->setSize(800, 800);
+	vTreeComponent->setVisible(true);
+	
+	vTree = new ValueTreesDemo();
+
+	//vtEditor = new ValueTreeEditor();
 	//vtEditor->setContentOwned(&tree, true);
 	//vtEditor->addAndMakeVisible(tree);
 
+	//tree is TreeView
 	tree.setDefaultOpenness(true);
 	tree.setMultiSelectEnabled(true);
 	tree.setRootItem(rootItem = new ValueTreeItem(createRootValueTree(), undoManager));
 	tree.setColour(TreeView::backgroundColourId, Colours::white);
+	addAndMakeVisible(tree);
 
-	treeComps->addAndMakeVisible(tree);
-	treeComps->addAndMakeVisible(undoButton);
-	treeComps->addAndMakeVisible(redoButton);
-	undoButton.addListener(this);
-	redoButton.addListener(this);
-	vtEditor->setContentNonOwned(treeComps, true);
+	//vTreeComponent->addAndMakeVisible(tree);
+	//vTree->addAndMakeVisible(vTreeComponent);
 
-//	addAndMakeVisible(vTree = new ValueTreesDemo());
+	//vtEditor->setContentNonOwned(vTreeComponent, true);
+
+	//addAndMakeVisible(vTree);
+	//vTree->
 	
 
 /*
+
 	Identifier testRoot("TestRoot");
-	vTree = new ValueTree(testRoot);
+	ValueTree testTree(testRoot);
 	Identifier testIdent("TestID");
 	Identifier testIdent2("TestID2");
-	vTree->setProperty(testIdent, 123, nullptr);
-	vTree->setProperty(testIdent2, 545, nullptr);
+	testTree.setProperty(testIdent, 123, nullptr);
+	testTree.setProperty(testIdent2, 545, nullptr);*/
 
-	
-	vtEditor->setSource(*vTree);*/
-	//vtEditor->addToDesktop();
+	//vtEditor = new ValueTreeEditor();
+	//vtEditor->setSource(testTree);
+//	vtEditor->addToDesktop();
 
     this->setSize (600, 600);
 	startTimer(50); // Start timer poll with 50ms rate
@@ -78,9 +82,11 @@ ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
     muteButton = nullptr;
     gainSlider = nullptr;
     bypassButton = nullptr;
-//	vtEditor = nullptr;
+	vtEditor = nullptr;
 	vTree = nullptr;
 	tree.setRootItem(nullptr);
+	rootItem = nullptr;
+//	testTree = nullptr;
 
 }
 

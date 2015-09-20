@@ -91,10 +91,11 @@ private:
     ScopedPointer<AssociatedSlider> gainSlider;
     ScopedPointer<AssociatedTextButton> bypassButton;
 
+	ScopedPointer<Component> vTreeComponent;
 	ScopedPointer<ValueTreeEditor> vtEditor;
-	//ScopedPointer<ValueTree> vTree;
 	ScopedPointer<ValueTreesDemo> vTree;
 
+	//ScopedPointer<ValueTree> testTree;
 	TreeView tree;
 	TextButton undoButton, redoButton;
 	ScopedPointer<ValueTreeItem> rootItem;
