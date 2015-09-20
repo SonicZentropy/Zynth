@@ -39,7 +39,7 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
 	
 	vTree = new ValueTreesDemo();
 
-	//vtEditor = new ValueTreeEditor();
+	vtEditor = new ValueTreeEditor();
 	//vtEditor->setContentOwned(&tree, true);
 	//vtEditor->addAndMakeVisible(tree);
 
@@ -48,16 +48,21 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
 	tree.setMultiSelectEnabled(true);
 	tree.setRootItem(rootItem = new ValueTreeItem(createRootValueTree(), undoManager));
 	tree.setColour(TreeView::backgroundColourId, Colours::white);
-	addAndMakeVisible(tree);
+	//addAndMakeVisible(tree);
 
-	//vTreeComponent->addAndMakeVisible(tree);
+	vTreeComponent->addAndMakeVisible(tree);
+//	vtEditor->setContentNonOwned(vTreeComponent, true);
+	//addAndMakeVisible(vTreeComponent);
+	
 	//vTree->addAndMakeVisible(vTreeComponent);
 
 	//vtEditor->setContentNonOwned(vTreeComponent, true);
 
 	//addAndMakeVisible(vTree);
 	//vTree->
-	
+	zWin = new ZenDebugWindow();
+	zWin->setSize(800, 800);
+	zWin->setContentNonOwned(vTreeComponent, true);
 
 /*
 
@@ -72,7 +77,7 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
 	//vtEditor->setSource(testTree);
 //	vtEditor->addToDesktop();
 
-    this->setSize (600, 600);
+    this->setSize (800, 800);
 	startTimer(50); // Start timer poll with 50ms rate
 
 }
@@ -82,11 +87,13 @@ ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
     muteButton = nullptr;
     gainSlider = nullptr;
     bypassButton = nullptr;
-	vtEditor = nullptr;
+//	vtEditor = nullptr;
 	vTree = nullptr;
 	tree.setRootItem(nullptr);
 	rootItem = nullptr;
 //	testTree = nullptr;
+	delete zWin;
+	zWin = nullptr;
 
 }
 
