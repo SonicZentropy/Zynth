@@ -33,49 +33,25 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
     bypassButton->addListener (this);
 
 
-	vTreeComponent = new Component();
+	//vTreeComponent = new Component("Root-vTreeComp");
+	vTreeComponent = new ValueTreeDebugComponent();
 	vTreeComponent->setSize(800, 800);
 	vTreeComponent->setVisible(true);
 	
-	vTree = new ValueTreesDemo();
 
-	vtEditor = new ValueTreeEditor();
-	//vtEditor->setContentOwned(&tree, true);
-	//vtEditor->addAndMakeVisible(tree);
-
-	//tree is TreeView
-	tree.setDefaultOpenness(true);
+	/*tree.setDefaultOpenness(true);
 	tree.setMultiSelectEnabled(true);
 	tree.setRootItem(rootItem = new ValueTreeItem(createRootValueTree(), undoManager));
 	tree.setColour(TreeView::backgroundColourId, Colours::white);
-	//addAndMakeVisible(tree);
 
-	vTreeComponent->addAndMakeVisible(tree);
-//	vtEditor->setContentNonOwned(vTreeComponent, true);
-	//addAndMakeVisible(vTreeComponent);
+	vTreeComponent->addAndMakeVisible(tree);*/
 	
-	//vTree->addAndMakeVisible(vTreeComponent);
 
-	//vtEditor->setContentNonOwned(vTreeComponent, true);
-
-	//addAndMakeVisible(vTree);
-	//vTree->
+	//Component* testComp = new ValueTreeDebugComponent();
 	zWin = new ZenDebugWindow();
 	zWin->setSize(800, 800);
 	zWin->setContentNonOwned(vTreeComponent, true);
-
-/*
-
-	Identifier testRoot("TestRoot");
-	ValueTree testTree(testRoot);
-	Identifier testIdent("TestID");
-	Identifier testIdent2("TestID2");
-	testTree.setProperty(testIdent, 123, nullptr);
-	testTree.setProperty(testIdent2, 545, nullptr);*/
-
-	//vtEditor = new ValueTreeEditor();
-	//vtEditor->setSource(testTree);
-//	vtEditor->addToDesktop();
+	
 
     this->setSize (800, 800);
 	startTimer(50); // Start timer poll with 50ms rate
@@ -87,12 +63,10 @@ ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
     muteButton = nullptr;
     gainSlider = nullptr;
     bypassButton = nullptr;
-//	vtEditor = nullptr;
-	vTree = nullptr;
+
 	tree.setRootItem(nullptr);
 	rootItem = nullptr;
-//	testTree = nullptr;
-	delete zWin;
+
 	zWin = nullptr;
 
 }

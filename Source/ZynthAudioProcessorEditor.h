@@ -19,7 +19,7 @@
 #include "JuceHeader.h"
 #include "ZynthAudioProcessor.h"
 #include "zen_utils/ZenHeader.h"
-#include "zen_utils/utilities/ValueTreeWindow.h"
+#include "zen_utils/utilities/ValueTreeWindowComponent.h"
 #include "zen_utils/GUI/ZenDebugWindow.h"
 
 
@@ -93,11 +93,10 @@ private:
     ScopedPointer<AssociatedTextButton> bypassButton;
 
 	ScopedPointer<Component> vTreeComponent;
-	ScopedPointer<ValueTreeEditor> vtEditor;
-	ScopedPointer<ValueTreesDemo> vTree;
-	ZenDebugWindow* zWin;
 
-	//ScopedPointer<ValueTree> testTree;
+	ScopedPointer<ZenDebugWindow> zWin;
+
+
 	TreeView tree;
 	TextButton undoButton, redoButton;
 	ScopedPointer<ValueTreeItem> rootItem;

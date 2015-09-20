@@ -2726,11 +2726,11 @@
     <ClInclude Include="..\..\Source\zen_utils\utilities\ZenUtils.h">
       <Filter>Zynth\Source\zen_utils\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\zen_utils\utilities\ValueTreeWindow.h">
-      <Filter>Zynth\Source\zen_utils\utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\zen_utils\GUI\ZenDebugWindow.h">
       <Filter>Zynth\Source\zen_utils\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\zen_utils\utilities\ValueTreeWindowComponent.h">
+      <Filter>Zynth\Source\zen_utils\utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

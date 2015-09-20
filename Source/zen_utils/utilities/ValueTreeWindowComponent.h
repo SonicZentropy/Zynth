@@ -19,9 +19,10 @@
 /** Display a separate desktop window for viewed and editing a value tree's
 property fields.
 */
+/*
 class ValueTreeEditor : public DocumentWindow
 {
-	/** Display properties for a tree. */
+	/ ** Display properties for a tree. * /
 	class PropertyEditor : public PropertyPanel
 	{
 	public:
@@ -143,7 +144,7 @@ class ValueTreeEditor : public DocumentWindow
 			}
 		}
 
-		/* Enormous list of ValueTree::Listener options... */
+		/ * Enormous list of ValueTree::Listener options... * /
 		void valueTreePropertyChanged(ValueTree& treeWhosePropertyHasChanged, const Identifier& property) override
 		{
 			if (t != treeWhosePropertyHasChanged) return;
@@ -186,7 +187,7 @@ class ValueTreeEditor : public DocumentWindow
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Item);
 	};
 
-	/** Display a tree. */
+	/ ** Display a tree. * /
 	class Editor : public Component
 	{
 	public:
@@ -249,6 +250,7 @@ public:
 	~ValueTreeEditor()
 	{
 		editor->setTree(ValueTree::invalid);
+		DBG("In valuetreeeditor destruct");
 	}
 
 	void closeButtonPressed() override
@@ -265,6 +267,7 @@ private:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ValueTreeEditor);
 	ScopedPointer<Editor> editor;
 };
+*/
 
 
 //==============================================================================
@@ -399,13 +402,13 @@ private:
 
 
 //==============================================================================
-class ValueTreesDemo : public Component,
+class ValueTreeDebugComponent : public Component,
 	public DragAndDropContainer,
 	private ButtonListener,
 	private Timer
 {
 public:
-	ValueTreesDemo()
+	ValueTreeDebugComponent()
 		: undoButton("Undo"),
 		redoButton("Redo")
 	{
@@ -424,7 +427,7 @@ public:
 		startTimer(500);
 	}
 
-	~ValueTreesDemo()
+	~ValueTreeDebugComponent()
 	{
 		tree.setRootItem(nullptr);
 	}
@@ -534,7 +537,7 @@ private:
 		undoManager.beginNewTransaction();
 	}
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ValueTreesDemo);
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ValueTreeDebugComponent);
 };
 
 //==============================================================================
