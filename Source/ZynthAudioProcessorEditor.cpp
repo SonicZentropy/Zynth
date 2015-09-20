@@ -2,9 +2,7 @@
 
 //==============================================================================
 ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerFilter)
-	: AudioProcessorEditor(ownerFilter),
-	undoButton("Undo"),
-	redoButton("Redo")
+	: AudioProcessorEditor(ownerFilter)
 {
 	processor = &ownerFilter;
 
@@ -32,26 +30,16 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
 	bypassButton->setClickingTogglesState(true);
     bypassButton->addListener (this);
 
-
-	//vTreeComponent = new Component("Root-vTreeComp");
-	vTreeComponent = new ValueTreeDebugComponent();
-	vTreeComponent->setSize(800, 800);
-	vTreeComponent->setVisible(true);
+	parameterTree = new ValueTree("Parameter Tree");
+	parameterTree->setProperty("name", "Root parameter tree", nullptr);
+	ValueTree parmChild("ParmTreeChild");
+	parmChild.setProperty("name", "Parm Tree Child", nullptr);
+	parmChild.setProperty("value", -11.0f, nullptr);
+	parameterTree->addChild(parmChild, 1, nullptr);
 	
+	zWin = new ZenDebugWindow(parameterTree);
+	//zWin = new ZenDebugWindow();
 
-	/*tree.setDefaultOpenness(true);
-	tree.setMultiSelectEnabled(true);
-	tree.setRootItem(rootItem = new ValueTreeItem(createRootValueTree(), undoManager));
-	tree.setColour(TreeView::backgroundColourId, Colours::white);
-
-	vTreeComponent->addAndMakeVisible(tree);*/
-	
-
-	//Component* testComp = new ValueTreeDebugComponent();
-	zWin = new ZenDebugWindow();
-	zWin->setSize(800, 800);
-	zWin->setContentNonOwned(vTreeComponent, true);
-	
 
     this->setSize (800, 800);
 	startTimer(50); // Start timer poll with 50ms rate
@@ -64,10 +52,8 @@ ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
     gainSlider = nullptr;
     bypassButton = nullptr;
 
-	tree.setRootItem(nullptr);
-	rootItem = nullptr;
-
 	zWin = nullptr;
+	parameterTree = nullptr;
 
 }
 
@@ -82,42 +68,12 @@ void ZynthAudioProcessorEditor::resized()
     muteButton->setBounds (10, 6, 74, 24);
     gainSlider->setBounds (158, 8, 150, 24);
     bypassButton->setBounds (10, 38, 74, 24);
-
-	Rectangle<int> r(getLocalBounds().reduced(8));
-
-	Rectangle<int> buttons(r.removeFromBottom(22));
-	undoButton.setBounds(buttons.removeFromLeft(100));
-	buttons.removeFromLeft(6);
-	redoButton.setBounds(buttons.removeFromLeft(100));
-
-	r.removeFromBottom(4);
-	tree.setBounds(r);
 }
 
-
-
-
-
-void ZynthAudioProcessorEditor::deleteSelectedItems()
-{
-	Array<ValueTree> selectedItems(ValueTreeItem::getSelectedTreeViewItems(tree));
-
-	for (int i = selectedItems.size(); --i >= 0;)
-	{
-		ValueTree& v = selectedItems.getReference(i);
-
-		if (v.getParent().isValid())
-			v.getParent().removeChild(v, &undoManager);
-	}
-}
 
 void ZynthAudioProcessorEditor::buttonClicked(Button* buttonThatWasClicked)
 {	
-	if (buttonThatWasClicked == &undoButton)
-		undoManager.undo();
-	else if (buttonThatWasClicked == &redoButton)
-		undoManager.redo();
-	else dynamic_cast<AssociatedButton*>(buttonThatWasClicked)->setAssociatedParameterValueNotifyingHost();
+	 dynamic_cast<AssociatedButton*>(buttonThatWasClicked)->setAssociatedParameterValueNotifyingHost();
 }
 
 void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
@@ -125,32 +81,10 @@ void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 	dynamic_cast<AssociatedSlider*>(sliderThatWasMoved)->setAssociatedParameterValueNotifyingHost();
 }
 
-bool ZynthAudioProcessorEditor::keyPressed(const KeyPress& key)
-{
-	if (key == KeyPress::deleteKey)
-	{
-		deleteSelectedItems();
-		return true;
-	}
-
-	if (key == KeyPress('z', ModifierKeys::commandModifier, 0))
-	{
-		undoManager.undo();
-		return true;
-	}
-
-	if (key == KeyPress('z', ModifierKeys::commandModifier | ModifierKeys::shiftModifier, 0))
-	{
-		undoManager.redo();
-		return true;
-	}
-
-	return Component::keyPressed(key);
-}
 
 void ZynthAudioProcessorEditor::timerCallback()
 {
-	undoManager.beginNewTransaction();
+	//undoManager.beginNewTransaction();
 	//exchange data between UI Elements and the Plugin (ourProcessor)
 	AssociatedSlider* currentSlider;
 	AssociatedButton* currentButton;

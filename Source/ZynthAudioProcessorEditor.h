@@ -19,7 +19,6 @@
 #include "JuceHeader.h"
 #include "ZynthAudioProcessor.h"
 #include "zen_utils/ZenHeader.h"
-#include "zen_utils/utilities/ValueTreeWindowComponent.h"
 #include "zen_utils/GUI/ZenDebugWindow.h"
 
 
@@ -29,7 +28,6 @@ using namespace Zen;
 class ZynthAudioProcessorEditor  : public AudioProcessorEditor,
                                    public Timer,
 	                               public DragAndDropContainer,
-	                               //public Component,
                                    public ButtonListener,
                                    public SliderListener
 {
@@ -47,43 +45,6 @@ public:
     void buttonClicked (Button* buttonThatWasClicked) override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
-
-	void deleteSelectedItems();
-	bool keyPressed(const KeyPress& key) override;
-
-	static ValueTree createTree(const String& desc)
-	{
-		ValueTree t("Item");
-		t.setProperty("name", desc, nullptr);
-		return t;
-	}
-
-	static ValueTree createRandomTree(int& counter, int depth)
-	{
-		ValueTree t = createTree("Item " + String(counter++));
-
-		if (depth < 3)
-			for (int i = 1 + Random::getSystemRandom().nextInt(7); --i >= 0;)
-				t.addChild(createRandomTree(counter, depth + 1), -1, nullptr);
-
-		return t;
-	}
-
-
-	static ValueTree createRootValueTree()
-	{
-		ValueTree vt = createTree("This demo displays a ValueTree as a treeview.");
-		vt.addChild(createTree("You can drag around the nodes to rearrange them"), -1, nullptr);
-		vt.addChild(createTree("..and press 'delete' to delete them"), -1, nullptr);
-		vt.addChild(createTree("Then, you can use the undo/redo buttons to undo these changes"), -1, nullptr);
-
-		int n = 1;
-		vt.addChild(createRandomTree(n, 0), -1, nullptr);
-
-		return vt;
-	}
-
-
 private:
 	ZynthAudioProcessor* processor;
     
@@ -91,17 +52,10 @@ private:
     ScopedPointer<AssociatedTextButton> muteButton;
     ScopedPointer<AssociatedSlider> gainSlider;
     ScopedPointer<AssociatedTextButton> bypassButton;
-
-	ScopedPointer<Component> vTreeComponent;
-
-	ScopedPointer<ZenDebugWindow> zWin;
-
-
-	TreeView tree;
-	TextButton undoButton, redoButton;
-	ScopedPointer<ValueTreeItem> rootItem;
-	UndoManager undoManager;
 	
+	ScopedPointer<ZenDebugWindow> zWin;
+	//ScopedPointer<ZenDebugWindow> testWin;
+	ScopedPointer<ValueTree>      parameterTree;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ZynthAudioProcessorEditor)

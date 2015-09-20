@@ -15,14 +15,21 @@
 #ifndef ZENDEBUGWINDOW_H_INCLUDED
 #define ZENDEBUGWINDOW_H_INCLUDED
 #include "JuceHeader.h"
+#include "..\utilities\ValueTreeWindowComponent.h"
 
 class ZenDebugWindow : public DocumentWindow
 {
 public:
 	ZenDebugWindow();
+	//explicit ZenDebugWindow(ValueTreeDebugComponent* inComponent);
+	explicit ZenDebugWindow(ValueTree* inComponent);
 	~ZenDebugWindow();
 
 	void closeButtonPressed() override;
+
+	void addValueTree(ValueTree inValueTree);
+protected:
+	ScopedPointer<ValueTreeDebugComponent> valueTreeDebugComponent;
 };
 
 #endif // ZENDEBUGWINDOW_H_INCLUDED

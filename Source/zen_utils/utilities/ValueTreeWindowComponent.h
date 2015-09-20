@@ -283,6 +283,9 @@ public:
 
 	String getUniqueName() const override
 	{
+		//String test = tree.getNumProperties()
+		String test = tree["value"];
+		//return tree["name"].toString() + test;
 		return tree["name"].toString();
 	}
 
@@ -295,10 +298,16 @@ public:
 	{
 		g.setColour(Colours::black);
 		g.setFont(15.0f);
+		String test = tree["value"].toString();
+		String concat = tree["name"].toString() + test;
 
-		g.drawText(tree["name"].toString(),
+		g.drawText(concat,
 			4, 0, width - 4, height,
 			Justification::centredLeft, true);
+/*
+		g.drawText(tree["name"].toString(),
+			4, 0, width - 4, height,
+			Justification::centredLeft, true);*/
 	}
 
 	void itemOpennessChanged(bool isNowOpen) override
@@ -425,6 +434,30 @@ public:
 		redoButton.addListener(this);
 
 		startTimer(500);
+		this->setSize(800, 800);
+		this->setVisible(true);
+	}
+
+	ValueTreeDebugComponent(ValueTree* inValueTree)
+		: undoButton("Undo"),
+		redoButton("Redo")
+	{
+		addAndMakeVisible(tree);
+
+		tree.setDefaultOpenness(true);
+		tree.setMultiSelectEnabled(true);
+		tree.setRootItem(rootItem = new ValueTreeItem(*inValueTree, undoManager));
+		tree.setColour(TreeView::backgroundColourId, Colours::white);
+
+		addAndMakeVisible(undoButton);
+		addAndMakeVisible(redoButton);
+		undoButton.addListener(this);
+		redoButton.addListener(this);
+
+		startTimer(500);
+		this->setSize(800, 800);
+		this->setVisible(true);
+		
 	}
 
 	~ValueTreeDebugComponent()
@@ -435,7 +468,7 @@ public:
 	void paint(Graphics& g) override
 	{
 		//fillTiledBackground(g);
-		//	g.fillAll(Colour(0xff303030));
+		g.fillAll(Colour(0xff303030));
 	}
 
 	void resized() override
@@ -453,20 +486,14 @@ public:
 
 	static ValueTree createTree(const String& desc)
 	{
-		ValueTree t("Item");
+		ValueTree t("Root");
 		t.setProperty("name", desc, nullptr);
 		return t;
 	}
 
 	static ValueTree createRootValueTree()
 	{
-		ValueTree vt = createTree("This demo displays a ValueTree as a treeview.");
-		vt.addChild(createTree("You can drag around the nodes to rearrange them"), -1, nullptr);
-		vt.addChild(createTree("..and press 'delete' to delete them"), -1, nullptr);
-		vt.addChild(createTree("Then, you can use the undo/redo buttons to undo these changes"), -1, nullptr);
-
-		int n = 1;
-		vt.addChild(createRandomTree(n, 0), -1, nullptr);
+		ValueTree vt = createTree("Root Value Tree");
 
 		return vt;
 	}
@@ -530,6 +557,7 @@ private:
 	TreeView tree;
 	TextButton undoButton, redoButton;
 	ScopedPointer<ValueTreeItem> rootItem;
+	
 	UndoManager undoManager;
 
 	void timerCallback() override
