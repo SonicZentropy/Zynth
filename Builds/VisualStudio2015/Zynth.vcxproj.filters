@@ -298,6 +298,9 @@
     <Filter Include="Zynth\UMLDiagrams\zen_utils">
       <UniqueIdentifier>{df787520-9695-48d4-a952-5100a3ad81f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Zynth\Source\zen_utils\GUI">
+      <UniqueIdentifier>{7358840d-78bd-44b8-99c8-da224d97f2cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\ZynthAudioProcessorEditor.cpp">
@@ -1394,6 +1397,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\zen_utils\processing\BufferSampleProcesses.cpp">
       <Filter>Zynth\Source\zen_utils\processing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\zen_utils\GUI\ZenDebugWindow.cpp">
+      <Filter>Zynth\Source\zen_utils\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\zen_utils\parameters\ParameterValueTree.cpp">
+      <Filter>Zynth\Source\zen_utils\parameters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2720,8 +2729,14 @@
     <ClInclude Include="..\..\Source\zen_utils\utilities\ZenUtils.h">
       <Filter>Zynth\Source\zen_utils\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\zen_utils\utilities\ValueTreeWindow.h">
+    <ClInclude Include="..\..\Source\zen_utils\GUI\ZenDebugWindow.h">
+      <Filter>Zynth\Source\zen_utils\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\zen_utils\utilities\ValueTreeWindowComponent.h">
       <Filter>Zynth\Source\zen_utils\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\zen_utils\parameters\ParameterValueTree.h">
+      <Filter>Zynth\Source\zen_utils\parameters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

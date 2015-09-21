@@ -97,7 +97,10 @@ public:
     /** Destructor.
         This will delete the object that this ScopedPointer currently refers to.
     */
-    inline ~ScopedPointer()                 { ContainerDeletePolicy<ObjectType>::destroy (object); }
+    inline ~ScopedPointer()
+    {
+	    ContainerDeletePolicy<ObjectType>::destroy (object);
+    }
 
     /** Changes this ScopedPointer to point to a new object.
 

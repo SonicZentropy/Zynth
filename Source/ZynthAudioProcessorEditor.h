@@ -19,6 +19,7 @@
 #include "JuceHeader.h"
 #include "ZynthAudioProcessor.h"
 #include "zen_utils/ZenHeader.h"
+#include "zen_utils/GUI/ZenDebugWindow.h"
 
 
 using namespace Zen;
@@ -26,6 +27,7 @@ using namespace Zen;
 /// <summary> GUI Editor for zynth audio processor. </summary>
 class ZynthAudioProcessorEditor  : public AudioProcessorEditor,
                                    public Timer,
+	                               public DragAndDropContainer,
                                    public ButtonListener,
                                    public SliderListener
 {
@@ -43,8 +45,6 @@ public:
     void buttonClicked (Button* buttonThatWasClicked) override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
-
-
 private:
 	ZynthAudioProcessor* processor;
     
@@ -52,8 +52,10 @@ private:
     ScopedPointer<AssociatedTextButton> muteButton;
     ScopedPointer<AssociatedSlider> gainSlider;
     ScopedPointer<AssociatedTextButton> bypassButton;
-
 	
+	ScopedPointer<ZenDebugWindow> zWin;
+	//ScopedPointer<ZenDebugWindow> testWin;
+	ScopedPointer<ValueTree>      parameterTree;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ZynthAudioProcessorEditor)
