@@ -1401,6 +1401,9 @@
     <ClCompile Include="..\..\Source\zen_utils\GUI\ZenDebugWindow.cpp">
       <Filter>Zynth\Source\zen_utils\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\zen_utils\parameters\ParameterValueTree.cpp">
+      <Filter>Zynth\Source\zen_utils\parameters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\ZynthAudioProcessorEditor.h">
@@ -2731,6 +2734,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\zen_utils\utilities\ValueTreeWindowComponent.h">
       <Filter>Zynth\Source\zen_utils\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\zen_utils\parameters\ParameterValueTree.h">
+      <Filter>Zynth\Source\zen_utils\parameters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

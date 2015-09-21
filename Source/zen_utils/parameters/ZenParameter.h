@@ -20,6 +20,7 @@
 #include <sstream>
 
 #include "../utilities/ZenParamUtils.h"
+#include "ParameterValueTree.h"
 //#include "LinearSmoothedValue.h"
 
 
@@ -40,6 +41,8 @@ public:
 		value(0.5), name(inName), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
 		setSmoothedValue(0.5);
+		paramValueTree = new ParameterValueTree(name, value, defaultValue, shouldBeSmoothed);
+
 	}
 
 	ZenParameter(const String &inName, const float& inDefaultValue, const bool& inShouldBeSmoothed = false, const float& smoothingTime=0.01f, const String& inLabel = "") :
@@ -228,16 +231,11 @@ public:
 	bool getShouldBeSmoothed() const { return shouldBeSmoothed; }
 	void setShouldBeSmoothed(bool inValue) { shouldBeSmoothed = inValue; }
 #pragma endregion
-	void constructValueTree()
-	{
-		paramValueTree = new ValueTree(name);
-		// #TODO: CURRENT WORK LOCATION
-		paramValueTree->
-	}
+
 
 protected:
 	Value value;
-	ScopedPointer<ValueTree> paramValueTree;
+	ScopedPointer<ParameterValueTree> paramValueTree;
 	
 	float defaultValue=0.0, minValue=0.0, maxValue=1.0, intervalStep= 0.01f;
 	unsigned int precision=2;
@@ -245,13 +243,9 @@ protected:
 	bool requestUIUpdate = true;
 
 	// Smoothing fields
-	
 	double currentSmoothedValue = 0, stepsToTarget = 0, target = 0, step = 0, countdown = 0, smoothTime = 0.01;
 	bool shouldBeSmoothed = false;
 
-
-		
-	
 	//==============================================================================
 private:
 	

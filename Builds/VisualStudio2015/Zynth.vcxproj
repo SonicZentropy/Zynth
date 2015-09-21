@@ -396,6 +396,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\zen_utils\GUI\ZenDebugWindow.cpp" />
+    <ClCompile Include="..\..\Source\zen_utils\parameters\ParameterValueTree.cpp" />
     <ClCompile Include="..\..\Source\zen_utils\processing\BufferSampleProcesses.cpp" />
     <ClCompile Include="..\..\Source\zen_utils\utilities\ZenDebug.cpp" />
     <ClCompile Include="..\..\Source\zen_utils\utilities\ZenParamUtils.cpp" />
@@ -1473,6 +1474,7 @@
     <ClInclude Include="..\..\Source\zen_utils\parameters\DecibelParameter.h" />
     <ClInclude Include="..\..\Source\zen_utils\parameters\FloatParameter.h" />
     <ClInclude Include="..\..\Source\zen_utils\parameters\LinearSmoothedValue.h" />
+    <ClInclude Include="..\..\Source\zen_utils\parameters\ParameterValueTree.h" />
     <ClInclude Include="..\..\Source\zen_utils\parameters\ZenParameter.h" />
     <ClInclude Include="..\..\Source\zen_utils\processing\BufferSampleProcesses.h" />
     <ClInclude Include="..\..\Source\zen_utils\utilities\DecibelConversions.h" />
