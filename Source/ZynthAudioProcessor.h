@@ -81,13 +81,19 @@ public:
 	float getCurrSampleRate() const { return currSampleRate; }
 	void setCurrSampleRate(float inValue) { currSampleRate = inValue; }
 
+	void createParametersTree();
+
+	ValueTree getRootTree() { return rootTree; }
+
 private:
 	// Change to scoped pointer
 	float currSampleRate = 44100.0f;
 	ValueTree rootTree;
+	ValueTree parametersTree;
+	ValueTree componentsTree;
 	//==============================================================================
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ZynthAudioProcessor)
-
+		void initializeValueTree();
 };
 
 

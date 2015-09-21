@@ -16,6 +16,7 @@
 =============================================================================*/
 #include "JuceHeader.h"
 #include "ZenParamUtils.h"
+#include "ZenUtils.h"
 
 namespace Zen
 {
@@ -49,16 +50,17 @@ namespace Zen
 		jassert(maxValue > minValue);
 
 		auto normalized = (value - minValue) / (maxValue - minValue);
-		jassert(normalized >= 0.0f && normalized <= 1.0f);
+		jassert(normalized >= -0.00001f && normalized <= 1.0001f);
 		return normalized;
 	}
 
 
 	float ZenParamUtils::denormalizeValueLinear(
-		const float& normalized, const float& minValue, const float& maxValue)
+		float& normalized, const float& minValue, const float& maxValue)
 	{
-		jassert(normalized >= 0.0f && normalized <= 1.0f);
+		jassert(normalized >= -0.00001f && normalized <= 1.00001f);
 		jassert(maxValue > minValue);
+		normalized = getClamped(normalized, 0, 1.0);
 		return minValue + normalized * (maxValue - minValue);
 	}
 
@@ -120,7 +122,9 @@ namespace Zen
 	/// <returns>Full range value of the input normalized value</returns>
 	float ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(float inValue, float minOfRange, float maxOfRange, float mappedMidpointOfRange)
 	{
-		jassert(inValue >= 0.0f && inValue <= 1.0f && mappedMidpointOfRange >= minOfRange && mappedMidpointOfRange <= maxOfRange);
+		//Account for float truncation errors
+		jassert(inValue >= -0.00001f && inValue <= 1.00001f && mappedMidpointOfRange >= minOfRange && mappedMidpointOfRange <= maxOfRange);
+		inValue = getClamped(inValue, 0.0f, 1.0f);
 		float y, x0, x1, y0, y1;
 		if (inValue <= 0.5)
 		{

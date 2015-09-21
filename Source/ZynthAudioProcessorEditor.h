@@ -54,11 +54,12 @@ private:
     ScopedPointer<AssociatedTextButton> bypassButton;
 	
 	ScopedPointer<ZenDebugWindow> zWin;
-	//ScopedPointer<ZenDebugWindow> testWin;
-	ScopedPointer<ValueTree>      parameterTree;
+	
+	
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ZynthAudioProcessorEditor)
+		void createComponentsTree();
 };
 
 #endif   // __JUCE_HEADER_E0F368D2F71ED5FC__

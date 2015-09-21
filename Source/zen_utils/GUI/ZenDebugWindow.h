@@ -22,7 +22,8 @@ class ZenDebugWindow : public DocumentWindow
 public:
 	ZenDebugWindow();
 	//explicit ZenDebugWindow(ValueTreeDebugComponent* inComponent);
-	explicit ZenDebugWindow(ValueTree* inComponent);
+	explicit ZenDebugWindow(ValueTree* inValueTreePointer);
+	explicit ZenDebugWindow(ValueTree inValueTree);
 	~ZenDebugWindow();
 
 	void closeButtonPressed() override;

@@ -49,6 +49,7 @@ public:
 		value(inDefaultValue), defaultValue(inDefaultValue), name(inName), unitLabel(inLabel), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
 		setSmoothedValue(inDefaultValue);
+		paramValueTree = new ParameterValueTree(name, value, defaultValue, shouldBeSmoothed);
 	}
 
 	ZenParameter(const String &inName, const float& inMinValue, const float& inMaxValue, const float& inDefaultValue, 
@@ -57,9 +58,8 @@ public:
 		maxValue(inMaxValue), intervalStep(inStep), name(inName), unitLabel(inLabel), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
 		setSmoothedValue(inDefaultValue);
-	}
-
-	
+		paramValueTree = new ParameterValueTree(name, value, defaultValue, shouldBeSmoothed);
+	}	
 
 	virtual ~ZenParameter() {};
 
@@ -77,6 +77,11 @@ public:
 		jassert(processor != nullptr && getParameterIndex() >= 0);
 		processor->setParameterNotifyingHost(getParameterIndex(), inValue);
 		requestUIUpdate = false;  //set this to false because change came from GUI
+	}
+
+	ValueTree getAssociatedValueTree()
+	{
+		return paramValueTree->getValueTree();
 	}
 
 	virtual bool needsUIUpdate()
@@ -232,6 +237,7 @@ public:
 	void setShouldBeSmoothed(bool inValue) { shouldBeSmoothed = inValue; }
 #pragma endregion
 
+	
 
 protected:
 	Value value;

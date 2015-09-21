@@ -30,18 +30,13 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
 	bypassButton->setClickingTogglesState(true);
     bypassButton->addListener (this);
 
-	parameterTree = new ValueTree("Parameter Tree");
-	parameterTree->setProperty("name", "Root parameter tree", nullptr);
-	ValueTree parmChild("ParmTreeChild");
-	parmChild.setProperty("name", "Parm Tree Child", nullptr);
-	parmChild.setProperty("value", -11.0f, nullptr);
-	parameterTree->addChild(parmChild, 1, nullptr);
+	createComponentsTree();
 	
-	zWin = new ZenDebugWindow(parameterTree);
+	zWin = new ZenDebugWindow(processor->getRootTree());
 	//zWin = new ZenDebugWindow();
 
 
-    this->setSize (800, 800);
+    this->setSize (400, 400);
 	startTimer(50); // Start timer poll with 50ms rate
 
 }
@@ -53,8 +48,6 @@ ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
     bypassButton = nullptr;
 
 	zWin = nullptr;
-	parameterTree = nullptr;
-
 }
 
 //==============================================================================
@@ -81,6 +74,17 @@ void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 	dynamic_cast<AssociatedSlider*>(sliderThatWasMoved)->setAssociatedParameterValueNotifyingHost();
 }
 
+
+void ZynthAudioProcessorEditor::createComponentsTree()
+{
+	/*parametersTree.setProperty("name", "Parameters", nullptr);
+	for (auto &param : getParameters())
+	{
+		ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
+		parametersTree.addChild(zenParam->getAssociatedValueTree(), -1, nullptr);
+	}*/
+	//this->
+}
 
 void ZynthAudioProcessorEditor::timerCallback()
 {

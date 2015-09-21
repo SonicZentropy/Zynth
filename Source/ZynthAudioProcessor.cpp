@@ -23,12 +23,15 @@
 
 //==============================================================================
 	ZynthAudioProcessor::ZynthAudioProcessor()
-		:rootTree("Root")
+		:rootTree("Root"), parametersTree("Parameters"), componentsTree("Components")
 	{			
 		addParameter(audioGainParam = new DecibelParameter("Gain", true, 0.01f, -96.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.01f, "dB"));
  		addParameter(muteParam = new BooleanParameter("Mute", false));
-		addParameter(bypassParam = new BooleanParameter("Bypass", false));		
-		ValueTree mainTree;
+		addParameter(bypassParam = new BooleanParameter("Bypass", false));	
+
+		initializeValueTree();
+
+		
 	}
 
 	ZynthAudioProcessor::~ZynthAudioProcessor()
@@ -116,6 +119,25 @@
 	{
 		// You should use this method to restore your parameters from this memory block,
 		// whose contents will have been created by the getStateInformation() call.
+	}
+
+	void ZynthAudioProcessor::initializeValueTree()
+	{
+		createParametersTree();
+		rootTree.setProperty("name", "Root", nullptr);
+		
+		rootTree.addChild(parametersTree, 0, nullptr);
+		rootTree.addChild(componentsTree, 1, nullptr);
+	}
+
+	void ZynthAudioProcessor::createParametersTree()
+	{
+		parametersTree.setProperty("name", "Parameters", nullptr);
+		for (auto &param : getParameters())
+		{
+			ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
+			parametersTree.addChild(zenParam->getAssociatedValueTree(), -1, nullptr);
+		}
 	}
 
 	

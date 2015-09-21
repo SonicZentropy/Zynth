@@ -296,18 +296,19 @@ public:
 
 	void paintItem(Graphics& g, int width, int height) override
 	{
+		// #TODO: add treeHasChanged 
 		g.setColour(Colours::black);
 		g.setFont(15.0f);
 		String test = tree["value"].toString();
 		String concat = tree["name"].toString() + test;
 
-		g.drawText(concat,
-			4, 0, width - 4, height,
-			Justification::centredLeft, true);
-/*
-		g.drawText(tree["name"].toString(),
+		/*g.drawText(concat,
 			4, 0, width - 4, height,
 			Justification::centredLeft, true);*/
+
+		g.drawText(tree["name"].toString(),
+			4, 0, width - 4, height,
+			Justification::centredLeft, true);
 	}
 
 	void itemOpennessChanged(bool isNowOpen) override
@@ -456,9 +457,30 @@ public:
 
 		startTimer(500);
 		this->setSize(800, 800);
-		this->setVisible(true);
-		
+		this->setVisible(true);		
 	}
+
+	ValueTreeDebugComponent(ValueTree inValueTree)
+		: undoButton("Undo"),
+		redoButton("Redo")
+	{
+		addAndMakeVisible(tree);
+
+		tree.setDefaultOpenness(true);
+		tree.setMultiSelectEnabled(true);
+		tree.setRootItem(rootItem = new ValueTreeItem(inValueTree, undoManager));
+		tree.setColour(TreeView::backgroundColourId, Colours::white);
+
+		addAndMakeVisible(undoButton);
+		addAndMakeVisible(redoButton);
+		undoButton.addListener(this);
+		redoButton.addListener(this);
+
+		startTimer(500);
+		this->setSize(800, 800);
+		this->setVisible(true);
+	}
+
 
 	~ValueTreeDebugComponent()
 	{
@@ -540,6 +562,13 @@ public:
 		{
 			undoManager.redo();
 			return true;
+		}
+
+		if (key == KeyPress('r'))
+		{
+			DBG("R key pressed");
+			rootItem->treeHasChanged();		
+			tree.repaint();
 		}
 
 		return Component::keyPressed(key);

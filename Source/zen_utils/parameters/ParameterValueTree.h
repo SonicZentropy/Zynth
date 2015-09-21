@@ -18,24 +18,28 @@
 
 namespace Zen{
 
-class ParameterValueTree 
+class ParameterValueTree : public ValueListener
 {
-
 public:
-	//paramValueTree = new ParameterValueTree(name, value.getValueSource(), defaultValue, shouldBeSmoothed);
+	
+	ParameterValueTree();
 	ParameterValueTree(String inName, Value parameterValueReference, float inDefaultValue, bool inShouldBeSmoothed);
 	
+
 	~ParameterValueTree();
 
 	void constructValueTree();
 
+	ValueTree getValueTree();
+
+	virtual void valueChanged(Value& value) override;
 protected:
 	String parameterName;
 	String unitLabel;
 	String paramType;
 	Value parameterValue;
-	float defaultValue;
-	bool isSmoothed;
+	Value defaultValue;
+	Value isSmoothed;
 	ValueTree parameterValueTree;
 
 

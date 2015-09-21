@@ -16,6 +16,7 @@
 #ifndef DECIBEL_CONVERSIONS_H_INCLUDED
 #define DECIBEL_CONVERSIONS_H_INCLUDED
 #include "ZenParamUtils.h"
+#include "ZenUtils.h"
 
 namespace Zen
 {
@@ -94,8 +95,8 @@ namespace Zen
 		/// <returns>Decibel value of the input normalized value</returns>
 		static float mapNormalizedValueToDecibels(const float& inValue, const float& decibelMinimum, const float& decibelMaximum)
 		{
-			jassert(inValue >= 0.0f && inValue <= 1.0f);
-			return ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(inValue, decibelMinimum, decibelMaximum, 0.0f);
+			jassert(inValue >= -0.00001f && inValue <= 1.00001f);
+			return ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(getClamped(inValue, 0, 1), decibelMinimum, decibelMaximum, 0.0f);
 		}
 
 		/// <summary>Takes a normalized gain value representing an arbitrary Decibel range and converts it to a raw decibel gain value where 1.0 = 0dB</summary>
@@ -105,8 +106,8 @@ namespace Zen
 		/// <returns>A de-normalized Gain value that can be used to process audio samples</returns>
 		static float decibelRangeGainToRawDecibelGain(const float& normGainValue, const float& minusInfinityDb, const float& maximumDecibels)
 		{
-			jassert(normGainValue >= 0.0f && normGainValue <= 1.0f);
-			auto valueInDecibels = ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(normGainValue, minusInfinityDb, maximumDecibels, 0.0);
+			jassert(normGainValue >= -0.00001f && normGainValue <= 1.00001f);
+			auto valueInDecibels = ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(getClamped(normGainValue, 0, 1), minusInfinityDb, maximumDecibels, 0.0);
 			return decibelsToDBGain(valueInDecibels, minusInfinityDb);
 		}
 

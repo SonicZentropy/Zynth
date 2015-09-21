@@ -13,29 +13,68 @@
 ===============================================================================*/
 
 #include "ParameterValueTree.h"
+#include "..\utilities\ZenParamUtils.h"
 namespace Zen
 {
 	//paramValueTree = new ParameterValueTree(name, value.getValueSource(), defaultValue, shouldBeSmoothed);
 	
-	ParameterValueTree::ParameterValueTree(String inName, Value parameterValueReference, float inDefaultValue, bool inShouldBeSmoothed)
-		: parameterName(inName), 
-		parameterValue(parameterValueReference), 
-		defaultValue(inDefaultValue), 
-		isSmoothed(inShouldBeSmoothed),
-		parameterValueTree("Parameter")
-	{
+ParameterValueTree::ParameterValueTree()
+{
+	DBG("In ParameterValueTree::ParameterValueTree() - Should never be called");
+	jassertfalse;
+}
+
+ParameterValueTree::ParameterValueTree(String inName, Value parameterValueReference, float inDefaultValue, bool inShouldBeSmoothed)
+	: parameterName(inName),
+	parameterValue(parameterValueReference),
+	defaultValue(inDefaultValue),
+	isSmoothed(inShouldBeSmoothed),
+	parameterValueTree("Parameter")
+{
+	constructValueTree();
+	parameterValue.addListener(this);
+	defaultValue.addListener(this);
+	isSmoothed.addListener(this);
 	
+}
 
-	}
+ParameterValueTree::~ParameterValueTree()
+{ }
 
-	ParameterValueTree::~ParameterValueTree()
-	{
+void ParameterValueTree::constructValueTree()
+{
+	//parameter value, defaultvalue, isSmoothed
 	
-	}
+	
+	parameterValueTree.setProperty("name", parameterName, nullptr);
+	
+	ValueTree valueChild("parameterValue");
+	valueChild.setProperty("name", "Value: " + parameterValue.getValue().toString(), nullptr);
+	parameterValueTree.addChild(valueChild, -1, nullptr);
 
-	void ParameterValueTree::constructValueTree()
-	{
-		parameterValueTree.setProperty("name", parameterName, nullptr);
-	}
+	ValueTree defaultValueChild("defaultParameterValue");
+	defaultValueChild.setProperty("name", "Default Value: " + defaultValue.getValue().toString(), nullptr);
+	parameterValueTree.addChild(defaultValueChild, -1, nullptr);
+
+	ValueTree parameterSmoothedChild("isSmoothed");
+	parameterSmoothedChild.setProperty("name", "Is Smoothed: " + isSmoothed.getValue().toString() , nullptr);
+	parameterValueTree.addChild(parameterSmoothedChild, -1, nullptr);
 
 }
+
+ValueTree ParameterValueTree::getValueTree()
+{
+	return parameterValueTree;
+}
+
+void ParameterValueTree::valueChanged(Value& value)
+{
+	if(value == parameterValue)
+		parameterValueTree.getChildWithName("parameterValue").setProperty("name", "Value: " + parameterValue.getValue().toString(), nullptr);
+	else if (value == defaultValue)
+		parameterValueTree.getChildWithName("defaultParameterValue").setProperty("name", "Default Value: " + defaultValue.getValue().toString(), nullptr);
+	else if (value == isSmoothed)
+		parameterValueTree.getChildWithName("isSmoothed").setProperty("name", "Is Smoothed: " + isSmoothed.getValue().toString(), nullptr);
+}
+
+}  // Namespace Zen

@@ -73,7 +73,7 @@ namespace Zen
 		/// <param name="minValue">Minimum value of desired range</param>
 		/// <param name="maxValue">Maximum value of desired range</param>
 		/// <returns>(float) Denormalized value between given min/max</returns>
-		static float denormalizeValueLinear(const float& normalized, const float& minValue, const float& maxValue);
+		static float denormalizeValueLinear(float& normalized, const float& minValue, const float& maxValue);
 
 
 		static float convertValueToDecibels(const float& gain);
