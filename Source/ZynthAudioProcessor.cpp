@@ -28,6 +28,7 @@
 		addParameter(audioGainParam = new DecibelParameter("Gain", true, 0.01f, -96.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.01f, "dB"));
  		addParameter(muteParam = new BooleanParameter("Mute", false));
 		addParameter(bypassParam = new BooleanParameter("Bypass", false));		
+		ValueTree mainTree;
 	}
 
 	ZynthAudioProcessor::~ZynthAudioProcessor()

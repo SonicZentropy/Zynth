@@ -35,7 +35,7 @@ namespace Zen
 
 	void ParameterValueTree::constructValueTree()
 	{
-	   parameterValueTree.setProperty("name", )
+		parameterValueTree.setProperty("name", parameterName, nullptr);
 	}
 
 }
