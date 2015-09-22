@@ -54,6 +54,7 @@ protected:
 	ZenParameter* associatedParameter;
 	String unitLabel;
 	unsigned int displayPrecision = 2;
+	//ScopedPointer
 
 };
 } //Namespace Zen

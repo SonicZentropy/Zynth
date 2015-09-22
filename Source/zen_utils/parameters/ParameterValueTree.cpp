@@ -45,11 +45,12 @@ void ParameterValueTree::constructValueTree()
 {
 	//parameter value, defaultvalue, isSmoothed
 	
-	
+	// #TODO: CURRENT WORK SPOT, trying to fix valuetree for serialization
 	parameterValueTree.setProperty("name", parameterName, nullptr);
 	
 	ValueTree valueChild("parameterValue");
-	valueChild.setProperty("name", "Value: " + parameterValue.getValue().toString(), nullptr);
+	valueChild.setProperty("name", parameterName, nullptr);
+	valueChild.setProperty("value", parameterValue, nullptr);
 	parameterValueTree.addChild(valueChild, -1, nullptr);
 
 	ValueTree defaultValueChild("defaultParameterValue");

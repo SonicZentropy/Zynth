@@ -86,13 +86,18 @@
 		// You could do that either as raw data, or use the XML or ValueTree classes
 		// as intermediaries to make it easy to save and load complex data.
 
-		XmlElement root("Root");
+		XmlElement rootXML(*(rootTree.createXml()));
+	//	rootTree.writeToStream()
+	//	rootTree.readFromData()
+		DBG("getState: Root Tree XMLString:\n" + rootTree.toXmlString());
+		//XmlElement root("Root");
 	//	XmlElement* el;
 		
+/*
 		for (auto &theParam : managedParameters)
 		{
 			dynamic_cast<ZenParameter*>(theParam)->writeXML(root);
-		}
+		}*/
 
 		/*
 		el = root.createNewChildElement("Bypass");
@@ -112,13 +117,18 @@
 		el = root.createNewChildElement("StereoPan");
 		el->addTextElement(String(stereoPanParam->getValue()));
 		*/
-		copyXmlToBinary(root, destData);
+		copyXmlToBinary(rootXML, destData);
 	}
 
 	void ZynthAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 	{
 		// You should use this method to restore your parameters from this memory block,
 		// whose contents will have been created by the getStateInformation() call.
+
+		ScopedPointer<XmlElement> theXML = this->getXmlFromBinary(data, sizeInBytes);
+		DBG("getState: XMLString:\n" + theXML->createDocument("any", false, true, "UTF-8", 100));
+		if (theXML != nullptr) 
+			rootTree.fromXml(*theXML);
 	}
 
 	void ZynthAudioProcessor::initializeValueTree()
@@ -127,7 +137,7 @@
 		rootTree.setProperty("name", "Root", nullptr);
 		
 		rootTree.addChild(parametersTree, 0, nullptr);
-		rootTree.addChild(componentsTree, 1, nullptr);
+	//	rootTree.addChild(componentsTree, 1, nullptr);
 	}
 
 	void ZynthAudioProcessor::createParametersTree()
