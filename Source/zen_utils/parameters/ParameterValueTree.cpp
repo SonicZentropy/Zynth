@@ -29,7 +29,7 @@ ParameterValueTree::ParameterValueTree(String inName, Value parameterValueRefere
 	parameterValue(parameterValueReference),
 	defaultValue(inDefaultValue),
 	isSmoothed(inShouldBeSmoothed),
-	parameterValueTree("Parameter")
+	parameterValueTree(inName)
 {
 	constructValueTree();
 	parameterValue.addListener(this);
@@ -49,16 +49,18 @@ void ParameterValueTree::constructValueTree()
 	parameterValueTree.setProperty("name", parameterName, nullptr);
 	
 	ValueTree valueChild("parameterValue");
-	valueChild.setProperty("name", parameterName, nullptr);
+	valueChild.setProperty("name", "Value", nullptr);
 	valueChild.setProperty("value", parameterValue, nullptr);
 	parameterValueTree.addChild(valueChild, -1, nullptr);
 
 	ValueTree defaultValueChild("defaultParameterValue");
-	defaultValueChild.setProperty("name", "Default Value: " + defaultValue.getValue().toString(), nullptr);
+	defaultValueChild.setProperty("name", "Default Value", nullptr);
+	defaultValueChild.setProperty("value", defaultValue.getValue(), nullptr);
 	parameterValueTree.addChild(defaultValueChild, -1, nullptr);
 
 	ValueTree parameterSmoothedChild("isSmoothed");
-	parameterSmoothedChild.setProperty("name", "Is Smoothed: " + isSmoothed.getValue().toString() , nullptr);
+	parameterSmoothedChild.setProperty("name", "Is Smoothed", nullptr);
+	parameterSmoothedChild.setProperty("value", isSmoothed.getValue(), nullptr);
 	parameterValueTree.addChild(parameterSmoothedChild, -1, nullptr);
 
 }
@@ -68,14 +70,29 @@ ValueTree ParameterValueTree::getValueTree()
 	return parameterValueTree;
 }
 
+void ParameterValueTree::setFromInTree(ValueTree inTree)
+{
+	//parameterName = inTree.getProperty("name");
+	parameterName = inTree.getType().toString();
+	DBG("Parameter Name: " + inTree.getType().toString());
+	parameterValue = inTree.getChildWithName("parameterValue").getPropertyAsValue("value", nullptr).getValue();
+	DBG("parameterValue: " + inTree.getChildWithName("parameterValue").getPropertyAsValue("value", nullptr).getValue().toString(););
+	defaultValue = inTree.getChildWithName("defaultParameterValue").getPropertyAsValue("value", nullptr).getValue();
+	DBG("defaultParameterValue: " + inTree.getChildWithName("defaultParameterValue").getPropertyAsValue("value", nullptr).getValue().toString());
+	isSmoothed = inTree.getChildWithName("isSmoothed").getPropertyAsValue("value", nullptr).getValue();
+	DBG("isSmoothed: " + inTree.getChildWithName("isSmoothed").getPropertyAsValue("value", nullptr).getValue().toString());
+	parameterValueTree = inTree.createCopy();
+
+}
+
 void ParameterValueTree::valueChanged(Value& value)
 {
 	if(value == parameterValue)
-		parameterValueTree.getChildWithName("parameterValue").setProperty("name", "Value: " + parameterValue.getValue().toString(), nullptr);
+		parameterValueTree.getChildWithName("parameterValue").setProperty("value", value.getValue(), nullptr);
 	else if (value == defaultValue)
-		parameterValueTree.getChildWithName("defaultParameterValue").setProperty("name", "Default Value: " + defaultValue.getValue().toString(), nullptr);
+		parameterValueTree.getChildWithName("defaultParameterValue").setProperty("value", value.getValue(), nullptr);
 	else if (value == isSmoothed)
-		parameterValueTree.getChildWithName("isSmoothed").setProperty("name", "Is Smoothed: " + isSmoothed.getValue().toString(), nullptr);
+		parameterValueTree.getChildWithName("isSmoothed").setProperty("value", value.getValue(), nullptr);
 }
 
 }  // Namespace Zen

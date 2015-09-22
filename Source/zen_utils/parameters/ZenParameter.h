@@ -84,6 +84,27 @@ public:
 		return paramValueTree->getValueTree();
 	}
 
+	void setAssociatedValueTree(ValueTree inTree)
+	{
+		// get parameter name 
+		ValueTree tempTree = inTree.getChildWithName("Parameters").getChildWithName(name);
+		paramValueTree->setFromInTree(tempTree);
+		updateFromValueTree();
+		requestUIUpdate = true;
+	}
+
+	void updateFromValueTree()
+	{
+		// #TODO: change GUI load from using default parms to using the current parm value
+		// #TODO: find way to refresh debug window on change
+		// #TODO: refresh GUI when opening
+		
+		 Value tempValue(paramValueTree->getValueTree().getChildWithName("parameterValue").getProperty("value") );
+		 value.setValue(tempValue);
+		defaultValue = paramValueTree->getValueTree().getChildWithName("defaultParameterValue").getProperty("value");
+		shouldBeSmoothed = paramValueTree->getValueTree().getChildWithName("isSmoothed").getProperty("value");
+	}
+
 	virtual bool needsUIUpdate()
 	{
 		return requestUIUpdate;

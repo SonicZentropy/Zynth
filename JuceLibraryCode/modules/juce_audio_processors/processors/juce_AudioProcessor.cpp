@@ -114,7 +114,7 @@ void AudioProcessor::setLatencySamples (const int newLatency)
 void AudioProcessor::setParameterNotifyingHost (const int parameterIndex,
                                                 const float newValue)
 {
-	DBG("In AudioProcessor::setParameterNotifyingHost() with input value: " + String(newValue));
+	//DBG("In AudioProcessor::setParameterNotifyingHost() with input value: " + String(newValue));
     setParameter (parameterIndex, newValue);
     sendParamChangeMessageToListeners (parameterIndex, newValue);
 }
@@ -209,7 +209,7 @@ float AudioProcessor::getParameter (int index)
 
 void AudioProcessor::setParameter (int index, float newValue)
 {
-	DBG("In AudioProcessor::setParameter() with input value: " + String(newValue));
+	//DBG("In AudioProcessor::setParameter() with input value: " + String(newValue));
     if (AudioProcessorParameter* p = getParamChecked (index))
         p->setValue (newValue);
 }
@@ -418,8 +418,8 @@ void AudioProcessorParameter::setValueNotifyingHost (float newValue)
 {
     // This method can't be used until the parameter has been attached to a processor!
     jassert (processor != nullptr && parameterIndex >= 0);
-	DBG("Entered method: AudioProcessorParameter:setValueNotifyingHost(newValue)");
-	DBG("Received value:" + String(newValue));
+	//DBG("Entered method: AudioProcessorParameter:setValueNotifyingHost(newValue)");
+	//DBG("Received value:" + String(newValue));
     return processor->setParameterNotifyingHost (parameterIndex, newValue);
 }
 

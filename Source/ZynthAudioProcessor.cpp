@@ -85,11 +85,15 @@
 		// You should use this method to store your parameters in the memory block.
 		// You could do that either as raw data, or use the XML or ValueTree classes
 		// as intermediaries to make it easy to save and load complex data.
+		DBG("In GET STATE");
 
 		XmlElement rootXML(*(rootTree.createXml()));
 	//	rootTree.writeToStream()
 	//	rootTree.readFromData()
+		DBG("PRE-GETSTATE================================================");
 		DBG("getState: Root Tree XMLString:\n" + rootTree.toXmlString());
+		DBG("POST-GETSTATE================================================");
+		
 		//XmlElement root("Root");
 	//	XmlElement* el;
 		
@@ -124,11 +128,22 @@
 	{
 		// You should use this method to restore your parameters from this memory block,
 		// whose contents will have been created by the getStateInformation() call.
+		DBG("In SET STATE");
 
+		ScopedPointer<XmlElement> theNewXML = new XmlElement(*(this->getXmlFromBinary(data, sizeInBytes)));
 		ScopedPointer<XmlElement> theXML = this->getXmlFromBinary(data, sizeInBytes);
-		DBG("getState: XMLString:\n" + theXML->createDocument("any", false, true, "UTF-8", 100));
-		if (theXML != nullptr) 
-			rootTree.fromXml(*theXML);
+		DBG("PRE-SET_STATE================================================");
+		DBG("setState: XMLString:\n" + theXML->createDocument("", false, false, "UTF-8", 100));
+		DBG("POST-SET_STATE================================================");
+		if (theXML != nullptr)
+		{						
+			rootTree = rootTree.fromXml(*theXML);
+			for (auto &param : getParameters())
+			{
+				ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
+				zenParam->setAssociatedValueTree(rootTree);
+			}
+		}
 	}
 
 	void ZynthAudioProcessor::initializeValueTree()

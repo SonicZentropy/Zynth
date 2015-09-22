@@ -338,6 +338,8 @@ public:
 
         This isn't designed to cope with random XML data - for a sensible result, it should only
         be fed XML that was created by the createXml() method.
+		ZENTROPY: Note that this does NOT change the tree that calls it, it only returns the changed tree
+		that then needs to be assigned, eg tempTree = tempTree.fromXml(theXML)
     */
     static ValueTree fromXml (const XmlElement& xml);
 

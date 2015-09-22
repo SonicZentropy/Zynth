@@ -24,14 +24,15 @@ public:
 	
 	ParameterValueTree();
 	ParameterValueTree(String inName, Value parameterValueReference, float inDefaultValue, bool inShouldBeSmoothed);
-	
 
 	~ParameterValueTree();
+
 
 	void constructValueTree();
 
 	ValueTree getValueTree();
 
+	void setFromInTree(ValueTree inTree);
 	virtual void valueChanged(Value& value) override;
 protected:
 	String parameterName;

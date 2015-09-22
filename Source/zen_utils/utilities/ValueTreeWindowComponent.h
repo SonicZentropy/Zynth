@@ -283,9 +283,6 @@ public:
 
 	String getUniqueName() const override
 	{
-		//String test = tree.getNumProperties()
-		String test = tree["value"];
-		//return tree["name"].toString() + test;
 		return tree["name"].toString();
 	}
 
@@ -299,14 +296,8 @@ public:
 		// #TODO: add treeHasChanged 
 		g.setColour(Colours::black);
 		g.setFont(15.0f);
-		String test = tree["value"].toString();
-		String concat = tree["name"].toString() + test;
-
-		/*g.drawText(concat,
-			4, 0, width - 4, height,
-			Justification::centredLeft, true);*/
-
-		g.drawText(tree["name"].toString(),
+	
+		g.drawText(tree["name"].toString() + ": " + tree["value"].toString(),
 			4, 0, width - 4, height,
 			Justification::centredLeft, true);
 	}

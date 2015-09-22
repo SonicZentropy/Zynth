@@ -96,6 +96,7 @@ void ZynthAudioProcessorEditor::timerCallback()
 	ZenParameter* currentParameter;
 
 	int numComponents = this->getNumChildComponents();
+	// #TODO: CHANGE BACK TO SINGLE needsUpdate!
 	// #ENHANCE:  Eventually change GUI updates to messages rather than polling
 	//This looks ugly, but it's a whole lot better than a massive if chain checking EVERY param individually
 	//This should handle every component's GUI updates automatically
