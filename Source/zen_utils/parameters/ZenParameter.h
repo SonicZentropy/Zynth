@@ -104,8 +104,8 @@ public:
 	/// <summary> Re-initializes the smoothed value parameter configuration.  Should be called from
 	/// parameter constructors in parameters that allow smoothing.  Should also be called on any change
 	/// of sample rate or desired smoothing time.  This can all be done within the processor's prepareToPlay()</summary>
-	/// <param name="inSampleRate"> The in sample rate. </param>
-	/// <param name="inSmoothTime"> The in smooth time. </param>
+	/// <param name="inSampleRate"> The current sample rate. </param>
+	/// <param name="inSmoothTime"> Time (in ms) to interpolate changes to this parameter </param>
 	void resetSmoothedValue(float inSampleRate, float inSmoothTime)
 	{
 		jassert(inSampleRate > 0 && inSmoothTime >= 0);
