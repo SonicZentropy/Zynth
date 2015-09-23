@@ -301,6 +301,18 @@
     <Filter Include="Zynth\Source\zen_utils\GUI">
       <UniqueIdentifier>{7358840d-78bd-44b8-99c8-da224d97f2cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Zynth\Source\toys">
+      <UniqueIdentifier>{dc44c957-1b7d-4edf-84e5-d2b44e79a482}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Zynth\Source\toys\jcf_debug">
+      <UniqueIdentifier>{917fcb5d-88f6-49a1-abc4-eb56c3ad4bf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Zynth\Source\toys\other">
+      <UniqueIdentifier>{53421b19-65a8-4cdd-91b5-8d5af49081bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Zynth\Source\toys\jcf_debug\source">
+      <UniqueIdentifier>{b007448c-a778-46de-86a1-ce63271011a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\ZynthAudioProcessorEditor.cpp">

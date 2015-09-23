@@ -40,6 +40,7 @@ public:
 	explicit ZenParameter(const String &inName, const bool& inShouldBeSmoothed = false, const float& smoothingTime=0.01f) :
 		value(0.5), name(inName), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
+		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(0.5);
 		paramValueTree = new ParameterValueTree(name, value, defaultValue, shouldBeSmoothed);
 
@@ -48,6 +49,7 @@ public:
 	ZenParameter(const String &inName, const float& inDefaultValue, const bool& inShouldBeSmoothed = false, const float& smoothingTime=0.01f, const String& inLabel = "") :
 		value(inDefaultValue), defaultValue(inDefaultValue), name(inName), unitLabel(inLabel), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
+		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(inDefaultValue);
 		paramValueTree = new ParameterValueTree(name, value, defaultValue, shouldBeSmoothed);
 	}
@@ -57,6 +59,7 @@ public:
 		:value(inDefaultValue), defaultValue(inDefaultValue), minValue(inMinValue), 
 		maxValue(inMaxValue), intervalStep(inStep), name(inName), unitLabel(inLabel), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
+		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(inDefaultValue);
 		paramValueTree = new ParameterValueTree(name, value, defaultValue, shouldBeSmoothed);
 	}	
@@ -65,6 +68,7 @@ public:
 
 	virtual void setValue(float inValue) override
 	{
+		DBGM("In ZenParameter::setValue() ");
 		value = inValue;
 		setSmoothedValue(inValue);
 		requestUIUpdate = true;
@@ -73,6 +77,7 @@ public:
 	//Juce's AudioProcessorParameter method changed to virtual
 	virtual void setValueNotifyingHost(float inValue) override
 	{
+		DBGM("In ZenParameter::setValueNotifyingHost() ");
 		// This method can't be used until the parameter has been attached to a processor!
 		jassert(processor != nullptr && getParameterIndex() >= 0);
 		processor->setParameterNotifyingHost(getParameterIndex(), inValue);
@@ -81,11 +86,13 @@ public:
 
 	ValueTree getAssociatedValueTree()
 	{
+		DBGM("In ZenParameter::getAssociatedValueTree() ");
 		return paramValueTree->getValueTree();
 	}
 
 	void setAssociatedValueTree(ValueTree inTree)
 	{
+		DBGM("In ZenParameter::setAssociatedValueTree() ");
 		// get parameter name 
 		ValueTree tempTree = inTree.getChildWithName("Parameters").getChildWithName(name);
 		paramValueTree->setFromInTree(tempTree);
@@ -95,6 +102,7 @@ public:
 
 	void updateFromValueTree()
 	{
+		DBGM("In ZenParameter::updateFromValueTree() ");
 		// #TODO: change GUI load from using default parms to using the current parm value
 		// #TODO: find way to refresh debug window on change
 		// #TODO: refresh GUI when opening
@@ -171,6 +179,7 @@ public:
 	/// Should be called ONCE on EVERY sample's process cycle.</summary>
 	float getNextSmoothedValue() noexcept
 	{
+		
 		if (countdown <= 0)
 			return target;
 
@@ -181,11 +190,13 @@ public:
 
 	bool checkShouldBeSmoothed() const
 	{
+		DBGM("In ZenParameter::checkShouldBeSmoothed() ");
 		return shouldBeSmoothed;
 	}
 
 	virtual String getText(float inValue, int maxStringLength) const override
 	{
+		DBGM("In ZenParameter::getText() ");
 		jassert(maxStringLength >= 0);
 		std::stringstream numberFormatter;
 		numberFormatter.precision(getDisplayPrecision());
@@ -198,6 +209,7 @@ public:
 
 	virtual void writeXML(XmlElement &xmlElem)
 	{
+		DBGM("In ZenParameter::writeXML() ");
 		//el = root.createNewChildElement("Bypass");
 		//el->addTextElement(String(masterBypassParam->getValue()));
 		xmlElem.setAttribute(name, getValue());
@@ -206,6 +218,7 @@ public:
 
 	virtual void readXML(const XmlElement* xmlState)
 	{
+		DBGM("In ZenParameter::readXML() ");
 		setValue(xmlState->getDoubleAttribute(name, getDefaultValue()));
 	}
 

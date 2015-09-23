@@ -16,6 +16,328 @@
 
 #include "JuceHeader.h"
 
+
+//==============================================================================
+class ValueTreeItem : public TreeViewItem,
+	private ValueTree::Listener
+{
+public:
+	ValueTreeItem(const ValueTree& v, UndoManager& um)
+		: tree(v), undoManager(um)
+	{
+		tree.addListener(this);
+	}
+
+	String getUniqueName() const override
+	{
+		return tree["name"].toString();
+	}
+
+	bool mightContainSubItems() override
+	{
+		return tree.getNumChildren() > 0;
+	}
+
+	void paintItem(Graphics& g, int width, int height) override
+	{
+		// #TODO: add treeHasChanged 
+		g.setColour(Colours::black);
+		g.setFont(15.0f);
+
+		g.drawText(tree["name"].toString() + ": " + tree["value"].toString(),
+			4, 0, width - 4, height,
+			Justification::centredLeft, true);
+	}
+
+	void itemOpennessChanged(bool isNowOpen) override
+	{
+		if (isNowOpen && getNumSubItems() == 0)
+			refreshSubItems();
+		else
+			clearSubItems();
+	}
+
+	var getDragSourceDescription() override
+	{
+		return "Drag Demo";
+	}
+
+	bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails& dragSourceDetails) override
+	{
+		return dragSourceDetails.description == "Drag Demo";
+	}
+
+	void itemDropped(const DragAndDropTarget::SourceDetails&, int insertIndex) override
+	{
+		moveItems(*getOwnerView(),
+			getSelectedTreeViewItems(*getOwnerView()),
+			tree, insertIndex, undoManager);
+	}
+
+	static void moveItems(TreeView& treeView, const Array<ValueTree>& items,
+		ValueTree newParent, int insertIndex, UndoManager& undoManager)
+	{
+		if (items.size() > 0)
+		{
+			ScopedPointer<XmlElement> oldOpenness(treeView.getOpennessState(false));
+
+			for (int i = items.size(); --i >= 0;)
+			{
+				ValueTree& v = items.getReference(i);
+
+				if (v.getParent().isValid() && newParent != v && !newParent.isAChildOf(v))
+				{
+					if (v.getParent() == newParent && newParent.indexOf(v) < insertIndex)
+						--insertIndex;
+
+					v.getParent().removeChild(v, &undoManager);
+					newParent.addChild(v, insertIndex, &undoManager);
+				}
+			}
+
+			if (oldOpenness != nullptr)
+				treeView.restoreOpennessState(*oldOpenness, false);
+		}
+	}
+
+	static Array<ValueTree> getSelectedTreeViewItems(TreeView& treeView)
+	{
+		Array<ValueTree> items;
+
+		const int numSelected = treeView.getNumSelectedItems();
+
+		for (int i = 0; i < numSelected; ++i)
+			if (const ValueTreeItem* vti = dynamic_cast<ValueTreeItem*> (treeView.getSelectedItem(i)))
+				items.add(vti->tree);
+
+		return items;
+	}
+
+private:
+	ValueTree tree;
+	UndoManager& undoManager;
+
+	void refreshSubItems()
+	{
+		clearSubItems();
+
+		for (int i = 0; i < tree.getNumChildren(); ++i)
+			addSubItem(new ValueTreeItem(tree.getChild(i), undoManager));
+	}
+
+	void valueTreePropertyChanged(ValueTree&, const Identifier&) override
+	{
+		repaintItem();
+	}
+
+	void valueTreeChildAdded(ValueTree& parentTree, ValueTree&) override { treeChildrenChanged(parentTree); }
+	void valueTreeChildRemoved(ValueTree& parentTree, ValueTree&, int) override { treeChildrenChanged(parentTree); }
+	void valueTreeChildOrderChanged(ValueTree& parentTree, int, int) override { treeChildrenChanged(parentTree); }
+	void valueTreeParentChanged(ValueTree&) override {}
+
+	void treeChildrenChanged(const ValueTree& parentTree)
+	{
+		if (parentTree == tree)
+		{
+			refreshSubItems();
+			treeHasChanged();
+			setOpen(true);
+		}
+	}
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ValueTreeItem)
+};
+
+//==============================================================================
+//==============================================================================
+class ValueTreeDebugComponent : public Component,
+	public DragAndDropContainer,
+	private ButtonListener,
+	private Timer
+{
+public:
+	ValueTreeDebugComponent()
+		: undoButton("Undo"),
+		redoButton("Redo")
+	{
+		addAndMakeVisible(tree);
+
+		tree.setDefaultOpenness(true);
+		tree.setMultiSelectEnabled(true);
+		tree.setRootItem(rootItem = new ValueTreeItem(createRootValueTree(), undoManager));
+		tree.setColour(TreeView::backgroundColourId, Colours::white);
+
+		addAndMakeVisible(undoButton);
+		addAndMakeVisible(redoButton);
+		undoButton.addListener(this);
+		redoButton.addListener(this);
+
+		startTimer(500);
+		this->setSize(800, 800);
+		this->setVisible(true);
+	}
+
+	ValueTreeDebugComponent(ValueTree* inValueTree)
+		: undoButton("Undo"),
+		redoButton("Redo")
+	{
+		addAndMakeVisible(tree);
+
+		tree.setDefaultOpenness(true);
+		tree.setMultiSelectEnabled(true);
+		tree.setRootItem(rootItem = new ValueTreeItem(*inValueTree, undoManager));
+		tree.setColour(TreeView::backgroundColourId, Colours::white);
+
+		addAndMakeVisible(undoButton);
+		addAndMakeVisible(redoButton);
+		undoButton.addListener(this);
+		redoButton.addListener(this);
+
+		startTimer(500);
+		this->setSize(800, 800);
+		this->setVisible(true);
+	}
+
+	ValueTreeDebugComponent(ValueTree inValueTree)
+		: undoButton("Undo"),
+		redoButton("Redo")
+	{
+		addAndMakeVisible(tree);
+
+		tree.setDefaultOpenness(true);
+		tree.setMultiSelectEnabled(true);
+		tree.setRootItem(rootItem = new ValueTreeItem(inValueTree, undoManager));
+		tree.setColour(TreeView::backgroundColourId, Colours::white);
+
+		addAndMakeVisible(undoButton);
+		addAndMakeVisible(redoButton);
+		undoButton.addListener(this);
+		redoButton.addListener(this);
+
+		startTimer(500);
+		this->setSize(800, 800);
+		this->setVisible(true);
+	}
+
+
+	~ValueTreeDebugComponent()
+	{
+		tree.setRootItem(nullptr);
+	}
+
+	void paint(Graphics& g) override
+	{
+		//fillTiledBackground(g);
+		g.fillAll(Colour(0xff303030));
+	}
+
+	void resized() override
+	{
+		Rectangle<int> r(getLocalBounds().reduced(8));
+
+		Rectangle<int> buttons(r.removeFromBottom(22));
+		undoButton.setBounds(buttons.removeFromLeft(100));
+		buttons.removeFromLeft(6);
+		redoButton.setBounds(buttons.removeFromLeft(100));
+
+		r.removeFromBottom(4);
+		tree.setBounds(r);
+	}
+
+	static ValueTree createTree(const String& desc)
+	{
+		ValueTree t("Root");
+		t.setProperty("name", desc, nullptr);
+		return t;
+	}
+
+	static ValueTree createRootValueTree()
+	{
+		ValueTree vt = createTree("Root Value Tree");
+
+		return vt;
+	}
+
+	static ValueTree createRandomTree(int& counter, int depth)
+	{
+		ValueTree t = createTree("Item " + String(counter++));
+
+		if (depth < 3)
+			for (int i = 1 + Random::getSystemRandom().nextInt(7); --i >= 0;)
+				t.addChild(createRandomTree(counter, depth + 1), -1, nullptr);
+
+		return t;
+	}
+
+	void deleteSelectedItems()
+	{
+		Array<ValueTree> selectedItems(ValueTreeItem::getSelectedTreeViewItems(tree));
+
+		for (int i = selectedItems.size(); --i >= 0;)
+		{
+			ValueTree& v = selectedItems.getReference(i);
+
+			if (v.getParent().isValid())
+				v.getParent().removeChild(v, &undoManager);
+		}
+	}
+
+	bool keyPressed(const KeyPress& key) override
+	{
+		if (key == KeyPress::deleteKey)
+		{
+			deleteSelectedItems();
+			return true;
+		}
+
+		if (key == KeyPress('z', ModifierKeys::commandModifier, 0))
+		{
+			undoManager.undo();
+			return true;
+		}
+
+		if (key == KeyPress('z', ModifierKeys::commandModifier | ModifierKeys::shiftModifier, 0))
+		{
+			undoManager.redo();
+			return true;
+		}
+
+		if (key == KeyPress('r'))
+		{
+			DBG("R key pressed");
+			rootItem->treeHasChanged();
+			tree.repaint();
+		}
+
+		return Component::keyPressed(key);
+	}
+
+	void buttonClicked(Button* b) override
+	{
+		if (b == &undoButton)
+			undoManager.undo();
+		else if (b == &redoButton)
+			undoManager.redo();
+	}
+
+private:
+	TreeView tree;
+	TextButton undoButton, redoButton;
+	ScopedPointer<ValueTreeItem> rootItem;
+
+	UndoManager undoManager;
+
+	void timerCallback() override
+	{
+		undoManager.beginNewTransaction();
+	}
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ValueTreeDebugComponent);
+};
+
+//==============================================================================
+
+
 /** Display a separate desktop window for viewed and editing a value tree's
 property fields.
 */
@@ -268,327 +590,5 @@ private:
 	ScopedPointer<Editor> editor;
 };
 */
-
-
-//==============================================================================
-class ValueTreeItem : public TreeViewItem,
-	private ValueTree::Listener
-{
-public:
-	ValueTreeItem(const ValueTree& v, UndoManager& um)
-		: tree(v), undoManager(um)
-	{
-		tree.addListener(this);
-	}
-
-	String getUniqueName() const override
-	{
-		return tree["name"].toString();
-	}
-
-	bool mightContainSubItems() override
-	{
-		return tree.getNumChildren() > 0;
-	}
-
-	void paintItem(Graphics& g, int width, int height) override
-	{
-		// #TODO: add treeHasChanged 
-		g.setColour(Colours::black);
-		g.setFont(15.0f);
-	
-		g.drawText(tree["name"].toString() + ": " + tree["value"].toString(),
-			4, 0, width - 4, height,
-			Justification::centredLeft, true);
-	}
-
-	void itemOpennessChanged(bool isNowOpen) override
-	{
-		if (isNowOpen && getNumSubItems() == 0)
-			refreshSubItems();
-		else
-			clearSubItems();
-	}
-
-	var getDragSourceDescription() override
-	{
-		return "Drag Demo";
-	}
-
-	bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails& dragSourceDetails) override
-	{
-		return dragSourceDetails.description == "Drag Demo";
-	}
-
-	void itemDropped(const DragAndDropTarget::SourceDetails&, int insertIndex) override
-	{
-		moveItems(*getOwnerView(),
-			getSelectedTreeViewItems(*getOwnerView()),
-			tree, insertIndex, undoManager);
-	}
-
-	static void moveItems(TreeView& treeView, const Array<ValueTree>& items,
-		ValueTree newParent, int insertIndex, UndoManager& undoManager)
-	{
-		if (items.size() > 0)
-		{
-			ScopedPointer<XmlElement> oldOpenness(treeView.getOpennessState(false));
-
-			for (int i = items.size(); --i >= 0;)
-			{
-				ValueTree& v = items.getReference(i);
-
-				if (v.getParent().isValid() && newParent != v && !newParent.isAChildOf(v))
-				{
-					if (v.getParent() == newParent && newParent.indexOf(v) < insertIndex)
-						--insertIndex;
-
-					v.getParent().removeChild(v, &undoManager);
-					newParent.addChild(v, insertIndex, &undoManager);
-				}
-			}
-
-			if (oldOpenness != nullptr)
-				treeView.restoreOpennessState(*oldOpenness, false);
-		}
-	}
-
-	static Array<ValueTree> getSelectedTreeViewItems(TreeView& treeView)
-	{
-		Array<ValueTree> items;
-
-		const int numSelected = treeView.getNumSelectedItems();
-
-		for (int i = 0; i < numSelected; ++i)
-			if (const ValueTreeItem* vti = dynamic_cast<ValueTreeItem*> (treeView.getSelectedItem(i)))
-				items.add(vti->tree);
-
-		return items;
-	}
-
-private:
-	ValueTree tree;
-	UndoManager& undoManager;
-
-	void refreshSubItems()
-	{
-		clearSubItems();
-
-		for (int i = 0; i < tree.getNumChildren(); ++i)
-			addSubItem(new ValueTreeItem(tree.getChild(i), undoManager));
-	}
-
-	void valueTreePropertyChanged(ValueTree&, const Identifier&) override
-	{
-		repaintItem();
-	}
-
-	void valueTreeChildAdded(ValueTree& parentTree, ValueTree&) override { treeChildrenChanged(parentTree); }
-	void valueTreeChildRemoved(ValueTree& parentTree, ValueTree&, int) override { treeChildrenChanged(parentTree); }
-	void valueTreeChildOrderChanged(ValueTree& parentTree, int, int) override { treeChildrenChanged(parentTree); }
-	void valueTreeParentChanged(ValueTree&) override {}
-
-	void treeChildrenChanged(const ValueTree& parentTree)
-	{
-		if (parentTree == tree)
-		{
-			refreshSubItems();
-			treeHasChanged();
-			setOpen(true);
-		}
-	}
-
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ValueTreeItem)
-};
-
-
-//==============================================================================
-class ValueTreeDebugComponent : public Component,
-	public DragAndDropContainer,
-	private ButtonListener,
-	private Timer
-{
-public:
-	ValueTreeDebugComponent()
-		: undoButton("Undo"),
-		redoButton("Redo")
-	{
-		addAndMakeVisible(tree);
-
-		tree.setDefaultOpenness(true);
-		tree.setMultiSelectEnabled(true);
-		tree.setRootItem(rootItem = new ValueTreeItem(createRootValueTree(), undoManager));
-		tree.setColour(TreeView::backgroundColourId, Colours::white);
-
-		addAndMakeVisible(undoButton);
-		addAndMakeVisible(redoButton);
-		undoButton.addListener(this);
-		redoButton.addListener(this);
-
-		startTimer(500);
-		this->setSize(800, 800);
-		this->setVisible(true);
-	}
-
-	ValueTreeDebugComponent(ValueTree* inValueTree)
-		: undoButton("Undo"),
-		redoButton("Redo")
-	{
-		addAndMakeVisible(tree);
-
-		tree.setDefaultOpenness(true);
-		tree.setMultiSelectEnabled(true);
-		tree.setRootItem(rootItem = new ValueTreeItem(*inValueTree, undoManager));
-		tree.setColour(TreeView::backgroundColourId, Colours::white);
-
-		addAndMakeVisible(undoButton);
-		addAndMakeVisible(redoButton);
-		undoButton.addListener(this);
-		redoButton.addListener(this);
-
-		startTimer(500);
-		this->setSize(800, 800);
-		this->setVisible(true);		
-	}
-
-	ValueTreeDebugComponent(ValueTree inValueTree)
-		: undoButton("Undo"),
-		redoButton("Redo")
-	{
-		addAndMakeVisible(tree);
-
-		tree.setDefaultOpenness(true);
-		tree.setMultiSelectEnabled(true);
-		tree.setRootItem(rootItem = new ValueTreeItem(inValueTree, undoManager));
-		tree.setColour(TreeView::backgroundColourId, Colours::white);
-
-		addAndMakeVisible(undoButton);
-		addAndMakeVisible(redoButton);
-		undoButton.addListener(this);
-		redoButton.addListener(this);
-
-		startTimer(500);
-		this->setSize(800, 800);
-		this->setVisible(true);
-	}
-
-
-	~ValueTreeDebugComponent()
-	{
-		tree.setRootItem(nullptr);
-	}
-
-	void paint(Graphics& g) override
-	{
-		//fillTiledBackground(g);
-		g.fillAll(Colour(0xff303030));
-	}
-
-	void resized() override
-	{
-		Rectangle<int> r(getLocalBounds().reduced(8));
-
-		Rectangle<int> buttons(r.removeFromBottom(22));
-		undoButton.setBounds(buttons.removeFromLeft(100));
-		buttons.removeFromLeft(6);
-		redoButton.setBounds(buttons.removeFromLeft(100));
-
-		r.removeFromBottom(4);
-		tree.setBounds(r);
-	}
-
-	static ValueTree createTree(const String& desc)
-	{
-		ValueTree t("Root");
-		t.setProperty("name", desc, nullptr);
-		return t;
-	}
-
-	static ValueTree createRootValueTree()
-	{
-		ValueTree vt = createTree("Root Value Tree");
-
-		return vt;
-	}
-
-	static ValueTree createRandomTree(int& counter, int depth)
-	{
-		ValueTree t = createTree("Item " + String(counter++));
-
-		if (depth < 3)
-			for (int i = 1 + Random::getSystemRandom().nextInt(7); --i >= 0;)
-				t.addChild(createRandomTree(counter, depth + 1), -1, nullptr);
-
-		return t;
-	}
-
-	void deleteSelectedItems()
-	{
-		Array<ValueTree> selectedItems(ValueTreeItem::getSelectedTreeViewItems(tree));
-
-		for (int i = selectedItems.size(); --i >= 0;)
-		{
-			ValueTree& v = selectedItems.getReference(i);
-
-			if (v.getParent().isValid())
-				v.getParent().removeChild(v, &undoManager);
-		}
-	}
-
-	bool keyPressed(const KeyPress& key) override
-	{
-		if (key == KeyPress::deleteKey)
-		{
-			deleteSelectedItems();
-			return true;
-		}
-
-		if (key == KeyPress('z', ModifierKeys::commandModifier, 0))
-		{
-			undoManager.undo();
-			return true;
-		}
-
-		if (key == KeyPress('z', ModifierKeys::commandModifier | ModifierKeys::shiftModifier, 0))
-		{
-			undoManager.redo();
-			return true;
-		}
-
-		if (key == KeyPress('r'))
-		{
-			DBG("R key pressed");
-			rootItem->treeHasChanged();		
-			tree.repaint();
-		}
-
-		return Component::keyPressed(key);
-	}
-
-	void buttonClicked(Button* b) override
-	{
-		if (b == &undoButton)
-			undoManager.undo();
-		else if (b == &redoButton)
-			undoManager.redo();
-	}
-
-private:
-	TreeView tree;
-	TextButton undoButton, redoButton;
-	ScopedPointer<ValueTreeItem> rootItem;
-	
-	UndoManager undoManager;
-
-	void timerCallback() override
-	{
-		undoManager.beginNewTransaction();
-	}
-
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ValueTreeDebugComponent);
-};
-
-//==============================================================================
-
 
 #endif // VALUETREEWINDOW_H_INCLUDED

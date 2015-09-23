@@ -4,9 +4,11 @@
 ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerFilter)
 	: AudioProcessorEditor(ownerFilter)
 {
+	DBGM("In ZynthAudioProcessorEditor::ZynthAudioProcessorEditor() ");
 	processor = &ownerFilter;
 
 	// #NOTES: Change Is_Synth in AppConfig.h for Bitwig
+	// #TODO: CURRENT WORK SPOT - figure out why gain value in gui gets reset to 10db sometimes
     setName("ZynthMainComponent");
     addAndMakeVisible (muteButton = new AssociatedTextButton("Mute Button", processor->muteParam));
     muteButton->setTooltip ("Mute all audio");
@@ -15,7 +17,7 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
     muteButton->addListener (this);
 
 	
-    addAndMakeVisible (gainSlider = new AssociatedSlider ("Gain Slider", processor->audioGainParam, "dBC"));
+    addAndMakeVisible (gainSlider = new AssociatedSlider ("Gain Slider", processor->audioGainParam, "dB"));
     gainSlider->setTooltip ("Adjusts audio gain");
     gainSlider->setRange (-96, 12, 0.01);
     gainSlider->setSliderStyle (Slider::LinearHorizontal);
@@ -43,6 +45,7 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
 
 ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
 {
+	DBGM("In ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor() ");
     muteButton = nullptr;
     gainSlider = nullptr;
     bypassButton = nullptr;
@@ -53,11 +56,13 @@ ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
 //==============================================================================
 void ZynthAudioProcessorEditor::paint (Graphics& g)
 {
+	DBGM("In ZynthAudioProcessorEditor::paint() ");
     g.fillAll (Colour (0xff303030));
 }
 
 void ZynthAudioProcessorEditor::resized()
 {
+	DBGM("In ZynthAudioProcessorEditor::resized() ");
     muteButton->setBounds (10, 6, 74, 24);
     gainSlider->setBounds (158, 8, 150, 24);
     bypassButton->setBounds (10, 38, 74, 24);
@@ -66,17 +71,21 @@ void ZynthAudioProcessorEditor::resized()
 
 void ZynthAudioProcessorEditor::buttonClicked(Button* buttonThatWasClicked)
 {	
+	DBGM("In ZynthAudioProcessorEditor::buttonClicked() ");
 	 dynamic_cast<AssociatedButton*>(buttonThatWasClicked)->setAssociatedParameterValueNotifyingHost();
 }
 
 void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 {    		
+	DBGM("In ZynthAudioProcessorEditor::sliderValueChanged() ");
 	dynamic_cast<AssociatedSlider*>(sliderThatWasMoved)->setAssociatedParameterValueNotifyingHost();
 }
 
 
 void ZynthAudioProcessorEditor::createComponentsTree()
 {
+	//This really isn't needed, should just rebuild components every open'
+	DBGM("In ZynthAudioProcessorEditor::createComponentsTree() ");
 	/*parametersTree.setProperty("name", "Parameters", nullptr);
 	for (auto &param : getParameters())
 	{

@@ -25,17 +25,17 @@
 	ZynthAudioProcessor::ZynthAudioProcessor()
 		:rootTree("Root"), parametersTree("Parameters"), componentsTree("Components")
 	{			
+		DBGM("In ZynthAudioProcessor::ZynthAudioProcessor() ");
 		addParameter(audioGainParam = new DecibelParameter("Gain", true, 0.01f, -96.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.01f, "dB"));
  		addParameter(muteParam = new BooleanParameter("Mute", false));
 		addParameter(bypassParam = new BooleanParameter("Bypass", false));	
 
-		initializeValueTree();
-
-		
+		initializeValueTree();		
 	}
 
 	ZynthAudioProcessor::~ZynthAudioProcessor()
 	{
+		DBGM("In ZynthAudioProcessor::~ZynthAudioProcessor() ");
 		audioGainParam = nullptr;
 		muteParam = nullptr;
 		bypassParam = nullptr;
@@ -79,13 +79,14 @@
 	
 	void ZynthAudioProcessor::getStateInformation(MemoryBlock& destData)
 	{
+		DBGM("In ZynthAudioProcessor::getStateInformation() ");
 		// You should use this method to store your parameterSet in the memory block.
 		// You could do that either as raw data, or use the XML or ValueTree classes
 		// as intermediaries to make it easy to save and load complex data.
 		// You should use this method to store your parameters in the memory block.
 		// You could do that either as raw data, or use the XML or ValueTree classes
 		// as intermediaries to make it easy to save and load complex data.
-		DBG("In GET STATE");
+		
 
 		XmlElement rootXML(*(rootTree.createXml()));
 	//	rootTree.writeToStream()
@@ -128,7 +129,7 @@
 	{
 		// You should use this method to restore your parameters from this memory block,
 		// whose contents will have been created by the getStateInformation() call.
-		DBG("In SET STATE");
+		DBGM("In ZynthAudioProcessor::setStateInformation() ");
 
 		ScopedPointer<XmlElement> theNewXML = new XmlElement(*(this->getXmlFromBinary(data, sizeInBytes)));
 		ScopedPointer<XmlElement> theXML = this->getXmlFromBinary(data, sizeInBytes);
@@ -148,6 +149,7 @@
 
 	void ZynthAudioProcessor::initializeValueTree()
 	{
+		DBGM("In ZynthAudioProcessor::initializeValueTree() ");
 		createParametersTree();
 		rootTree.setProperty("name", "Root", nullptr);
 		
@@ -157,6 +159,7 @@
 
 	void ZynthAudioProcessor::createParametersTree()
 	{
+		DBGM("In ZynthAudioProcessor::createParametersTree() ");
 		parametersTree.setProperty("name", "Parameters", nullptr);
 		for (auto &param : getParameters())
 		{
@@ -172,6 +175,7 @@
 	//==============================================================================
 	void ZynthAudioProcessor::prepareToPlay(double inSampleRate, int samplesPerBlock)
 	{
+		DBGM("In ZynthAudioProcessor::prepareToPlay() ");
 		// Use this method as the place to do any pre-playback
 		// initialisation that you need..
 	
@@ -282,6 +286,7 @@
 
 	AudioProcessorEditor* ZynthAudioProcessor::createEditor()
 	{
+		DBGM("In ZynthAudioProcessor::createEditor() ");
 		return new ZynthAudioProcessorEditor(*this);
 	}
 
@@ -290,6 +295,7 @@
 	// This creates new instances of the plugin..
 	AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 	{
+		DBGM("In ::createPluginFilter() ");
 		return new ZynthAudioProcessor();
 	}
 

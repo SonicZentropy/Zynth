@@ -115,7 +115,8 @@
       @see Logger::outputDebugString
   */
   #define DBG(dbgtext)              MACRO_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf; tempDbgBuf << dbgtext; juce::Logger::outputDebugString (tempDbgBuf);)
-
+  // #ZENTROPY: changed the following JUCE code on 2015/09/22  
+#define DBGM(dbgtext)              MACRO_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf; tempDbgBuf << dbgtext; juce::Logger::outputDebugString (tempDbgBuf);)
   //==============================================================================
   /** This will always cause an assertion failure.
       It is only compiled in a debug build, (unless JUCE_LOG_ASSERTIONS is enabled for your build).
@@ -138,6 +139,7 @@
   // If debugging is disabled, these dummy debug and assertion macros are used..
 
   #define DBG(dbgtext)
+  #define DBGM(dbgtext)
   #define jassertfalse              MACRO_WITH_FORCED_SEMICOLON (juce_LogCurrentAssertion)
 
   #if JUCE_LOG_ASSERTIONS

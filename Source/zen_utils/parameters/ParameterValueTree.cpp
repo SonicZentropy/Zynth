@@ -31,6 +31,7 @@ ParameterValueTree::ParameterValueTree(String inName, Value parameterValueRefere
 	isSmoothed(inShouldBeSmoothed),
 	parameterValueTree(inName)
 {
+	DBGM("In ParameterValueTree::ParameterValueTree() ");
 	constructValueTree();
 	parameterValue.addListener(this);
 	defaultValue.addListener(this);
@@ -39,10 +40,13 @@ ParameterValueTree::ParameterValueTree(String inName, Value parameterValueRefere
 }
 
 ParameterValueTree::~ParameterValueTree()
-{ }
+{
+	DBGM("In ParameterValueTree::~ParameterValueTree() ");
+}
 
 void ParameterValueTree::constructValueTree()
 {
+	DBGM("In ParameterValueTree::constructValueTree() ");
 	//parameter value, defaultvalue, isSmoothed
 	
 	// #TODO: CURRENT WORK SPOT, trying to fix valuetree for serialization
@@ -67,11 +71,13 @@ void ParameterValueTree::constructValueTree()
 
 ValueTree ParameterValueTree::getValueTree()
 {
+	DBGM("In ParameterValueTree::getValueTree() ");
 	return parameterValueTree;
 }
 
 void ParameterValueTree::setFromInTree(ValueTree inTree)
 {
+	DBGM("In ParameterValueTree::setFromInTree() ");
 	//parameterName = inTree.getProperty("name");
 	parameterName = inTree.getType().toString();
 	DBG("Parameter Name: " + inTree.getType().toString());
@@ -87,6 +93,7 @@ void ParameterValueTree::setFromInTree(ValueTree inTree)
 
 void ParameterValueTree::valueChanged(Value& value)
 {
+	DBGM("In ParameterValueTree::valueChanged() ");
 	if(value == parameterValue)
 		parameterValueTree.getChildWithName("parameterValue").setProperty("value", value.getValue(), nullptr);
 	else if (value == defaultValue)

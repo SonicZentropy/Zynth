@@ -43,6 +43,7 @@ public:
 		midValue(inMidValue),
 		range(inMaxDecibels - inMinDecibels)
 	{
+		DBGM("In DecibelParameter::DecibelParameter() ");
 		requestUIUpdate = true;
 	}
 
@@ -52,11 +53,13 @@ public:
 	
 	virtual float convertDecibelsToLinearWithSetMidpoint(const float& decibels)
 	{
+		DBGM("In DecibelParameter::convertDecibelsToLinearWithSetMidpoint() ");
 		return DecibelConversions::mapDecibelsToProperNormalizedValue(decibels, minDecibels, maxDecibels, unityDecibels);
 	}
 
 	virtual float convertLinearWithSetMidpointToDecibels(const float& inValue)
 	{
+		DBGM("In DecibelParameter::convertLinearWithSetMidpointToDecibels() ");
 		return DecibelConversions::mapNormalizedValueToDecibels(inValue, minDecibels, maxDecibels);
 	}
 
@@ -71,18 +74,20 @@ public:
 	/// <returns> The smoothed raw decibel gain value. </returns>
 	virtual float getSmoothedRawDecibelGainValue()
 	{
+		
 		return DecibelConversions::decibelRangeGainToRawDecibelGain(getNextSmoothedValue(), minDecibels, maxDecibels);
 	}
 
 	virtual void setValueNotifyingHost(float newValue) override
-	{			
+	{		
+		DBGM("In DecibelParameter::setValueNotifyingHost() ");
 		float dbConvertedToLinear = convertDecibelsToLinearWithSetMidpoint(newValue);
 		ZenParameter::setValueNotifyingHost(dbConvertedToLinear);
 
 	}
 
 	virtual float getValueInDecibels() const
-	{
+	{		
 		return DecibelConversions::mapNormalizedValueToDecibels(getValue(), minDecibels, maxDecibels);
 	}
 
@@ -93,6 +98,7 @@ public:
 
 	virtual String getText(float inValue, int maxStringLength) const override
 	{
+		DBGM("In DecibelParameter::getText() ");
 		jassert(maxStringLength >= 0);
 		std::stringstream numberFormatter;
 		numberFormatter.precision(getDisplayPrecision());

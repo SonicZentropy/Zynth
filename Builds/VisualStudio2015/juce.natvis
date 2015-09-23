@@ -49,6 +49,23 @@ See http://github.com/jcredland/juce-toys
         <Item Name="children">object.referencedObject->children</Item>
     </Expand>
 </Type>
+  
+  <Type Name="juce::XmlElement">
+    <DisplayString> TagName={tagName.text.data,na} </DisplayString>
+    <Expand>
+        <Item Name="First Child Element">firstChildElement,na</Item>
+        <Item Name="Next List Item">nextListItem,na</Item>
+        <Item Name="Attributes">attributes,na</Item>
+    </Expand>
+</Type> 
+
+  <Type Name="juce::LinkedListPointer">
+    <DisplayString>JUCE Pointer</DisplayString>
+  </Type>
+  <Type Name="juce::XmlAttributeNode">
+    <DisplayString>XMLATTRIBUTENODE</DisplayString>
+  </Type>
+  
 
 
   <Type Name="Zen::DecibelParameter">
