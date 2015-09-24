@@ -75,6 +75,7 @@
 			BufferSampleProcesses::processGain(&leftData[i], &rightData[i], audioGainRaw);
 		}
 		
+		
 	}
 	
 	void ZynthAudioProcessor::getStateInformation(MemoryBlock& destData)

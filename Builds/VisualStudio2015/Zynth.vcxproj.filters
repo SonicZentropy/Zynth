@@ -10,6 +10,12 @@
     <Filter Include="Juce Modules">
       <UniqueIdentifier>{422C46B7-0467-2DB0-BF3C-16DFCAFD69AC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\jcf_debug">
+      <UniqueIdentifier>{1B0BB018-D50F-19E7-3551-352A2F70AED3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\jcf_debug\source">
+      <UniqueIdentifier>{F20D7C22-B12B-31E7-8D40-D1FC54845FC9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\juce_audio_basics">
       <UniqueIdentifier>{3247ED97-A75A-F50B-8CCC-46155E895806}</UniqueIdentifier>
     </Filter>
@@ -301,18 +307,6 @@
     <Filter Include="Zynth\Source\zen_utils\GUI">
       <UniqueIdentifier>{7358840d-78bd-44b8-99c8-da224d97f2cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Zynth\Source\toys">
-      <UniqueIdentifier>{dc44c957-1b7d-4edf-84e5-d2b44e79a482}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Zynth\Source\toys\jcf_debug">
-      <UniqueIdentifier>{917fcb5d-88f6-49a1-abc4-eb56c3ad4bf3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Zynth\Source\toys\other">
-      <UniqueIdentifier>{53421b19-65a8-4cdd-91b5-8d5af49081bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Zynth\Source\toys\jcf_debug\source">
-      <UniqueIdentifier>{b007448c-a778-46de-86a1-ce63271011a2}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\ZynthAudioProcessorEditor.cpp">
@@ -320,6 +314,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\ZynthAudioProcessor.cpp">
       <Filter>Zynth\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\modules\jcf_debug\source\credland_component_debugger.cpp">
+      <Filter>Juce Modules\jcf_debug\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\modules\jcf_debug\source\font_and_colour_designer.cpp">
+      <Filter>Juce Modules\jcf_debug\source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
       <Filter>Juce Modules\juce_audio_basics\buffers</Filter>
@@ -1362,6 +1362,9 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_extra\native\juce_win32_WebBrowserComponent.cpp">
       <Filter>Juce Modules\juce_gui_extra\native</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\modules\jcf_debug\jcf_debug.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\juce_audio_basics.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
@@ -1426,6 +1429,21 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\ZynthAudioProcessor.h">
       <Filter>Zynth\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\jcf_debug\source\buffer_visualiser.h">
+      <Filter>Juce Modules\jcf_debug\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\jcf_debug\source\credland_component_debugger.h">
+      <Filter>Juce Modules\jcf_debug\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\jcf_debug\source\font_and_colour_designer.h">
+      <Filter>Juce Modules\jcf_debug\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\jcf_debug\source\value_tree_editor.h">
+      <Filter>Juce Modules\jcf_debug\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\jcf_debug\jcf_debug.h">
+      <Filter>Juce Modules\jcf_debug</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h">
       <Filter>Juce Modules\juce_audio_basics\buffers</Filter>
@@ -2758,6 +2776,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\JuceLibraryCode\modules\jcf_debug\juce_module_info">
+      <Filter>Juce Modules\jcf_debug</Filter>
+    </None>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_basics\juce_module_info">
       <Filter>Juce Modules\juce_audio_basics</Filter>
     </None>

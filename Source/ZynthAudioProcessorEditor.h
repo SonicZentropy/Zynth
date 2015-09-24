@@ -23,6 +23,7 @@
 
 
 using namespace Zen;
+using jcf::ValueTreeEditor;
 
 /// <summary> GUI Editor for zynth audio processor. </summary>
 class ZynthAudioProcessorEditor  : public AudioProcessorEditor,
@@ -54,7 +55,7 @@ private:
     ScopedPointer<AssociatedTextButton> bypassButton;
 	
 	ScopedPointer<ZenDebugWindow> zWin;
-	
+	ScopedPointer<ValueTreeEditor> vtEditor;
 	
 
     //==============================================================================

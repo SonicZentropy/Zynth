@@ -1,5 +1,6 @@
 #include "ZynthAudioProcessorEditor.h"
 
+
 //==============================================================================
 ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerFilter)
 	: AudioProcessorEditor(ownerFilter)
@@ -35,7 +36,11 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
 	createComponentsTree();
 	
 	zWin = new ZenDebugWindow(processor->getRootTree());
-	//zWin = new ZenDebugWindow();
+	zWin = new ZenDebugWindow();
+/*
+	vtEditor = new ValueTreeEditor();
+	ValueTree vtree(processor->getRootTree());
+	vtEditor->setSource(vtree);*/
 
 
     this->setSize (400, 400);
@@ -51,12 +56,13 @@ ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
     bypassButton = nullptr;
 
 	zWin = nullptr;
+//	vtEditor = nullptr;
 }
 
 //==============================================================================
 void ZynthAudioProcessorEditor::paint (Graphics& g)
 {
-	DBGM("In ZynthAudioProcessorEditor::paint() ");
+
     g.fillAll (Colour (0xff303030));
 }
 
