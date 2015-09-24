@@ -2812,4 +2812,7 @@
       <Filter>Juce Library Code</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="juce.natvis" />
+  </ItemGroup>
 </Project>

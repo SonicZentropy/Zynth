@@ -65,18 +65,40 @@ See http://github.com/jcredland/juce-toys
   <Type Name="juce::XmlAttributeNode">
     <DisplayString>XMLATTRIBUTENODE</DisplayString>
   </Type>
-  
+
+  <Type Name="juce::var::ValueUnion">
+    <DisplayString>ValueSource- (double) {doubleValue,na}</DisplayString>
+    <Expand>
+      <Item Name="Value">intValue,na</Item>
+    </Expand>
+  </Type>
 
 
   <Type Name="Zen::DecibelParameter">
-    <DisplayString>V: {value}, U: {requestUIUpdate}</DisplayString>
+    <DisplayString>Value: {value,na}</DisplayString>
     <Expand>
-      <Item Name="Value">value</Item>
+      <Item Name="Value">value,na</Item>
       <Item Name="Min Decibels">minDecibels</Item>
       <Item Name="Max Decibels">maxDecibels</Item>
       <Item Name="Req UI Update">requestUIUpdate</Item>
     </Expand>
   </Type>
+
+<!-- 
+  <Type Name="Zen::FloatParameter">
+    <DisplayString>FParm</DisplayString>
+    <Expand>
+      <Item Name="Value">value,na</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="Zen::ZenParameter">
+    <DisplayString>ZENPARM</DisplayString>
+    <Expand>
+      <Item Name="Value">value,na</Item>
+      <Item Name="Req UI Update">requestUIUpdate,na</Item>
+    </Expand>
+  </Type> -->
 
  
   <Type Name="Zen::AssociatedSlider">

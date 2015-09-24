@@ -106,6 +106,7 @@ public:
 		String result = numberFormatter.str();
 		result.append( " "+getLabel(), 20);
 		
+		
 		return (String(getValueInDecibels()) + " " + String(unitLabel));
 	}
 

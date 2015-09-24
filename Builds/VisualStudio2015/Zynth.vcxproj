@@ -1933,6 +1933,9 @@
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="juce.natvis" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

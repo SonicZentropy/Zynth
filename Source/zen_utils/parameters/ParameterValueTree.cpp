@@ -94,6 +94,8 @@ void ParameterValueTree::setFromInTree(ValueTree inTree)
 void ParameterValueTree::valueChanged(Value& value)
 {
 	DBGM("In ParameterValueTree::valueChanged() ");
+	// #TODO: check to see if parameterValueTree is null!
+	if (!parameterValueTree.isValid()) return;
 	if(value == parameterValue)
 		parameterValueTree.getChildWithName("parameterValue").setProperty("value", value.getValue(), nullptr);
 	else if (value == defaultValue)
