@@ -14,25 +14,10 @@ ZenDebugWindow::ZenDebugWindow ()
 	setSize(800, 800);
 }
 
-/*
-ZenDebugWindow::ZenDebugWindow(ValueTreeDebugComponent* inComponent)
-	:DocumentWindow("Zen Debug Window", Colours::lightgrey, DocumentWindow::allButtons)
-{
-	setResizable(true, false);
-	setUsingNativeTitleBar(true);
-	centreWithSize(getWidth(), getHeight());
-	setVisible(true);
-
-	valueTreeDebugComponent = inComponent;
-	setContentNonOwned(valueTreeDebugComponent, true);
-	setSize(800, 800);
-}*/
-
-
 ZenDebugWindow::ZenDebugWindow(ValueTree* inValueTree)
 	:DocumentWindow("Zen Debug Window", Colours::lightgrey, DocumentWindow::allButtons)
 {
-	DBGM("In ZenDebugWindow::ZenDebugWindow() ");
+	DBGM("In ZenDebugWindow::ZenDebugWindow(ValueTree* inValueTree) ");
 	setResizable(true, false);
 	setUsingNativeTitleBar(true);
 	centreWithSize(getWidth(), getHeight());
@@ -47,7 +32,8 @@ ZenDebugWindow::ZenDebugWindow(ValueTree* inValueTree)
 ZenDebugWindow::ZenDebugWindow(ValueTree inValueTree)
 	:DocumentWindow("Zen Debug Window", Colours::lightgrey, DocumentWindow::allButtons)
 {
-	DBGM("In ZenDebugWindow::ZenDebugWindow() ");
+	DBGM("In ZenDebugWindow::ZenDebugWindow(ValueTree inValueTree) ");
+	
 	setResizable(true, false);
 	setUsingNativeTitleBar(true);
 	centreWithSize(getWidth(), getHeight());
@@ -73,5 +59,5 @@ void ZenDebugWindow::closeButtonPressed()
 
 void ZenDebugWindow::addValueTree(ValueTree inValueTree)
 {
-	DBGM("In ZenDebugWindow::addValueTree() ");
+	DBGM("In ZenDebugWindow::addValueTree(inValueTree) ");
 }

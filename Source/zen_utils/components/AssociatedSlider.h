@@ -27,11 +27,21 @@ namespace Zen
 	class AssociatedSlider : public Slider, public AssociatedComponent
 	{
 	public:
+
 		AssociatedSlider(const String& componentName, ZenParameter* associatedParam, const String& inLabel = "")
+			: Slider(componentName),
+			Component(componentName),
+			AssociatedComponent(associatedParam, inLabel)
+		{		
+			setValue(associatedParam->getValueForGUIComponent());
+		}
+
+		AssociatedSlider(const String& componentName, ZenParameter* associatedParam, const float& minimumOfRange, const float& maximumOfRange, const float& inStep = 0.01f, const String& inLabel = "")
 			: Slider(componentName),
 			  Component(componentName),
 			  AssociatedComponent(associatedParam, inLabel)			 
 		{
+			setRange(minimumOfRange, maximumOfRange, inStep);
 			setValue( associatedParam->getValueForGUIComponent() );			
 		}
 
@@ -43,6 +53,7 @@ namespace Zen
 
 		void setAssociatedParameterValueNotifyingHost() override
 		{
+			// #TODO: OVERRIDE THIS getValue() CALL
 			associatedParameter->setValueNotifyingHost(getValue());
 		}
 

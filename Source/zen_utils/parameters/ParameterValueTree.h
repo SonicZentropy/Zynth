@@ -35,12 +35,6 @@ public:
 	void setFromInTree(ValueTree inTree);
 	virtual void valueChanged(Value& value) override;
 protected:
-	String parameterName;
-	String unitLabel;
-	String paramType;
-	Value parameterValue;
-	Value defaultValue;
-	Value isSmoothed;
 	ValueTree parameterValueTree;
 
 

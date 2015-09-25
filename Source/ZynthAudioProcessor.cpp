@@ -23,14 +23,17 @@
 
 //==============================================================================
 	ZynthAudioProcessor::ZynthAudioProcessor()
-		:rootTree("Root"), parametersTree("Parameters"), componentsTree("Components")
+		:rootTree("Root"), parametersTree("Parameters")
 	{			
 		DBGM("In ZynthAudioProcessor::ZynthAudioProcessor() ");
 		addParameter(audioGainParam = new DecibelParameter("Gain", true, 0.01f, -96.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.01f, "dB"));
  		addParameter(muteParam = new BooleanParameter("Mute", false));
 		addParameter(bypassParam = new BooleanParameter("Bypass", false));	
+		rootTree = createParameterTree();
+		
+		debugTreeEditor = new jcf::ValueTreeEditor();
+		debugTreeEditor->setSource(rootTree);
 
-		initializeValueTree();		
 	}
 
 	ZynthAudioProcessor::~ZynthAudioProcessor()
@@ -88,41 +91,15 @@
 		// You could do that either as raw data, or use the XML or ValueTree classes
 		// as intermediaries to make it easy to save and load complex data.
 		
+		
+		XmlElement rootXML("Root");
 
-		XmlElement rootXML(*(rootTree.createXml()));
-	//	rootTree.writeToStream()
-	//	rootTree.readFromData()
-		DBG("PRE-GETSTATE================================================");
-		DBG("getState: Root Tree XMLString:\n" + rootTree.toXmlString());
-		DBG("POST-GETSTATE================================================");
-		
-		//XmlElement root("Root");
-	//	XmlElement* el;
-		
-/*
-		for (auto &theParam : managedParameters)
+		for (auto &param : getParameters())
 		{
-			dynamic_cast<ZenParameter*>(theParam)->writeXML(root);
-		}*/
-
-		/*
-		el = root.createNewChildElement("Bypass");
-		el->addTextElement(String(masterBypassParam->getValue()));
-		el = root.createNewChildElement("StereoWidth");
-		el->addTextElement(String(stereoWidthParam->getValue()));
-		el = root.createNewChildElement("MuteAudio");
-		el->addTextElement(String(muteAudioParam->getValue()));
-		el = root.createNewChildElement("Gain");
-		el->addTextElement(String(audioGainParam->getValue()));
-		el = root.createNewChildElement("InvertLeft");
-		el->addTextElement(String(invertLeftParam->getValue()));
-		el = root.createNewChildElement("InvertRight");
-		el->addTextElement(String(invertRightParam->getValue()));
-		el = root.createNewChildElement("LockGain");
-		el->addTextElement(String(lockGainParam->getValue()));
-		el = root.createNewChildElement("StereoPan");
-		el->addTextElement(String(stereoPanParam->getValue()));
-		*/
+			ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
+			zenParam->writeToXML(&rootXML);
+		}
+		DBG(rootXML.createDocument("", false, false, "UTF-8", 120));
 		copyXmlToBinary(rootXML, destData);
 	}
 
@@ -132,45 +109,33 @@
 		// whose contents will have been created by the getStateInformation() call.
 		DBGM("In ZynthAudioProcessor::setStateInformation() ");
 
-		ScopedPointer<XmlElement> theNewXML = new XmlElement(*(this->getXmlFromBinary(data, sizeInBytes)));
+		
 		ScopedPointer<XmlElement> theXML = this->getXmlFromBinary(data, sizeInBytes);
-		DBG("PRE-SET_STATE================================================");
-		DBG("setState: XMLString:\n" + theXML->createDocument("", false, false, "UTF-8", 100));
-		DBG("POST-SET_STATE================================================");
+		DBG(theXML->createDocument("", false, false, "UTF-8", 120));
+
 		if (theXML != nullptr)
 		{						
-			rootTree = rootTree.fromXml(*theXML);
 			for (auto &param : getParameters())
 			{
 				ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
-				zenParam->setAssociatedValueTree(rootTree);
+				zenParam->setFromXML(theXML);
 			}
 		}
 	}
 
-	void ZynthAudioProcessor::initializeValueTree()
+	ValueTree ZynthAudioProcessor::createParameterTree()
 	{
-		DBGM("In ZynthAudioProcessor::initializeValueTree() ");
-		createParametersTree();
-		rootTree.setProperty("name", "Root", nullptr);
-		
-		rootTree.addChild(parametersTree, 0, nullptr);
-	//	rootTree.addChild(componentsTree, 1, nullptr);
-	}
+		ValueTree valTree("Parameters");
 
-	void ZynthAudioProcessor::createParametersTree()
-	{
-		DBGM("In ZynthAudioProcessor::createParametersTree() ");
-		parametersTree.setProperty("name", "Parameters", nullptr);
 		for (auto &param : getParameters())
 		{
 			ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
-			parametersTree.addChild(zenParam->getAssociatedValueTree(), -1, nullptr);
+			valTree.addChild(zenParam->getValueTree(), -1, nullptr);
 		}
+
+		
+		return valTree;
 	}
-
-	
-
 
 #pragma region overrides
 	//==============================================================================

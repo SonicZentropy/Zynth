@@ -19,11 +19,12 @@
 #include "JuceHeader.h"
 #include "ZynthAudioProcessor.h"
 #include "zen_utils/ZenHeader.h"
-#include "zen_utils/GUI/ZenDebugWindow.h"
+#include "debug/source/credland_component_debugger.h"
+
 
 
 using namespace Zen;
-using jcf::ValueTreeEditor;
+using jcf::ComponentDebugger;
 
 /// <summary> GUI Editor for zynth audio processor. </summary>
 class ZynthAudioProcessorEditor  : public AudioProcessorEditor,
@@ -54,8 +55,8 @@ private:
     ScopedPointer<AssociatedSlider> gainSlider;
     ScopedPointer<AssociatedTextButton> bypassButton;
 	
-	ScopedPointer<ZenDebugWindow> zWin;
-	ScopedPointer<ValueTreeEditor> vtEditor;
+	ScopedPointer<ComponentDebugger> compDebugger;
+//	ScopedPointer<ValueTreeEditor> debugTreeEditor;
 	
 
     //==============================================================================

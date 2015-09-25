@@ -53,7 +53,7 @@ void ParameterValueTree::constructValueTree()
 	parameterValueTree.setProperty("name", parameterName, nullptr);
 	
 	ValueTree valueChild("parameterValue");
-	valueChild.setProperty("name", "Value", nullptr);
+	valueChild.setProperty("name", "Parameter Value", nullptr);
 	valueChild.setProperty("value", parameterValue, nullptr);
 	parameterValueTree.addChild(valueChild, -1, nullptr);
 
@@ -96,7 +96,7 @@ void ParameterValueTree::valueChanged(Value& value)
 	DBGM("In ParameterValueTree::valueChanged() ");
 	// #TODO: check to see if parameterValueTree is null!
 	if (!parameterValueTree.isValid()) return;
-	if(value == parameterValue)
+	if(value.)
 		parameterValueTree.getChildWithName("parameterValue").setProperty("value", value.getValue(), nullptr);
 	else if (value == defaultValue)
 		parameterValueTree.getChildWithName("defaultParameterValue").setProperty("value", value.getValue(), nullptr);

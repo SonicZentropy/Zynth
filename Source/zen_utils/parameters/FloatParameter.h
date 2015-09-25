@@ -49,8 +49,7 @@ public:
 		: ZenParameter(inParameterName, inMinValue, inMaxValue, inDefaultValue, inStep, inShouldBeSmoothed, smoothingTime, inLabel)
 	{
 		DBGM("In FloatParameter::FloatParameter() ");
-		range = maxValue - minValue;
-		jassert(range >= 0);
+		range = inMaxValue - inMinValue;
 	}
 
 	virtual ~FloatParameter()

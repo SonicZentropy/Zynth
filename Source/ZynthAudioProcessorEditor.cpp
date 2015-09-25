@@ -19,12 +19,14 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
 
 	
     addAndMakeVisible (gainSlider = new AssociatedSlider ("Gain Slider", processor->audioGainParam, "dB"));
+	// #TODO: SET VALUE HERE
     gainSlider->setTooltip ("Adjusts audio gain");
     gainSlider->setRange (-96, 12, 0.01);
     gainSlider->setSliderStyle (Slider::LinearHorizontal);
     gainSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
 	gainSlider->setTextValueSuffix("dB");
 	gainSlider->setDoubleClickReturnValue(true, 0.0);
+	//gainSlider->setValue(processor->)
 	gainSlider->addListener (this);
 	
     addAndMakeVisible (bypassButton = new AssociatedTextButton ("Bypass Button", processor->bypassParam));
@@ -33,19 +35,11 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
 	bypassButton->setClickingTogglesState(true);
     bypassButton->addListener (this);
 
-	createComponentsTree();
-	
-	zWin = new ZenDebugWindow(processor->getRootTree());
-	zWin = new ZenDebugWindow();
-/*
-	vtEditor = new ValueTreeEditor();
-	ValueTree vtree(processor->getRootTree());
-	vtEditor->setSource(vtree);*/
-
-
     this->setSize (400, 400);
-	startTimer(50); // Start timer poll with 50ms rate
 
+//	compDebugger = new ComponentDebugger(this);
+
+	startTimer(50); // Start timer poll with 50ms rate
 }
 
 ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
@@ -54,9 +48,8 @@ ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
     muteButton = nullptr;
     gainSlider = nullptr;
     bypassButton = nullptr;
-
-	zWin = nullptr;
-//	vtEditor = nullptr;
+		
+	compDebugger = nullptr;
 }
 
 //==============================================================================
@@ -83,23 +76,11 @@ void ZynthAudioProcessorEditor::buttonClicked(Button* buttonThatWasClicked)
 
 void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 {    		
-	DBGM("In ZynthAudioProcessorEditor::sliderValueChanged() ");
+	AssociatedSlider* tempSlider = dynamic_cast<AssociatedSlider*>(sliderThatWasMoved);
+	DBGM("In ZynthAudioProcessorEditor::sliderValueChanged() with: " + tempSlider->getName());
 	dynamic_cast<AssociatedSlider*>(sliderThatWasMoved)->setAssociatedParameterValueNotifyingHost();
 }
 
-
-void ZynthAudioProcessorEditor::createComponentsTree()
-{
-	//This really isn't needed, should just rebuild components every open'
-	DBGM("In ZynthAudioProcessorEditor::createComponentsTree() ");
-	/*parametersTree.setProperty("name", "Parameters", nullptr);
-	for (auto &param : getParameters())
-	{
-		ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
-		parametersTree.addChild(zenParam->getAssociatedValueTree(), -1, nullptr);
-	}*/
-	//this->
-}
 
 void ZynthAudioProcessorEditor::timerCallback()
 {

@@ -18,8 +18,9 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "JuceHeader.h"
-#include "zen_utils\parameters\DecibelParameter.h"
-#include "zen_utils\parameters\BooleanParameter.h"
+#include "zen_utils/parameters/DecibelParameter.h"
+#include "zen_utils/parameters/BooleanParameter.h"
+//#include "zen_utils/GUI/ZenArrayDebugger.h"
 
 //==============================================================================
 /**
@@ -81,7 +82,7 @@ public:
 	float getCurrSampleRate() const { return currSampleRate; }
 	void setCurrSampleRate(float inValue) { currSampleRate = inValue; }
 
-	void createParametersTree();
+
 
 	ValueTree getRootTree() { return rootTree; }
 
@@ -90,10 +91,15 @@ private:
 	float currSampleRate = 44100.0f;
 	ValueTree rootTree;
 	ValueTree parametersTree;
-	ValueTree componentsTree;
+//	ValueTree componentsTree;
+	ScopedPointer<jcf::ValueTreeEditor> debugTreeEditor;
+//	ScopedPointer<Zen::ZenArrayDebugger> arrayDebugger;
+
+	ValueTree createParameterTree();
+
 	//==============================================================================
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ZynthAudioProcessor)
-		void initializeValueTree();
+	
 };
 
 

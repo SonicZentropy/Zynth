@@ -1413,12 +1413,6 @@
     <ClCompile Include="..\..\Source\zen_utils\processing\BufferSampleProcesses.cpp">
       <Filter>Zynth\Source\zen_utils\processing</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\zen_utils\GUI\ZenDebugWindow.cpp">
-      <Filter>Zynth\Source\zen_utils\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\zen_utils\parameters\ParameterValueTree.cpp">
-      <Filter>Zynth\Source\zen_utils\parameters</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\zen_utils\components\ComponentValueTree.cpp">
       <Filter>Zynth\Source\zen_utils\components</Filter>
     </ClCompile>
@@ -2762,17 +2756,14 @@
     <ClInclude Include="..\..\Source\zen_utils\utilities\ZenUtils.h">
       <Filter>Zynth\Source\zen_utils\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\zen_utils\GUI\ZenDebugWindow.h">
-      <Filter>Zynth\Source\zen_utils\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\zen_utils\utilities\ValueTreeWindowComponent.h">
       <Filter>Zynth\Source\zen_utils\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\zen_utils\parameters\ParameterValueTree.h">
-      <Filter>Zynth\Source\zen_utils\parameters</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\zen_utils\components\ComponentValueTree.h">
       <Filter>Zynth\Source\zen_utils\components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\zen_utils\GUI\ZenArrayDebugger.h">
+      <Filter>Zynth\Source\zen_utils\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

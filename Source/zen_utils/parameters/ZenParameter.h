@@ -26,9 +26,9 @@
 
 namespace Zen {
 using namespace juce;
-class ZenParameter : public AudioProcessorParameter
+class ZenParameter : public AudioProcessorParameter, public ReferenceCountedObject, public ValueListener//, public ValueTree
 {
-	
+
 public:
 	// #ENHANCE: add copy constructors
 
@@ -42,7 +42,10 @@ public:
 	{
 		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(0.5);
-		paramValueTree = new ParameterValueTree(name, value, defaultValue, shouldBeSmoothed);
+		paramValueTree = new ValueTree(this->name);
+		value.addListener(this);
+		defaultValue.addListener(this);
+		setValueTree();
 
 	}
 
@@ -51,7 +54,10 @@ public:
 	{
 		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(inDefaultValue);
-		paramValueTree = new ParameterValueTree(name, value, defaultValue, shouldBeSmoothed);
+		paramValueTree = new ValueTree(this->name);
+		value.addListener(this);
+		defaultValue.addListener(this);
+		setValueTree();
 	}
 
 	ZenParameter(const String &inName, const float& inMinValue, const float& inMaxValue, const float& inDefaultValue, 
@@ -61,10 +67,57 @@ public:
 	{
 		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(inDefaultValue);
-		paramValueTree = new ParameterValueTree(name, value, defaultValue, shouldBeSmoothed);
+		paramValueTree = new ValueTree(this->name);
+		value.addListener(this);
+		defaultValue.addListener(this);
+		setValueTree();
 	}	
 
 	virtual ~ZenParameter() {};
+
+	virtual void writeToXML(XmlElement* inXML)
+	{
+		// #TODO: fix scope of thisXML (make sure it's freed)
+		XmlElement* thisXML;
+		thisXML = inXML->createNewChildElement(this->name);
+		thisXML->setAttribute("parameterValue", getValue());
+		thisXML->setAttribute("defaultValue", getDefaultValue());
+		thisXML->setAttribute("isSmoothed", getShouldBeSmoothed());
+	}
+
+	virtual void setFromXML(XmlElement* inXML)
+	{
+		DBGM("In ZenParameter::setFromXML(inXML) ");
+		//XmlElement thisXML(*(inXML.getChildByName(this->name)));
+		setValue(inXML->getChildByName(this->name)->getDoubleAttribute("parameterValue", -9876.5));
+		setDefaultValue(inXML->getChildByName(this->name)->getDoubleAttribute("defaultValue", -9876.5));
+		setShouldBeSmoothed(inXML->getChildByName(this->name)->getBoolAttribute("isSmoothed", false));
+	}
+
+	virtual ValueTree getValueTree()
+	{
+		return *paramValueTree;
+	}
+
+	virtual void setValueTree()
+	{
+		paramValueTree->removeAllChildren(nullptr);
+		paramValueTree->removeAllProperties(nullptr);
+		
+		
+		paramValueTree->setProperty("parameterValue", getValue(), nullptr);
+		paramValueTree->setProperty("defaultValue", getDefaultValue(), nullptr);
+		paramValueTree->setProperty("isSmoothed", getShouldBeSmoothed(), nullptr);
+		
+	}
+
+
+	virtual void valueChanged(Value& value) override
+	{
+		DBGM("In ZenParameter::valueChanged(value) ");
+		setValueTree();
+	}
+
 
 	virtual void setValue(float inValue) override
 	{
@@ -82,35 +135,6 @@ public:
 		jassert(processor != nullptr && getParameterIndex() >= 0);
 		processor->setParameterNotifyingHost(getParameterIndex(), inValue);
 		requestUIUpdate = false;  //set this to false because change came from GUI
-	}
-
-	ValueTree getAssociatedValueTree()
-	{
-		DBGM("In ZenParameter::getAssociatedValueTree() ");
-		return paramValueTree->getValueTree();
-	}
-
-	void setAssociatedValueTree(ValueTree inTree)
-	{
-		DBGM("In ZenParameter::setAssociatedValueTree() ");
-		// get parameter name 
-		ValueTree tempTree = inTree.getChildWithName("Parameters").getChildWithName(name);
-		paramValueTree->setFromInTree(tempTree);
-		updateFromValueTree();
-		requestUIUpdate = true;
-	}
-
-	void updateFromValueTree()
-	{
-		DBGM("In ZenParameter::updateFromValueTree() ");
-		// #TODO: change GUI load from using default parms to using the current parm value
-		// #TODO: find way to refresh debug window on change
-		// #TODO: refresh GUI when opening
-		
-		 Value tempValue(paramValueTree->getValueTree().getChildWithName("parameterValue").getProperty("value") );
-		 value.setValue(tempValue);
-		defaultValue = paramValueTree->getValueTree().getChildWithName("defaultParameterValue").getProperty("value");
-		shouldBeSmoothed = paramValueTree->getValueTree().getChildWithName("isSmoothed").getProperty("value");
 	}
 
 	virtual bool needsUIUpdate()
@@ -207,32 +231,22 @@ public:
 		return result;
 	}
 
-	virtual void writeXML(XmlElement &xmlElem)
-	{
-		DBGM("In ZenParameter::writeXML() ");
-		//el = root.createNewChildElement("Bypass");
-		//el->addTextElement(String(masterBypassParam->getValue()));
-		xmlElem.setAttribute(name, getValue());
-		xmlElem.createNewChildElement(name)->addTextElement(String(getValue()));
-	}
-
-	virtual void readXML(const XmlElement* xmlState)
-	{
-		DBGM("In ZenParameter::readXML() ");
-		setValue(xmlState->getDoubleAttribute(name, getDefaultValue()));
-	}
-
 #pragma region Getters/Setters
 
 	virtual String getName() const { return name; };
 
 	virtual float getValue() const override { return value.getValue(); }
 
-	virtual float getMinValue() const {	return minValue; }
+	virtual float getMinValue() const {	return minValue.getValue(); }
 
-	virtual float getMaxValue() const {	return maxValue; }
+	virtual float getMaxValue() const {	return maxValue.getValue(); }
 
-	virtual float getDefaultValue() const override { return defaultValue; }
+	virtual float getDefaultValue() const override { return defaultValue.getValue(); }
+
+	virtual void setDefaultValue(float inValue)
+	{
+		defaultValue = inValue;
+	}
 
 	virtual bool getBoolFromValue() const
 	{		
@@ -275,15 +289,17 @@ public:
 
 protected:
 	Value value;
-	ScopedPointer<ParameterValueTree> paramValueTree;
+	//ScopedPointer<ParameterValueTree> paramValueTree;
+	ScopedPointer<ValueTree> paramValueTree;
 	
-	float defaultValue=0.0, minValue=0.0, maxValue=1.0, intervalStep= 0.01f;
+	Value defaultValue, minValue, maxValue;
+	float intervalStep;
 	unsigned int precision=2;
 	String name, unitLabel = "", description = "";
 	bool requestUIUpdate = true;
 
 	// Smoothing fields
-	double currentSmoothedValue = 0, stepsToTarget = 0, target = 0, step = 0, countdown = 0, smoothTime = 0.01;
+	double currentSmoothedValue = 0, stepsToTarget = 0, target = 0, step = 0, countdown = 0, smoothTime;
 	bool shouldBeSmoothed = false;
 
 	//==============================================================================

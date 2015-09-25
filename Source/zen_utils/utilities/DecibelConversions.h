@@ -81,7 +81,9 @@ namespace Zen
 		static float mapDecibelsToProperNormalizedValue(const float& inDecibels, const float& decibelMinimum, const float& decibelMaximum, const float& decibelValueForMidpoint)
 		{
 			jassert(inDecibels >= decibelMinimum && inDecibels <= decibelMaximum && decibelValueForMidpoint >= decibelMinimum && decibelValueForMidpoint <= decibelMaximum);
-			return ZenParamUtils::convertValueToWarpedLinearBasedOnMidpoint(inDecibels, decibelMinimum, decibelMaximum, decibelValueForMidpoint);
+			float result = ZenParamUtils::convertValueToWarpedLinearBasedOnMidpoint(inDecibels, decibelMinimum, decibelMaximum, decibelValueForMidpoint);
+			DBGM("In DecibelConversions::mapDecibelsToProperNormalizedValue(inDecibels, decibelMinimum, decibelMaximum, decibelValueForMidpoint) with result: " + String(result));
+			return result;
 		}
 
 		/// <summary>Map a normalized, linearly scaled input value between 0.0 and 1.0 to decibels in a given range (ex: -96 to 12)</summary>
@@ -96,7 +98,7 @@ namespace Zen
 		static float mapNormalizedValueToDecibels(const float& inValue, const float& decibelMinimum, const float& decibelMaximum)
 		{
 			jassert(inValue >= -0.00001f && inValue <= 1.00001f);
-			return ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(getClamped(inValue, 0, 1), decibelMinimum, decibelMaximum, 0.0f);
+			return ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(inValue, decibelMinimum, decibelMaximum, 0.0f);
 		}
 
 		/// <summary>Takes a normalized gain value representing an arbitrary Decibel range and converts it to a raw decibel gain value where 1.0 = 0dB</summary>
@@ -107,7 +109,7 @@ namespace Zen
 		static float decibelRangeGainToRawDecibelGain(const float& normGainValue, const float& minusInfinityDb, const float& maximumDecibels)
 		{
 			jassert(normGainValue >= -0.00001f && normGainValue <= 1.00001f);
-			auto valueInDecibels = ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(getClamped(normGainValue, 0, 1), minusInfinityDb, maximumDecibels, 0.0);
+			auto valueInDecibels = ZenParamUtils::convertMidpointWarpedLinearNormalizedValueToRawRangeValue(normGainValue, minusInfinityDb, maximumDecibels, 0.0);
 			return decibelsToDBGain(valueInDecibels, minusInfinityDb);
 		}
 

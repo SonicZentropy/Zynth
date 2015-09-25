@@ -50,11 +50,40 @@ public:
 	virtual ~DecibelParameter()
 	{
 	}	
+
+	virtual void writeToXML(XmlElement* inXML) override
+	{
+		// #TODO: fix scope of thisXML (make sure it's freed)
+		XmlElement* thisXML;
+		thisXML = inXML->createNewChildElement(this->name);
+		thisXML->setAttribute("parameterValue", getValue());
+		thisXML->setAttribute("defaultValue", getDefaultValue());
+		thisXML->setAttribute("isSmoothed", getShouldBeSmoothed());
+		thisXML->setAttribute("minDecibels", getMinDecibels());
+		thisXML->setAttribute("maxDecibels", getMaxDecibels());
+		thisXML->setAttribute("unityDecibels", getUnityDecibels());
+		thisXML->setAttribute("midValue", getMidValue());
+	}
+
+/*
+	virtual void setFromXML(XmlElement& inXML) override
+	{
+		ScopedPointer<XmlElement> thisXML = inXML.getChildByName(this->name);
+		setValue(thisXML->getDoubleAttribute("parameterValue", -9876.5));
+		setDefaultValue(thisXML->getDoubleAttribute("defaultValue", -9876.5));
+		setShouldBeSmoothed(thisXML->getBoolAttribute("isSmoothed", false));
+		setMinDecibels(thisXML->getDoubleAttribute("minDecibels", -9876.5));
+		setMaxDecibels(thisXML->getDoubleAttribute("maxDecibels", -9876.5));
+		setUnityDecibels(thisXML->getDoubleAttribute("unityDecibels", -9876.5));
+		setMidValue(thisXML->getDoubleAttribute("midValue", -9876.5));
+	}*/
 	
 	virtual float convertDecibelsToLinearWithSetMidpoint(const float& decibels)
 	{
-		DBGM("In DecibelParameter::convertDecibelsToLinearWithSetMidpoint() ");
-		return DecibelConversions::mapDecibelsToProperNormalizedValue(decibels, minDecibels, maxDecibels, unityDecibels);
+		
+		float result = DecibelConversions::mapDecibelsToProperNormalizedValue(decibels, minDecibels, maxDecibels, unityDecibels);
+		DBGM("In DecibelParameter::convertDecibelsToLinearWithSetMidpoint() with result: " + String(result));
+		return result;
 	}
 
 	virtual float convertLinearWithSetMidpointToDecibels(const float& inValue)
@@ -88,7 +117,9 @@ public:
 
 	virtual float getValueInDecibels() const
 	{		
-		return DecibelConversions::mapNormalizedValueToDecibels(getValue(), minDecibels, maxDecibels);
+		float conv = DecibelConversions::mapNormalizedValueToDecibels(getValue(), minDecibels, maxDecibels);
+		DBGM("In DecibelParameter::getValueInDecibels() with converted: " + String(conv));
+		return conv;
 	}
 
 	virtual float getValueForGUIComponent() const override
@@ -98,7 +129,7 @@ public:
 
 	virtual String getText(float inValue, int maxStringLength) const override
 	{
-		DBGM("In DecibelParameter::getText() ");
+		
 		jassert(maxStringLength >= 0);
 		std::stringstream numberFormatter;
 		numberFormatter.precision(getDisplayPrecision());
@@ -107,7 +138,9 @@ public:
 		result.append( " "+getLabel(), 20);
 		
 		
-		return (String(getValueInDecibels()) + " " + String(unitLabel));
+		String dbText = (String(getValueInDecibels()) + " " + String(unitLabel));
+		DBGM("In DecibelParameter::getText() with text: " + dbText);
+		return dbText;
 	}
 
 #pragma region GET/SET
@@ -123,9 +156,9 @@ public:
 
 	void setUnityDecibels(const float inUnityDecibels) { unityDecibels = inUnityDecibels; }
 
-	float getmidValue() const { return midValue; }
+	float getMidValue() const { return midValue; }
 
-	void setmidValue(const float inMidValue) { midValue = inMidValue; }
+	void setMidValue(const float inMidValue) { midValue = inMidValue; }
 
 	float getRange() const { return range; }
 

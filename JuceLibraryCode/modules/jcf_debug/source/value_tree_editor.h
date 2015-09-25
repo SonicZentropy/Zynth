@@ -84,6 +84,7 @@ class ValueTreeEditor :
             t (tree)
         {
             t.addListener (this);
+			
         }
 
         ~Item()
@@ -156,7 +157,13 @@ class ValueTreeEditor :
                 }
 
 #endif
-                propertySummary += " " + name.toString() + "=" + propertyValue;
+                if(name.toString().equalsIgnoreCase("name"))
+                {
+					//propertySummary += " " + name.toString() + "=\"" + propertyValue + "\"";
+				} else
+				{
+					propertySummary += " " + name.toString() + "=" + propertyValue;
+				}
             }
 
             g.drawText (propertySummary, propertyX, 0, w - propertyX, h, Justification::left, true);
@@ -248,6 +255,7 @@ class ValueTreeEditor :
             layout.setItemLayout (2, -0.1, -0.9, -0.4);
 
             setSize (1000, 700);
+			treeView.setDefaultOpenness(true);
             addAndMakeVisible (treeView);
             addAndMakeVisible (propertyEditor);
             addAndMakeVisible (layoutResizer);
