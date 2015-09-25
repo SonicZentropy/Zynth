@@ -40,7 +40,7 @@ public:
 	explicit ZenParameter(const String &inName, const bool& inShouldBeSmoothed = false, const float& smoothingTime=0.01f) :
 		value(0.5), name(inName), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
-		DBGM("In ZenParameter::ZenParameter() ");
+////		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(0.5);
 		paramValueTree = new ValueTree(this->name);
 		value.addListener(this);
@@ -52,7 +52,7 @@ public:
 	ZenParameter(const String &inName, const float& inDefaultValue, const bool& inShouldBeSmoothed = false, const float& smoothingTime=0.01f, const String& inLabel = "") :
 		value(inDefaultValue), defaultValue(inDefaultValue), name(inName), unitLabel(inLabel), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
-		DBGM("In ZenParameter::ZenParameter() ");
+////		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(inDefaultValue);
 		paramValueTree = new ValueTree(this->name);
 		value.addListener(this);
@@ -65,7 +65,7 @@ public:
 		:value(inDefaultValue), defaultValue(inDefaultValue), minValue(inMinValue), 
 		maxValue(inMaxValue), intervalStep(inStep), name(inName), unitLabel(inLabel), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
-		DBGM("In ZenParameter::ZenParameter() ");
+////		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(inDefaultValue);
 		paramValueTree = new ValueTree(this->name);
 		value.addListener(this);
@@ -87,7 +87,7 @@ public:
 
 	virtual void setFromXML(XmlElement* inXML)
 	{
-		DBGM("In ZenParameter::setFromXML(inXML) ");
+////		DBGM("In ZenParameter::setFromXML(inXML) ");
 		//XmlElement thisXML(*(inXML.getChildByName(this->name)));
 		setValue(inXML->getChildByName(this->name)->getDoubleAttribute("parameterValue", -9876.5));
 		setDefaultValue(inXML->getChildByName(this->name)->getDoubleAttribute("defaultValue", -9876.5));
@@ -114,14 +114,14 @@ public:
 
 	virtual void valueChanged(Value& value) override
 	{
-		DBGM("In ZenParameter::valueChanged(value) ");
+////		DBGM("In ZenParameter::valueChanged(value) ");
 		setValueTree();
 	}
 
 
 	virtual void setValue(float inValue) override
 	{
-		DBGM("In ZenParameter::setValue() ");
+////		DBGM("In ZenParameter::setValue() ");
 		value = inValue;
 		setSmoothedValue(inValue);
 		requestUIUpdate = true;
@@ -130,7 +130,7 @@ public:
 	//Juce's AudioProcessorParameter method changed to virtual
 	virtual void setValueNotifyingHost(float inValue) override
 	{
-		DBGM("In ZenParameter::setValueNotifyingHost() ");
+////		DBGM("In ZenParameter::setValueNotifyingHost() ");
 		// This method can't be used until the parameter has been attached to a processor!
 		jassert(processor != nullptr && getParameterIndex() >= 0);
 		processor->setParameterNotifyingHost(getParameterIndex(), inValue);
@@ -214,13 +214,13 @@ public:
 
 	bool checkShouldBeSmoothed() const
 	{
-		DBGM("In ZenParameter::checkShouldBeSmoothed() ");
+////		DBGM("In ZenParameter::checkShouldBeSmoothed() ");
 		return shouldBeSmoothed;
 	}
 
 	virtual String getText(float inValue, int maxStringLength) const override
 	{
-		DBGM("In ZenParameter::getText() ");
+////		DBGM("In ZenParameter::getText() ");
 		jassert(maxStringLength >= 0);
 		std::stringstream numberFormatter;
 		numberFormatter.precision(getDisplayPrecision());

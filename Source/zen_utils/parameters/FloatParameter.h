@@ -41,20 +41,20 @@ public:
 	FloatParameter(const String& paramName, const float& inDefaultValue, const bool& inShouldBeSmoothed = false, const float& smoothingTime = 0.01f, const String& inLabel = "")
 		: ZenParameter(paramName, inDefaultValue, inShouldBeSmoothed, smoothingTime, inLabel)
 	{
-		DBGM("In FloatParameter::FloatParameter() ");
+////		DBGM("In FloatParameter::FloatParameter() ");
 	}
 
 	explicit FloatParameter(const String& inParameterName, const float& inMinValue = 0.0f, const float& inMaxValue = 1.0f, const float& inDefaultValue = 0.5f, 
 		           const float& inStep = 0.01f, const bool& inShouldBeSmoothed = false, const float& smoothingTime = 0.01f, const String& inLabel = "")
 		: ZenParameter(inParameterName, inMinValue, inMaxValue, inDefaultValue, inStep, inShouldBeSmoothed, smoothingTime, inLabel)
 	{
-		DBGM("In FloatParameter::FloatParameter() ");
+////		DBGM("In FloatParameter::FloatParameter() ");
 		range = inMaxValue - inMinValue;
 	}
 
 	virtual ~FloatParameter()
 	{
-		DBGM("In FloatParameter::~FloatParameter() ");
+////		DBGM("In FloatParameter::~FloatParameter() ");
 	}
 
 	virtual float getScaledValue() const

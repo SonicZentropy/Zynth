@@ -90,8 +90,8 @@ private:
 	// Change to scoped pointer
 	float currSampleRate = 44100.0f;
 	ValueTree rootTree;
-	ValueTree parametersTree;
-//	ValueTree componentsTree;
+	//ValueTree parametersTree;
+
 	ScopedPointer<jcf::ValueTreeEditor> debugTreeEditor;
 //	ScopedPointer<Zen::ZenArrayDebugger> arrayDebugger;
 

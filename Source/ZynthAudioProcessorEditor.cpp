@@ -5,7 +5,7 @@
 ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerFilter)
 	: AudioProcessorEditor(ownerFilter)
 {
-	DBGM("In ZynthAudioProcessorEditor::ZynthAudioProcessorEditor() ");
+////	DBGM("In ZynthAudioProcessorEditor::ZynthAudioProcessorEditor() ");
 	processor = &ownerFilter;
 
 	// #NOTES: Change Is_Synth in AppConfig.h for Bitwig
@@ -44,12 +44,12 @@ ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerF
 
 ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor()
 {
-	DBGM("In ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor() ");
+////	DBGM("In ZynthAudioProcessorEditor::~ZynthAudioProcessorEditor() ");
     muteButton = nullptr;
     gainSlider = nullptr;
     bypassButton = nullptr;
 		
-	compDebugger = nullptr;
+	//compDebugger = nullptr;
 }
 
 //==============================================================================
@@ -61,7 +61,7 @@ void ZynthAudioProcessorEditor::paint (Graphics& g)
 
 void ZynthAudioProcessorEditor::resized()
 {
-	DBGM("In ZynthAudioProcessorEditor::resized() ");
+////	DBGM("In ZynthAudioProcessorEditor::resized() ");
     muteButton->setBounds (10, 6, 74, 24);
     gainSlider->setBounds (158, 8, 150, 24);
     bypassButton->setBounds (10, 38, 74, 24);
@@ -70,14 +70,13 @@ void ZynthAudioProcessorEditor::resized()
 
 void ZynthAudioProcessorEditor::buttonClicked(Button* buttonThatWasClicked)
 {	
-	DBGM("In ZynthAudioProcessorEditor::buttonClicked() ");
+////	 DBGM("In ZynthAudioProcessorEditor::buttonClicked() ");
 	 dynamic_cast<AssociatedButton*>(buttonThatWasClicked)->setAssociatedParameterValueNotifyingHost();
 }
 
 void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 {    		
-	AssociatedSlider* tempSlider = dynamic_cast<AssociatedSlider*>(sliderThatWasMoved);
-	DBGM("In ZynthAudioProcessorEditor::sliderValueChanged() with: " + tempSlider->getName());
+////	DBGM("In ZynthAudioProcessorEditor::sliderValueChanged() with: " + tempSlider->getName());
 	dynamic_cast<AssociatedSlider*>(sliderThatWasMoved)->setAssociatedParameterValueNotifyingHost();
 }
 
@@ -85,14 +84,12 @@ void ZynthAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 void ZynthAudioProcessorEditor::timerCallback()
 {
 	//undoManager.beginNewTransaction();
-	//exchange data between UI Elements and the Plugin (ourProcessor)
 	AssociatedSlider* currentSlider;
 	AssociatedButton* currentButton;
 	AssociatedComponent* currentComponent;
 	ZenParameter* currentParameter;
 
 	int numComponents = this->getNumChildComponents();
-	// #TODO: CHANGE BACK TO SINGLE needsUpdate!
 	// #ENHANCE:  Eventually change GUI updates to messages rather than polling
 	//This looks ugly, but it's a whole lot better than a massive if chain checking EVERY param individually
 	//This should handle every component's GUI updates automatically

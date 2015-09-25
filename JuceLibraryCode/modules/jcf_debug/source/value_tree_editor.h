@@ -162,7 +162,7 @@ class ValueTreeEditor :
 					//propertySummary += " " + name.toString() + "=\"" + propertyValue + "\"";
 				} else
 				{
-					propertySummary += " " + name.toString() + "=" + propertyValue;
+					propertySummary += " " + name.toString() + "=" + propertyValue.toStdString().substr(0, 8);
 				}
             }
 

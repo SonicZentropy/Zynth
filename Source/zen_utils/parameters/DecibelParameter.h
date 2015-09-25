@@ -43,7 +43,7 @@ public:
 		midValue(inMidValue),
 		range(inMaxDecibels - inMinDecibels)
 	{
-		DBGM("In DecibelParameter::DecibelParameter() ");
+////		DBGM("In DecibelParameter::DecibelParameter() ");
 		requestUIUpdate = true;
 	}
 
@@ -82,13 +82,13 @@ public:
 	{
 		
 		float result = DecibelConversions::mapDecibelsToProperNormalizedValue(decibels, minDecibels, maxDecibels, unityDecibels);
-		DBGM("In DecibelParameter::convertDecibelsToLinearWithSetMidpoint() with result: " + String(result));
+////		DBGM("In DecibelParameter::convertDecibelsToLinearWithSetMidpoint() with result: " + String(result));
 		return result;
 	}
 
 	virtual float convertLinearWithSetMidpointToDecibels(const float& inValue)
 	{
-		DBGM("In DecibelParameter::convertLinearWithSetMidpointToDecibels() ");
+////		DBGM("In DecibelParameter::convertLinearWithSetMidpointToDecibels() ");
 		return DecibelConversions::mapNormalizedValueToDecibels(inValue, minDecibels, maxDecibels);
 	}
 
@@ -109,7 +109,7 @@ public:
 
 	virtual void setValueNotifyingHost(float newValue) override
 	{		
-		DBGM("In DecibelParameter::setValueNotifyingHost() ");
+////		DBGM("In DecibelParameter::setValueNotifyingHost() ");
 		float dbConvertedToLinear = convertDecibelsToLinearWithSetMidpoint(newValue);
 		ZenParameter::setValueNotifyingHost(dbConvertedToLinear);
 
@@ -118,7 +118,7 @@ public:
 	virtual float getValueInDecibels() const
 	{		
 		float conv = DecibelConversions::mapNormalizedValueToDecibels(getValue(), minDecibels, maxDecibels);
-		DBGM("In DecibelParameter::getValueInDecibels() with converted: " + String(conv));
+////		DBGM("In DecibelParameter::getValueInDecibels() with converted: " + String(conv));
 		return conv;
 	}
 
@@ -139,7 +139,7 @@ public:
 		
 		
 		String dbText = (String(getValueInDecibels()) + " " + String(unitLabel));
-		DBGM("In DecibelParameter::getText() with text: " + dbText);
+////		DBGM("In DecibelParameter::getText() with text: " + dbText);
 		return dbText;
 	}
 
