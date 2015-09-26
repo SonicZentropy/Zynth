@@ -20,8 +20,7 @@
 #include <sstream>
 
 #include "../utilities/ZenParamUtils.h"
-#include "ParameterValueTree.h"
-//#include "LinearSmoothedValue.h"
+
 
 
 namespace Zen {
@@ -73,7 +72,11 @@ public:
 		setValueTree();
 	}	
 
-	virtual ~ZenParameter() {};
+	virtual ~ZenParameter()
+	{
+		//delete paramValueTree;
+		//paramValueTree = nullptr;
+	};
 
 	virtual void writeToXML(XmlElement* inXML)
 	{

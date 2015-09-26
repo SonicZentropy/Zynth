@@ -1,3 +1,28 @@
+#pragma push_macro("_CRTDBG_MAP_ALLOC")
+#ifdef _CRTDBG_MAP_ALLOC
+#undef _CRTDBG_MAP_ALLOC
+#endif
+
+#pragma push_macro("malloc")
+#ifdef malloc
+#undef malloc
+#endif
+
+#pragma push_macro("free")
+#ifdef free
+#undef free
+#endif
+
+#pragma push_macro("calloc")
+#ifdef calloc
+#undef calloc
+#endif
+
+#pragma push_macro("realloc")
+#ifdef realloc
+#undef realloc
+#endif
+
 /*
   ==============================================================================
 
@@ -1510,3 +1535,9 @@ void AudioProcessorGraph::AudioGraphIOProcessor::setParentGraph (AudioProcessorG
         updateHostDisplay();
     }
 }
+
+#pragma pop_macro("_CRTDBG_MAP_ALLOC")
+#pragma pop_macro("malloc")
+#pragma pop_macro("free")
+#pragma pop_macro("calloc")
+#pragma pop_macro("realloc")

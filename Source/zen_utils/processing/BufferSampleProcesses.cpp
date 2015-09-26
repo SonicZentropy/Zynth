@@ -18,6 +18,8 @@
 #include <algorithm>
 #include <cmath>
 
+
+
 namespace Zen
 {
 
@@ -58,20 +60,6 @@ namespace Zen
 		*rightSample *= -1;
 	}
 
-/*
-	void BufferSampleProcesses::processExtractMidSignal(float* leftSample, float* rightSample)
-	{
-		float mid = *leftSample + *rightSample;
-		*leftSample = mid;
-		*rightSample = *leftSample;
-	}
-
-	void BufferSampleProcesses::processExtractSideSignal(float* leftSample, float* rightSample)
-	{
-		float side = *leftSample - *rightSample;
-		*leftSample = side;
-		*rightSample = *leftSample;
-	}*/
 
 	void BufferSampleProcesses::processPanning(float* leftSample, float* rightSample, const float& panRatio)
 	{

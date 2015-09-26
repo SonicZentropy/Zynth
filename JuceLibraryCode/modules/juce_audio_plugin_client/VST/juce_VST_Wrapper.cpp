@@ -26,6 +26,9 @@
 // and your header search path must make it accessible to the module's files.
 #include "AppConfig.h"
 
+
+
+
 #include "../utility/juce_CheckSettingMacros.h"
 
 #if JucePlugin_Build_VST
@@ -34,11 +37,14 @@
  #pragma warning (disable : 4996 4100)
 #endif
 
+
+
 #ifdef _WIN32
  #undef _WIN32_WINNT
  #define _WIN32_WINNT 0x500
  #undef STRICT
  #define STRICT 1
+
  #include <windows.h>
 #elif defined (LINUX)
  #include <X11/Xlib.h>
@@ -48,6 +54,8 @@
 #else
  #include <Carbon/Carbon.h>
 #endif
+
+
 
 #ifdef PRAGMA_ALIGN_SUPPORTED
  #undef PRAGMA_ALIGN_SUPPORTED
@@ -114,6 +122,44 @@
 #endif
 
 #undef MemoryBlock
+
+
+#pragma push_macro("_CRTDBG_MAP_ALLOC")
+#ifdef _CRTDBG_MAP_ALLOC
+#undef _CRTDBG_MAP_ALLOC
+#endif
+
+#pragma push_macro("malloc")
+#ifdef malloc
+#undef malloc
+#endif
+
+#pragma push_macro("free")
+#ifdef free
+#undef free
+#endif
+
+#pragma push_macro("calloc")
+#ifdef calloc
+#undef calloc
+#endif
+
+#pragma push_macro("realloc")
+#ifdef realloc
+#undef realloc
+#endif
+
+#ifdef _strdup_dbg
+#undef _strdup_dbg
+#endif
+
+#ifdef wcsdup
+#undef wcsdup
+#endif
+
+#ifdef tempnam
+#undef tempnam
+#endif
 
 class JuceVSTWrapper;
 static bool recursionCheck = false;
@@ -1622,3 +1668,10 @@ namespace
 #endif
 
 #endif
+
+#pragma pop_macro("_CRTDBG_MAP_ALLOC")
+#pragma pop_macro("malloc")
+#pragma pop_macro("free")
+#pragma pop_macro("calloc")
+#pragma pop_macro("realloc")
+

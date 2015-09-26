@@ -1154,6 +1154,18 @@ TreeViewItem::~TreeViewItem()
 {
 }
 
+void TreeViewItem::setOwnerViewPublic(TreeView* newOwner)
+{
+	ownerView = newOwner;
+
+	for (int i = subItems.size(); --i >= 0;)
+	{
+		TreeViewItem* subItem = subItems.getUnchecked(i);
+		subItem->setOwnerView(newOwner);
+		subItem->ownerViewChanged(newOwner);
+	}
+}
+
 String TreeViewItem::getUniqueName() const
 {
     return String::empty;

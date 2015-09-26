@@ -16,6 +16,7 @@
 #define ZENARRAYDEBUGGER_H_INCLUDED
 #include "JuceHeader.h"
 
+
 namespace Zen{
 
 class ZenArrayDebugger : public DocumentWindow

@@ -22,6 +22,7 @@
   ==============================================================================
 */
 
+
 class AsyncUpdater::AsyncUpdaterMessage  : public CallbackMessage
 {
 public:
@@ -56,6 +57,7 @@ AsyncUpdater::~AsyncUpdater()
     jassert ((! isUpdatePending()) || MessageManager::getInstance()->currentThreadHasLockedMessageManager());
 
     activeMessage->shouldDeliver.set (0);
+			
 }
 
 void AsyncUpdater::triggerAsyncUpdate()

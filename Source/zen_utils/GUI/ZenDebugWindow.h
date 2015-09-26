@@ -17,6 +17,9 @@
 #include "JuceHeader.h"
 #include "..\utilities\ValueTreeWindowComponent.h"
 
+namespace Zen
+{
+
 class ZenDebugWindow : public DocumentWindow
 {
 public:
@@ -33,4 +36,5 @@ protected:
 	ScopedPointer<ValueTreeDebugComponent> valueTreeDebugComponent;
 };
 
+} // Namespace Zen
 #endif // ZENDEBUGWINDOW_H_INCLUDED

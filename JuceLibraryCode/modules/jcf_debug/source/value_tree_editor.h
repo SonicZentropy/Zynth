@@ -6,6 +6,8 @@
 #ifndef VALUE_TREE_EDITOR_H_INCLUDED
 #define VALUE_TREE_EDITOR_H_INCLUDED
 
+ 
+
 
 /** 
  Display a separate desktop window for viewed and editing a value
@@ -78,26 +80,29 @@ class ValueTreeEditor :
         public ValueTree::Listener
     {
     public:
-        Item (PropertyEditor* propertiesEditor, ValueTree tree)
-            :
-            propertiesEditor (propertiesEditor),
+        Item (PropertyEditor* inPropertiesEditor, ValueTree tree)
+            :  
             t (tree)
         {
-            t.addListener (this);
-			
+            t.addListener (this);	
+			propertiesEditor = inPropertiesEditor;
         }
 
         ~Item()
         {
+		//	t.removeListener(this);
+			//DBG("Curr Properties size: " + String(currentProperties.size()));
+			//currentProperties.clear();
+			//propertiesEditor = nullptr;
             clearSubItems();
         }
 
-        bool mightContainSubItems()
+        bool mightContainSubItems() override
         {
             return t.getNumChildren() > 0;
         }
 
-        void itemOpennessChanged (bool isNowOpen)
+        void itemOpennessChanged (bool isNowOpen) override
         {
             if (isNowOpen) updateSubItems();
         }
@@ -115,7 +120,7 @@ class ValueTreeEditor :
                 restoreOpennessState (*openness);
         }
 
-        void paintItem (Graphics& g, int w, int h)
+        void paintItem (Graphics& g, int w, int h) override
         {
 
             Font font;
@@ -169,7 +174,7 @@ class ValueTreeEditor :
             g.drawText (propertySummary, propertyX, 0, w - propertyX, h, Justification::left, true);
         }
 
-        void itemSelectionChanged (bool isNowSelected)
+        void itemSelectionChanged (bool isNowSelected) override
         {
             if (isNowSelected)
             {
@@ -181,7 +186,7 @@ class ValueTreeEditor :
 
 
         /* Enormous list of ValueTree::Listener options... */
-        void valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged, const Identifier& property)
+        void valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged, const Identifier& property) override
         {
             if (t != treeWhosePropertyHasChanged) return;
 
@@ -191,7 +196,7 @@ class ValueTreeEditor :
             repaintItem();
             t.addListener (this);
         }
-        void valueTreeChildAdded (ValueTree& parentTree, ValueTree& childWhichHasBeenAdded)
+        void valueTreeChildAdded (ValueTree& parentTree, ValueTree& childWhichHasBeenAdded) override
         {
             if (parentTree == t)
                 updateSubItems();
@@ -200,25 +205,25 @@ class ValueTreeEditor :
         }
 
 
-        void valueTreeChildRemoved (ValueTree& parentTree, ValueTree& childWhichHasBeenRemoved, int)
+        void valueTreeChildRemoved (ValueTree& parentTree, ValueTree& childWhichHasBeenRemoved, int) override
         {
             if (parentTree == t)
                 updateSubItems();
 
             treeHasChanged();
         }
-        void valueTreeChildOrderChanged (ValueTree& parentTreeWhoseChildrenHaveMoved, int, int)
+        void valueTreeChildOrderChanged (ValueTree& parentTreeWhoseChildrenHaveMoved, int, int) override
         {
             if (parentTreeWhoseChildrenHaveMoved == t)
                 updateSubItems();
 
             treeHasChanged();
         }
-        void valueTreeParentChanged (ValueTree& treeWhoseParentHasChanged)
+        void valueTreeParentChanged (ValueTree& treeWhoseParentHasChanged) override
         {
             treeHasChanged();
         }
-        void valueTreeRedirected (ValueTree& treeWhichHasBeenChanged)
+        void valueTreeRedirected (ValueTree& treeWhichHasBeenChanged) override
         {
             if (treeWhichHasBeenChanged == t)
                 updateSubItems();
@@ -227,7 +232,7 @@ class ValueTreeEditor :
         }
 
         /* Works only if the ValueTree isn't updated between calls to getUniqueName. */
-        String getUniqueName() const
+        String getUniqueName() const override
         {
             if (t.getParent() == ValueTree::invalid) return "1";
 
@@ -235,7 +240,8 @@ class ValueTreeEditor :
         }
 
     private:
-        PropertyEditor* propertiesEditor;
+        //PropertyEditor* propertiesEditor;
+		PropertyEditor* propertiesEditor;
         ValueTree t;
         Array<Identifier> currentProperties;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Item);
@@ -248,7 +254,8 @@ class ValueTreeEditor :
     {
     public:
         Editor() :
-            layoutResizer (&layout, 1, false)
+            treeView("treeView-Name"),
+			layoutResizer (&layout, 1, false)
         {
             layout.setItemLayout (0, -0.1, -0.9, -0.6);
             layout.setItemLayout (1, 5, 5, 5);
@@ -262,7 +269,12 @@ class ValueTreeEditor :
         }
         ~Editor()
         {
+			treeView.deleteRootItem();
             treeView.setRootItem (nullptr);
+			if (rootItem != nullptr)
+				rootItem->setOwnerViewPublic(nullptr);
+			rootItem = nullptr;
+			
         }
 
         void resized()
@@ -312,6 +324,15 @@ public:
     ~ValueTreeEditor()
     {
         editor->setTree (ValueTree::invalid);
+		if(editor->isOnDesktop())
+		{
+			editor->removeFromDesktop();
+		}
+		editor = nullptr;
+		if(this->isOnDesktop())
+		{
+			this->removeFromDesktop();
+		}
     }
 
     void closeButtonPressed()
@@ -325,8 +346,9 @@ public:
     }
 
 private:
+	ScopedPointer<Editor> editor;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ValueTreeEditor);
-    ScopedPointer<Editor> editor;
 };
 
 

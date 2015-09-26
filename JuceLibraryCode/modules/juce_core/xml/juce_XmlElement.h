@@ -211,6 +211,8 @@ public:
                            StringRef encodingType = "UTF-8",
                            int lineWrapLength = 60) const;
 
+	String XmlElement::createDefaultDocument() const;
+
     /** Writes the document to a stream as UTF-8.
 
         @param output           the stream to write to

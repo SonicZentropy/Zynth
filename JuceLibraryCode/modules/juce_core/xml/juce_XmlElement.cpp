@@ -326,6 +326,12 @@ void XmlElement::writeElementAsText (OutputStream& outputStream,
     }
 }
 
+// #ZENTROPY: changed the following JUCE code on 2015/09/26 added default method
+String XmlElement::createDefaultDocument() const
+{
+	return createDocument("", false, false, "UTF-8", 120);
+}
+
 String XmlElement::createDocument (StringRef dtdToUse,
                                    const bool allOnOneLine,
                                    const bool includeXmlHeader,

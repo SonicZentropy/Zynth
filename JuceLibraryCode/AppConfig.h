@@ -17,7 +17,22 @@
 //==============================================================================
 // [BEGIN_USER_CODE_SECTION]
 
-// (You can add your own code in this section, and the Introjucer will not overwrite it)
+#define ZEN_CRT_MEMORY_DEBUGGER 
+//#undef ZEN_CRT_MEMORY_DEBUGGER
+
+#ifdef ZEN_CRT_MEMORY_DEBUGGER
+#ifndef _CRTDBG_MAP_ALLOC
+#define _CRTDBG_MAP_ALLOC
+#endif
+#include <stdlib.h>
+#include <crtdbg.h>
+//#ifdef _DEBUG
+//#ifndef DBG_NEW
+//#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+//#define new DBG_NEW
+//#endif
+//#endif  // _DEBUG
+#endif
 
 // [END_USER_CODE_SECTION]
 

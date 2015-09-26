@@ -16,7 +16,6 @@
 
 #include "JuceHeader.h"
 
-
 //==============================================================================
 class ValueTreeItem : public TreeViewItem,
 	private ValueTree::Listener
@@ -43,10 +42,30 @@ public:
 		// #TODO: add treeHasChanged 
 		g.setColour(Colours::black);
 		g.setFont(15.0f);
+		
+		String propertySummary = tree.getType().toString() + ": ";
 
-		g.drawText(tree["name"].toString() + ": " + tree["value"].toString(),
+		for (int i = 0; i < tree.getNumProperties(); ++i)
+		{
+			const Identifier name = tree.getPropertyName(i).toString();
+			String propertyValue = tree.getProperty(name).toString();
+			
+			if (name.toString().equalsIgnoreCase("name"))
+			{
+				//propertySummary += " " + name.toString() + "=\"" + propertyValue + "\"";
+			} else
+			{
+				propertySummary += " " + name.toString() + "=" + propertyValue.toStdString().substr(0, 8);
+			}
+			
+		}
+
+	
+
+		g.drawText(propertySummary,
 			4, 0, width - 4, height,
 			Justification::centredLeft, true);
+		
 	}
 
 	void itemOpennessChanged(bool isNowOpen) override

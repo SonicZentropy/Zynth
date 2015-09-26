@@ -578,6 +578,9 @@ public:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpennessRestorer)
     };
 
+	
+	void setOwnerViewPublic(TreeView* newOwner);
+
 private:
     //==============================================================================
     TreeView* ownerView;
@@ -597,7 +600,7 @@ private:
 
     void updatePositions (int newY);
     int getIndentX() const noexcept;
-    void setOwnerView (TreeView*) noexcept;
+	void setOwnerView(TreeView*) noexcept;
     void paintRecursively (Graphics&, int width);
     TreeViewItem* getTopLevelItem() noexcept;
     TreeViewItem* findItemRecursively (int y) noexcept;

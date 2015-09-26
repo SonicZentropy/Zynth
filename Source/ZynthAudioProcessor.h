@@ -17,10 +17,13 @@
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
 
+
+
 #include "JuceHeader.h"
 #include "zen_utils/parameters/DecibelParameter.h"
 #include "zen_utils/parameters/BooleanParameter.h"
-//#include "zen_utils/GUI/ZenArrayDebugger.h"
+#include "zen_utils/GUI/ZenDebugWindow.h"
+
 
 //==============================================================================
 /**
@@ -82,8 +85,6 @@ public:
 	float getCurrSampleRate() const { return currSampleRate; }
 	void setCurrSampleRate(float inValue) { currSampleRate = inValue; }
 
-
-
 	ValueTree getRootTree() { return rootTree; }
 
 private:
@@ -93,7 +94,7 @@ private:
 	//ValueTree parametersTree;
 
 	ScopedPointer<jcf::ValueTreeEditor> debugTreeEditor;
-//	ScopedPointer<Zen::ZenArrayDebugger> arrayDebugger;
+	//ScopedPointer<Zen::ZenDebugWindow> debugTreeEditor;
 
 	ValueTree createParameterTree();
 

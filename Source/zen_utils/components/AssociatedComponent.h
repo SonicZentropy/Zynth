@@ -16,6 +16,8 @@
 #define ZEN_ASSOCIATED_COMPONENT_H_INCLUDED
 #include "JuceHeader.h"
 #include "../parameters/ZenParameter.h"
+
+
  
 namespace Zen
 {

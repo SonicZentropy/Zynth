@@ -1,6 +1,5 @@
 #include "ZynthAudioProcessorEditor.h"
 
-
 //==============================================================================
 ZynthAudioProcessorEditor::ZynthAudioProcessorEditor(ZynthAudioProcessor& ownerFilter)
 	: AudioProcessorEditor(ownerFilter)

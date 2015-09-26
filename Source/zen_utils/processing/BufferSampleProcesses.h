@@ -17,6 +17,8 @@
 #define BUFFER_SAMPLE_PROCESSES_H_INCLUDED
 #include <ctime>
 
+
+
 namespace Zen
 {
 	class BufferSampleProcesses
