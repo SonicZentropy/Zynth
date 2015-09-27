@@ -6,7 +6,7 @@ namespace Zen
 ZenDebugWindow::ZenDebugWindow()
 	:DocumentWindow("Zen Debug Window", Colours::lightgrey, DocumentWindow::allButtons)
 {
-////	DBGM("In ZenDebugWindow::ZenDebugWindow() ");
+//	DBGM("In ZenDebugWindow::ZenDebugWindow() ");
 	setResizable(true, false);
 	setUsingNativeTitleBar(true);
 	centreWithSize(getWidth(), getHeight());
@@ -20,7 +20,7 @@ ZenDebugWindow::ZenDebugWindow()
 ZenDebugWindow::ZenDebugWindow(ValueTree* inValueTree)
 	:DocumentWindow("Zen Debug Window", Colours::lightgrey, DocumentWindow::allButtons)
 {
-////	DBGM("In ZenDebugWindow::ZenDebugWindow(ValueTree* inValueTree) ");
+//	DBGM("In ZenDebugWindow::ZenDebugWindow(ValueTree* inValueTree) ");
 	setResizable(true, false);
 	setUsingNativeTitleBar(true);
 	centreWithSize(getWidth(), getHeight());
@@ -35,7 +35,7 @@ ZenDebugWindow::ZenDebugWindow(ValueTree* inValueTree)
 ZenDebugWindow::ZenDebugWindow(ValueTree inValueTree)
 	:DocumentWindow("Zen Debug Window", Colours::lightgrey, DocumentWindow::allButtons)
 {
-////	DBGM("In ZenDebugWindow::ZenDebugWindow(ValueTree inValueTree) ");
+//	DBGM("In ZenDebugWindow::ZenDebugWindow(ValueTree inValueTree) ");
 
 	setResizable(true, false);
 	setUsingNativeTitleBar(true);
@@ -49,20 +49,20 @@ ZenDebugWindow::ZenDebugWindow(ValueTree inValueTree)
 
 ZenDebugWindow::~ZenDebugWindow()
 {
-////	DBGM("In ZenDebugWindow::~ZenDebugWindow() ");
+//	DBGM("In ZenDebugWindow::~ZenDebugWindow() ");
 	valueTreeDebugComponent = nullptr;
 
 }
 
 void ZenDebugWindow::closeButtonPressed()
 {
-////	DBGM("In ZenDebugWindow::closeButtonPressed() ");
+//	DBGM("In ZenDebugWindow::closeButtonPressed() ");
 	setVisible(false);
 }
 
 void ZenDebugWindow::addValueTree(ValueTree inValueTree)
 {
-////	DBGM("In ZenDebugWindow::addValueTree(inValueTree) ");
+//	DBGM("In ZenDebugWindow::addValueTree(inValueTree) ");
 }
 
 } //namespace Zen

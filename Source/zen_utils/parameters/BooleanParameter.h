@@ -52,18 +52,6 @@ public:
 	virtual ~BooleanParameter()
 	{	}
 
-	/*virtual void BooleanParameter::setValue(float newValue) override
-	{
-		
-		//other values technically disallowed
-		jassert(newValue >= 0.0 && newValue <= 1.0);
-
-		//compatibility transform such that anything != 0.0 is true
-		value = ((newValue == 0.0f) ? 0.0f : 1.0f);
-		booleanValue = ZenParamUtils::convertFloatToBoolean(newValue);
-		requestUIUpdate = true;
-	}*/
-
 	virtual void BooleanParameter::setValue(bool newBool)
 	{	
 		value = convertBooleanToFloat(newBool);
@@ -84,6 +72,8 @@ public:
 
 protected:
 
+private:
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BooleanParameter);
 };
 }//namespace
 #endif   // ZEN_BOOLEAN_PARAMETER_H_INCLUDED

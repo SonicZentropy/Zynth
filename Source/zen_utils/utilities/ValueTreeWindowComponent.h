@@ -39,7 +39,6 @@ public:
 
 	void paintItem(Graphics& g, int width, int height) override
 	{
-		// #TODO: add treeHasChanged 
 		g.setColour(Colours::black);
 		g.setFont(15.0f);
 		

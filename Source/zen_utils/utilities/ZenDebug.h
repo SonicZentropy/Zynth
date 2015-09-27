@@ -54,6 +54,7 @@ namespace Zen
 		static clock_t inTime;
 		static int numSecondsBetweenDebugPrints;	///< Number of seconds between debug prints
 
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ZenDebug);
 	};
 }
 #endif  // ZEN_DEBUG_H_INCLUDED

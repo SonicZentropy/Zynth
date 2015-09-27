@@ -55,7 +55,6 @@ namespace Zen
 
 		void setAssociatedParameterValueNotifyingHost() override
 		{
-			// #TODO: OVERRIDE THIS getValue() CALL
 			associatedParameter->setValueNotifyingHost(getValue());
 		}
 
@@ -70,8 +69,7 @@ namespace Zen
 			std::stringstream numberFormatter;
 			numberFormatter.precision(getDisplayPrecision());
 			numberFormatter << std::fixed << getValue() << unitLabel;
-			String result = numberFormatter.str();			
-		//	result.append(unitLabel, 20);			
+			String result = numberFormatter.str();					
 			return result;			
 		}
 
@@ -107,6 +105,8 @@ namespace Zen
 
 	protected:
 
+	private:
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AssociatedSlider);
 	
 	};
 }

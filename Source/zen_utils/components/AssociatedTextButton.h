@@ -44,6 +44,9 @@ public:
 		return associatedParameter->getValue();
 	}*/
 
+private:
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AssociatedTextButton);
+
 };
 } // Namespace
 #endif  // ZEN_ASSOCIATED_TEXT_BUTTON_H_INCLUDED

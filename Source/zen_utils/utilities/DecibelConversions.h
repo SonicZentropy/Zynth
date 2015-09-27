@@ -83,7 +83,7 @@ namespace Zen
 		{
 			jassert(inDecibels >= decibelMinimum && inDecibels <= decibelMaximum && decibelValueForMidpoint >= decibelMinimum && decibelValueForMidpoint <= decibelMaximum);
 			float result = ZenParamUtils::convertValueToWarpedLinearBasedOnMidpoint(inDecibels, decibelMinimum, decibelMaximum, decibelValueForMidpoint);
-////			DBGM("In DecibelConversions::mapDecibelsToProperNormalizedValue(inDecibels, decibelMinimum, decibelMaximum, decibelValueForMidpoint) with result: " + String(result));
+//			DBGM("In DecibelConversions::mapDecibelsToProperNormalizedValue(inDecibels, decibelMinimum, decibelMaximum, decibelValueForMidpoint) with result: " + String(result));
 			return result;
 		}
 

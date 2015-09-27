@@ -43,19 +43,19 @@ public:
 		midValue(inMidValue),
 		range(inMaxDecibels - inMinDecibels)
 	{
-////		DBGM("In DecibelParameter::DecibelParameter() ");
+//		DBGM("In DecibelParameter::DecibelParameter() ");
 		requestUIUpdate = true;
+		DecibelParameter::setValueTree();
 	}
 
 	virtual ~DecibelParameter()
 	{
 	}	
 
-	virtual void writeToXML(XmlElement* inXML) override
+	virtual void writeToXML(XmlElement& inXML) override
 	{
-		// #TODO: fix scope of thisXML (make sure it's freed)
-		XmlElement* thisXML;
-		thisXML = inXML->createNewChildElement(this->name);
+//		DBGM("In DecibelParameter::writeToXML(inXML) ");
+		XmlElement* thisXML = inXML.createNewChildElement(this->name);
 		thisXML->setAttribute("parameterValue", getValue());
 		thisXML->setAttribute("defaultValue", getDefaultValue());
 		thisXML->setAttribute("isSmoothed", getShouldBeSmoothed());
@@ -65,10 +65,11 @@ public:
 		thisXML->setAttribute("midValue", getMidValue());
 	}
 
-/*
-	virtual void setFromXML(XmlElement& inXML) override
+
+	virtual void setFromXML(const XmlElement& inXML) override
 	{
-		ScopedPointer<XmlElement> thisXML = inXML.getChildByName(this->name);
+//		DBGM("In DecibelParameter::setFromXML(inXML) ");
+		XmlElement* thisXML = inXML.getChildByName(this->name);
 		setValue(thisXML->getDoubleAttribute("parameterValue", -9876.5));
 		setDefaultValue(thisXML->getDoubleAttribute("defaultValue", -9876.5));
 		setShouldBeSmoothed(thisXML->getBoolAttribute("isSmoothed", false));
@@ -76,19 +77,43 @@ public:
 		setMaxDecibels(thisXML->getDoubleAttribute("maxDecibels", -9876.5));
 		setUnityDecibels(thisXML->getDoubleAttribute("unityDecibels", -9876.5));
 		setMidValue(thisXML->getDoubleAttribute("midValue", -9876.5));
-	}*/
+	}
+
+	virtual void setValueTree() override
+	{
+//		DBGM("In DecibelParameter::setValueTree() ");
+		//Base ZenParameter is called before this and starts paramValueTree construction
+/*
+
+		paramValueTree->removeAllChildren(nullptr);
+		paramValueTree->removeAllProperties(nullptr);
+
+		paramValueTree->setProperty("parameterValue", getValue(), nullptr);
+		paramValueTree->setProperty("defaultValue", getDefaultValue(), nullptr);*/
+		ZenParameter::setValueTree();
+		paramValueTree->setProperty("isSmoothed", getShouldBeSmoothed(), nullptr);
+		paramValueTree->setProperty("minDecibels", getMinDecibels(), nullptr);
+		paramValueTree->setProperty("maxDecibels", getMaxDecibels(), nullptr);
+		paramValueTree->setProperty("unityDecibels", getUnityDecibels(), nullptr);
+		paramValueTree->setProperty("midValue", getMidValue(), nullptr);
+	}
+
+	virtual void valueChanged(Value& value) override
+	{
+		//		DBGM("In ZenParameter::valueChanged(value) ");
+		setValueTree();
+	}
 	
 	virtual float convertDecibelsToLinearWithSetMidpoint(const float& decibels)
 	{
-		
+//		DBGM("In DecibelParameter::convertDecibelsToLinearWithSetMidpoint() with result: " + String(result));
 		float result = DecibelConversions::mapDecibelsToProperNormalizedValue(decibels, minDecibels, maxDecibels, unityDecibels);
-////		DBGM("In DecibelParameter::convertDecibelsToLinearWithSetMidpoint() with result: " + String(result));
 		return result;
 	}
 
 	virtual float convertLinearWithSetMidpointToDecibels(const float& inValue)
 	{
-////		DBGM("In DecibelParameter::convertLinearWithSetMidpointToDecibels() ");
+//		DBGM("In DecibelParameter::convertLinearWithSetMidpointToDecibels() ");
 		return DecibelConversions::mapNormalizedValueToDecibels(inValue, minDecibels, maxDecibels);
 	}
 
@@ -109,7 +134,7 @@ public:
 
 	virtual void setValueNotifyingHost(float newValue) override
 	{		
-////		DBGM("In DecibelParameter::setValueNotifyingHost() ");
+//		DBGM("In DecibelParameter::setValueNotifyingHost() ");
 		float dbConvertedToLinear = convertDecibelsToLinearWithSetMidpoint(newValue);
 		ZenParameter::setValueNotifyingHost(dbConvertedToLinear);
 
@@ -118,7 +143,7 @@ public:
 	virtual float getValueInDecibels() const
 	{		
 		float conv = DecibelConversions::mapNormalizedValueToDecibels(getValue(), minDecibels, maxDecibels);
-////		DBGM("In DecibelParameter::getValueInDecibels() with converted: " + String(conv));
+//		DBGM("In DecibelParameter::getValueInDecibels() with converted: " + String(conv));
 		return conv;
 	}
 
@@ -139,7 +164,7 @@ public:
 		
 		
 		String dbText = (String(getValueInDecibels()) + " " + String(unitLabel));
-////		DBGM("In DecibelParameter::getText() with text: " + dbText);
+//		DBGM("In DecibelParameter::getText() with text: " + dbText);
 		return dbText;
 	}
 
@@ -172,6 +197,9 @@ protected:
 	float unityDecibels;
 	float midValue;
 	float range;
+
+	private:
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DecibelParameter);
 };
 }
 

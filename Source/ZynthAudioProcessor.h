@@ -12,21 +12,15 @@
 //  Zentropia is hosted on Github at [https://github.com/SonicZentropy]
 ===============================================================================*/
 
-
-
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
-
-
 
 #include "JuceHeader.h"
 #include "zen_utils/parameters/DecibelParameter.h"
 #include "zen_utils/parameters/BooleanParameter.h"
-#include "zen_utils/GUI/ZenDebugWindow.h"
-
 
 //==============================================================================
-/**
+/** Main DSP Processing Class
 */
 class ZynthAudioProcessor : public AudioProcessor
 {
@@ -35,16 +29,13 @@ public:
 	ZynthAudioProcessor();
 	~ZynthAudioProcessor();
 
-	//==============================================================================
-		
-
+	//==============================================================================		
 	void processBlock(AudioSampleBuffer&, MidiBuffer&) override;
-
 	void getStateInformation(MemoryBlock& destData) override;
 	void setStateInformation(const void* data, int sizeInBytes) override;
-
+	//==============================================================================
 		
-	//DO NOT USE SCOPED POINTERS FOR PARAMETERS
+	//DO NOT USE SCOPED POINTERS FOR PARAMETERS, they're deleted by the managedParam OwnedArray
 	Zen::DecibelParameter* audioGainParam;		
 	Zen::BooleanParameter* muteParam;
 	Zen::BooleanParameter* bypassParam;
@@ -80,25 +71,23 @@ public:
 	void changeProgramName(int index, const String& newName) override;
 
 	//==============================================================================
-	
 #pragma endregion 
+
 	float getCurrSampleRate() const { return currSampleRate; }
 	void setCurrSampleRate(float inValue) { currSampleRate = inValue; }
 
 	ValueTree getRootTree() { return rootTree; }
 
-private:
-	// Change to scoped pointer
+private:	
 	float currSampleRate = 44100.0f;
 	ValueTree rootTree;
-	//ValueTree parametersTree;
-
+	
 	ScopedPointer<jcf::ValueTreeEditor> debugTreeEditor;
-	//ScopedPointer<Zen::ZenDebugWindow> debugTreeEditor;
 
+	//Private Methods=======================================================================
 	ValueTree createParameterTree();
 
-	//==============================================================================
+	//JUCE Internal=========================================================================
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ZynthAudioProcessor)
 	
 };

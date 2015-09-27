@@ -248,6 +248,7 @@
       <AdditionalOptions>/wd4244 %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <DisableSpecificWarnings>4589;4250;4244;4100;4458;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1356,7 +1357,6 @@
     <ClInclude Include="..\..\Source\zen_utils\parameters\ZenParameter.h" />
     <ClInclude Include="..\..\Source\zen_utils\processing\BufferSampleProcesses.h" />
     <ClInclude Include="..\..\Source\zen_utils\utilities\DecibelConversions.h" />
-    <ClInclude Include="..\..\Source\zen_utils\utilities\ValueTreeWindowComponent.h" />
     <ClInclude Include="..\..\Source\zen_utils\utilities\ZenDebug.h" />
     <ClInclude Include="..\..\Source\zen_utils\utilities\ZenParamUtils.h" />
     <ClInclude Include="..\..\Source\zen_utils\utilities\ZenUtils.h" />

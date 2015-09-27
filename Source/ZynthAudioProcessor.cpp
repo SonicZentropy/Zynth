@@ -17,22 +17,19 @@
 #include "ZynthAudioProcessorEditor.h"
 #include "zen_utils\utilities\ZenUtils.h"
 
-// #ENHANCE:  add JUCE_TRACK_OBJECT macro to bottom of my params/components
-// #ENHANCE: add copy constructors
-
+// #ENHANCE: add JUCE_TRACK_OBJECT macro to bottom of my params/components
 
 //==============================================================================
 	ZynthAudioProcessor::ZynthAudioProcessor()
-		:rootTree("Root")//, parametersTree("Parameters")
+		:rootTree("Root")
 	{			
-		//_crtBreakAlloc = 307;
+		//_crtBreakAlloc = 307;     //Break on this memory allocation number (When Debug)
 //		DBGM("In ZynthAudioProcessor::ZynthAudioProcessor() ");
 		addParameter(audioGainParam = new DecibelParameter("Gain", true, 0.01f, -96.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.01f, "dB"));
  		addParameter(muteParam = new BooleanParameter("Mute", false));
 		addParameter(bypassParam = new BooleanParameter("Bypass", false));	
 		
 		rootTree = createParameterTree();
-		//DBG( rootTree.createXml()->createDefaultDocument() );
 		debugTreeEditor = new jcf::ValueTreeEditor();
 		debugTreeEditor->setSize(450, 300);
 		debugTreeEditor->setTopLeftPosition(1900 - debugTreeEditor->getWidth(), 1040 - debugTreeEditor->getHeight());
@@ -42,9 +39,8 @@
 
 	ZynthAudioProcessor::~ZynthAudioProcessor()
 	{
-		rootTree.removeAllChildren(nullptr);
-	//	DBG("debugTreeEditor num child components: " + debugTreeEditor->getNumChildComponents());
 //		DBGM("In ZynthAudioProcessor::~ZynthAudioProcessor() ");
+		rootTree.removeAllChildren(nullptr);
 		audioGainParam = nullptr;
 		muteParam = nullptr;
 		bypassParam = nullptr;
@@ -82,7 +78,7 @@
 		//Main Processing Loop
 		for (long i = 0; i < buffer.getNumSamples(); i++)
 		{
-			auto audioGainRaw = getClamped(audioGainParam->getSmoothedRawDecibelGainValue(), 0, 4.0f); //Make sure screwups don't blow up speakers
+			float audioGainRaw = getClamped(audioGainParam->getSmoothedRawDecibelGainValue(), 0, 4.0f); //Make sure screwups don't blow up speakers
 			jassert(audioGainRaw >= 0);
 			BufferSampleProcesses::processGain(&leftData[i], &rightData[i], audioGainRaw);
 		}
@@ -100,16 +96,15 @@
 		// You could do that either as raw data, or use the XML or ValueTree classes
 		// as intermediaries to make it easy to save and load complex data.
 		
-		
-	/*	XmlElement rootXML("Root");
+		XmlElement rootXML("Root");
 
-		for (auto &param : getParameters())
+		for (auto param : getParameters())
 		{
-			ScopedPointer<ZenParameter> zenParam = dynamic_cast<ZenParameter*>(param);
-			zenParam->writeToXML(&rootXML);
+			ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
+			zenParam->writeToXML(rootXML);
 		}
 		//DBG(rootXML.createDocument("", false, false, "UTF-8", 120));
-		copyXmlToBinary(rootXML, destData);*/
+		copyXmlToBinary(rootXML, destData);
 	}
 
 	void ZynthAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
@@ -119,30 +114,31 @@
 //		DBGM("In ZynthAudioProcessor::setStateInformation() ");
 
 		
-	/*	ScopedPointer<XmlElement> theXML = this->getXmlFromBinary(data, sizeInBytes);
+		ScopedPointer<XmlElement> theXML = this->getXmlFromBinary(data, sizeInBytes);
 		//DBG(theXML->createDocument("", false, false, "UTF-8", 120));
 
 		if (theXML != nullptr)
 		{						
-			for (auto &param : getParameters())
+			for (auto param : getParameters())
 			{
-				ScopedPointer<ZenParameter> zenParam = dynamic_cast<ZenParameter*>(param);
-				if(zenParam != nullptr) zenParam->setFromXML(theXML);
+				ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
+				if(zenParam != nullptr) zenParam->setFromXML(*theXML);
 			}
-		}*/
+		}
 	}
 
 	ValueTree ZynthAudioProcessor::createParameterTree()
 	{
 		ValueTree valTree("Parameters");
 
-		for (auto &param : getParameters())
+		for (auto param : getParameters())
 		{
 			ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
 			if(zenParam != nullptr) valTree.addChild(zenParam->getValueTree(), -1, nullptr);
-		}		
+		}	
+		//DBG("Value Tree result from createParameterTree() : " + valTree.toXmlString());
 		return valTree;
-//		return ValueTree("nulltree");
+
 	}
 
 #pragma region overrides
@@ -154,9 +150,9 @@
 		// initialisation that you need..
 	
 		// Iterates over parameters and resets Smooth for the ones who need it
-		/*for (auto &param : getParameters())
+		for (auto param : getParameters())
 		{			
-			ScopedPointer<ZenParameter> zenParam = dynamic_cast<ZenParameter*>(param);
+			ZenParameter* zenParam = dynamic_cast<ZenParameter*>(param);
 			if (zenParam != nullptr)
 			{
 				if (zenParam->checkShouldBeSmoothed())
@@ -164,7 +160,7 @@
 					zenParam->resetSmoothedValue(inSampleRate);
 				}
 			}
-		}*/
+		}
 	}
 
 	//==============================================================================
@@ -271,7 +267,7 @@
 	// This creates new instances of the plugin..
 	AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 	{
-//		DBGM("In ::createPluginFilter() ");
+//		DBGM("In ZynthAudioProcessor::createPluginFilter() ");
 		return new ZynthAudioProcessor();
 	}
 

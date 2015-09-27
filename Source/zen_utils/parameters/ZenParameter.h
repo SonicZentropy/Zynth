@@ -18,18 +18,14 @@
 
 #include "JuceHeader.h"
 #include <sstream>
-
 #include "../utilities/ZenParamUtils.h"
-
-
 
 namespace Zen {
 using namespace juce;
-class ZenParameter : public AudioProcessorParameter, public ReferenceCountedObject, public ValueListener//, public ValueTree
+class ZenParameter : public AudioProcessorParameter, public ReferenceCountedObject, public ValueListener
 {
 
 public:
-	// #ENHANCE: add copy constructors
 
 	ZenParameter()
 	{
@@ -39,24 +35,23 @@ public:
 	explicit ZenParameter(const String &inName, const bool& inShouldBeSmoothed = false, const float& smoothingTime=0.01f) :
 		value(0.5), name(inName), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
-////		DBGM("In ZenParameter::ZenParameter() ");
+//		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(0.5);
 		paramValueTree = new ValueTree(this->name);
 		value.addListener(this);
 		defaultValue.addListener(this);
-		setValueTree();
-
+		ZenParameter::setValueTree();
 	}
 
 	ZenParameter(const String &inName, const float& inDefaultValue, const bool& inShouldBeSmoothed = false, const float& smoothingTime=0.01f, const String& inLabel = "") :
 		value(inDefaultValue), defaultValue(inDefaultValue), name(inName), unitLabel(inLabel), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
-////		DBGM("In ZenParameter::ZenParameter() ");
+//		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(inDefaultValue);
 		paramValueTree = new ValueTree(this->name);
 		value.addListener(this);
 		defaultValue.addListener(this);
-		setValueTree();
+		ZenParameter::setValueTree();
 	}
 
 	ZenParameter(const String &inName, const float& inMinValue, const float& inMaxValue, const float& inDefaultValue, 
@@ -64,37 +59,46 @@ public:
 		:value(inDefaultValue), defaultValue(inDefaultValue), minValue(inMinValue), 
 		maxValue(inMaxValue), intervalStep(inStep), name(inName), unitLabel(inLabel), smoothTime(smoothingTime), shouldBeSmoothed(inShouldBeSmoothed)
 	{
-////		DBGM("In ZenParameter::ZenParameter() ");
+//		DBGM("In ZenParameter::ZenParameter() ");
 		setSmoothedValue(inDefaultValue);
 		paramValueTree = new ValueTree(this->name);
 		value.addListener(this);
 		defaultValue.addListener(this);
-		setValueTree();
+		ZenParameter::setValueTree();
 	}	
 
 	virtual ~ZenParameter()
 	{
-		//delete paramValueTree;
-		//paramValueTree = nullptr;
+		paramValueTree = nullptr;
 	};
 
-	virtual void writeToXML(XmlElement* inXML)
+
+
+	virtual void writeToXML(XmlElement& inXML)
 	{
-		// #TODO: fix scope of thisXML (make sure it's freed)
-		XmlElement* thisXML;
-		thisXML = inXML->createNewChildElement(this->name);
+//		DBGM("In ZenParameter::writeToXML(inXML) ");
+		XmlElement* thisXML = inXML.createNewChildElement(this->name);
 		thisXML->setAttribute("parameterValue", getValue());
 		thisXML->setAttribute("defaultValue", getDefaultValue());
 		thisXML->setAttribute("isSmoothed", getShouldBeSmoothed());
 	}
 
-	virtual void setFromXML(XmlElement* inXML)
+	virtual void setFromXML(const XmlElement& inXML)
 	{
-////		DBGM("In ZenParameter::setFromXML(inXML) ");
-		//XmlElement thisXML(*(inXML.getChildByName(this->name)));
-		setValue(inXML->getChildByName(this->name)->getDoubleAttribute("parameterValue", -9876.5));
-		setDefaultValue(inXML->getChildByName(this->name)->getDoubleAttribute("defaultValue", -9876.5));
-		setShouldBeSmoothed(inXML->getChildByName(this->name)->getBoolAttribute("isSmoothed", false));
+//		DBGM("In ZenParameter::setFromXML(inXML) ");
+		XmlElement* thisXML = inXML.getChildByName(this->name);
+		setValue(thisXML->getDoubleAttribute("parameterValue", -9876.5));
+		setDefaultValue(thisXML->getDoubleAttribute("defaultValue", -9876.5));
+		setShouldBeSmoothed(thisXML->getBoolAttribute("isSmoothed", false));
+	}
+
+	virtual void setValueTree()
+	{
+		paramValueTree->removeAllChildren(nullptr);
+		paramValueTree->removeAllProperties(nullptr);
+
+		paramValueTree->setProperty("parameterValue", getValue(), nullptr);
+		paramValueTree->setProperty("defaultValue", getDefaultValue(), nullptr);
 	}
 
 	virtual ValueTree getValueTree()
@@ -102,29 +106,15 @@ public:
 		return *paramValueTree;
 	}
 
-	virtual void setValueTree()
-	{
-		paramValueTree->removeAllChildren(nullptr);
-		paramValueTree->removeAllProperties(nullptr);
-		
-		
-		paramValueTree->setProperty("parameterValue", getValue(), nullptr);
-		paramValueTree->setProperty("defaultValue", getDefaultValue(), nullptr);
-		paramValueTree->setProperty("isSmoothed", getShouldBeSmoothed(), nullptr);
-		
-	}
-
-
 	virtual void valueChanged(Value& value) override
 	{
-////		DBGM("In ZenParameter::valueChanged(value) ");
+//		DBGM("In ZenParameter::valueChanged(value) ");
 		setValueTree();
 	}
 
-
 	virtual void setValue(float inValue) override
 	{
-////		DBGM("In ZenParameter::setValue() ");
+//		DBGM("In ZenParameter::setValue() ");
 		value = inValue;
 		setSmoothedValue(inValue);
 		requestUIUpdate = true;
@@ -133,7 +123,7 @@ public:
 	//Juce's AudioProcessorParameter method changed to virtual
 	virtual void setValueNotifyingHost(float inValue) override
 	{
-////		DBGM("In ZenParameter::setValueNotifyingHost() ");
+//		DBGM("In ZenParameter::setValueNotifyingHost() ");
 		// This method can't be used until the parameter has been attached to a processor!
 		jassert(processor != nullptr && getParameterIndex() >= 0);
 		processor->setParameterNotifyingHost(getParameterIndex(), inValue);
@@ -217,13 +207,13 @@ public:
 
 	bool checkShouldBeSmoothed() const
 	{
-////		DBGM("In ZenParameter::checkShouldBeSmoothed() ");
+//		DBGM("In ZenParameter::checkShouldBeSmoothed() ");
 		return shouldBeSmoothed;
 	}
 
 	virtual String getText(float inValue, int maxStringLength) const override
 	{
-////		DBGM("In ZenParameter::getText() ");
+//		DBGM("In ZenParameter::getText() ");
 		jassert(maxStringLength >= 0);
 		std::stringstream numberFormatter;
 		numberFormatter.precision(getDisplayPrecision());
@@ -292,7 +282,6 @@ public:
 
 protected:
 	Value value;
-	//ScopedPointer<ParameterValueTree> paramValueTree;
 	ScopedPointer<ValueTree> paramValueTree;
 	
 	Value defaultValue, minValue, maxValue;
@@ -306,44 +295,47 @@ protected:
 	bool shouldBeSmoothed = false;
 
 	//==============================================================================
+	
 private:
 	
-	JUCE_LEAK_DETECTOR(ZenParameter);
+	//JUCE_LEAK_DETECTOR(ZenParameter);
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ZenParameter);
 };
 
 /// <summary> Values that represent parameter units. </summary>
+/*
 enum ParameterUnit
 {
-	UnitGeneric = 0,	/* untyped value generally between 0.0 and 1.0 */
-	UnitIndexed = 1,	/* takes an integer value (good for menu selections) */
-	UnitBoolean = 2,	/* 0.0 means FALSE, non-zero means TRUE */
-	UnitPercent = 3,	/* usually from 0 -> 100, sometimes -50 -> +50 */
-	UnitSeconds = 4,	/* absolute or relative time */
-	UnitSampleFrames = 5,	/* one sample frame equals (1.0/sampleRate) seconds */
-	UnitPhase = 6,	/* -180 to 180 degrees */
-	UnitRate = 7,	/* rate multiplier, for playback speed, etc. (e.g. 2.0 == twice as fast) */
-	UnitHertz = 8,	/* absolute frequency/pitch in cycles/second */
-	UnitCents = 9,	/* unit of relative pitch */
-	UnitRelativeSemiTones = 10,	/* useful for coarse detuning */
-	UnitMIDINoteNumber = 11,	/* absolute pitch as defined in the MIDI spec (exact freq may depend on tuning table) */
-	UnitMIDIController = 12,	/* a generic MIDI controller value from 0 -> 127 */
-	UnitDecibels = 13,	/* logarithmic relative gain */
-	UnitLinearGain = 14,	/* linear relative gain */
-	UnitDegrees = 15,	/* -180 to 180 degrees, similar to phase but more general (good for 3D coord system) */
-	UnitEqualPowerCrossfade = 16,	/* 0 -> 100, crossfade mix two sources according to sqrt(x) and sqrt(1.0 - x) */
-	UnitMixerFaderCurve1 = 17,	/* 0.0 -> 1.0, pow(x, 3.0) -> linear gain to simulate a reasonable mixer channel fader response */
-	UnitPan = 18,	/* standard left to right mixer pan */
-	UnitMeters = 19,	/* distance measured in meters */
-	UnitAbsoluteCents = 20,	/* absolute frequency measurement : if f is freq in hertz then 	*/
-							/* absoluteCents = 1200 * log2(f / 440) + 6900					*/
-	UnitOctaves = 21,	/* octaves in relative pitch where a value of 1 is equal to 1200 cents*/
-	UnitBPM = 22,	/* beats per minute, ie tempo */
-	UnitBeats = 23,	/* time relative to tempo, ie. 1.0 at 120 BPM would equal 1/2 a second */
-	UnitMilliseconds = 24,	/* parameter is expressed in milliseconds */
-	UnitRatio = 25,	/* for compression, expansion ratio, etc. */
+	UnitGeneric = 0,	/ * untyped value generally between 0.0 and 1.0 * /
+	UnitIndexed = 1,	/ * takes an integer value (good for menu selections) * /
+	UnitBoolean = 2,	/ * 0.0 means FALSE, non-zero means TRUE * /
+	UnitPercent = 3,	/ * usually from 0 -> 100, sometimes -50 -> +50 * /
+	UnitSeconds = 4,	/ * absolute or relative time * /
+	UnitSampleFrames = 5,	/ * one sample frame equals (1.0/sampleRate) seconds * /
+	UnitPhase = 6,	/ * -180 to 180 degrees * /
+	UnitRate = 7,	/ * rate multiplier, for playback speed, etc. (e.g. 2.0 == twice as fast) * /
+	UnitHertz = 8,	/ * absolute frequency/pitch in cycles/second * /
+	UnitCents = 9,	/ * unit of relative pitch * /
+	UnitRelativeSemiTones = 10,	/ * useful for coarse detuning * /
+	UnitMIDINoteNumber = 11,	/ * absolute pitch as defined in the MIDI spec (exact freq may depend on tuning table) * /
+	UnitMIDIController = 12,	/ * a generic MIDI controller value from 0 -> 127 * /
+	UnitDecibels = 13,	/ * logarithmic relative gain * /
+	UnitLinearGain = 14,	/ * linear relative gain * /
+	UnitDegrees = 15,	/ * -180 to 180 degrees, similar to phase but more general (good for 3D coord system) * /
+	UnitEqualPowerCrossfade = 16,	/ * 0 -> 100, crossfade mix two sources according to sqrt(x) and sqrt(1.0 - x) * /
+	UnitMixerFaderCurve1 = 17,	/ * 0.0 -> 1.0, pow(x, 3.0) -> linear gain to simulate a reasonable mixer channel fader response * /
+	UnitPan = 18,	/ * standard left to right mixer pan * /
+	UnitMeters = 19,	/ * distance measured in meters * /
+	UnitAbsoluteCents = 20,	/ * absolute frequency measurement : if f is freq in hertz then 	* /
+							/ * absoluteCents = 1200 * log2(f / 440) + 6900					* /
+	UnitOctaves = 21,	/ * octaves in relative pitch where a value of 1 is equal to 1200 cents* /
+	UnitBPM = 22,	/ * beats per minute, ie tempo * /
+	UnitBeats = 23,	/ * time relative to tempo, ie. 1.0 at 120 BPM would equal 1/2 a second * /
+	UnitMilliseconds = 24,	/ * parameter is expressed in milliseconds * /
+	UnitRatio = 25,	/ * for compression, expansion ratio, etc. * /
 
-	UnitCustomUnit = 26	/* this is the parameter unit type for parameters that present a custom unit name */
-};
+	UnitCustomUnit = 26	/ * this is the parameter unit type for parameters that present a custom unit name * /
+};*/
 
 } // Namespace Zen
 #endif // ZEN_PARAMETER_H_INCLUDED

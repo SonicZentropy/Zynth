@@ -335,7 +335,7 @@ public:
 		}
     }
 
-    void closeButtonPressed()
+    void closeButtonPressed() override
     {
         setVisible (false);
     }

@@ -65,7 +65,7 @@ private:
 	float currentValue, target, step;
 	int countdown, stepsToTarget;
 
-	JUCE_DECLARE_NON_COPYABLE(LinearSmoothedValue)
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LinearSmoothedValue)
 };
 }
 

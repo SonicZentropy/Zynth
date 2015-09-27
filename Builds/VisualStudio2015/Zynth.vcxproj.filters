@@ -2756,9 +2756,6 @@
     <ClInclude Include="..\..\Source\zen_utils\utilities\ZenUtils.h">
       <Filter>Zynth\Source\zen_utils\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\zen_utils\utilities\ValueTreeWindowComponent.h">
-      <Filter>Zynth\Source\zen_utils\utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\zen_utils\GUI\ZenArrayDebugger.h">
       <Filter>Zynth\Source\zen_utils\GUI</Filter>
     </ClInclude>
