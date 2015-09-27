@@ -82,14 +82,7 @@ public:
 	virtual void setValueTree() override
 	{
 //		DBGM("In DecibelParameter::setValueTree() ");
-		//Base ZenParameter is called before this and starts paramValueTree construction
-/*
-
-		paramValueTree->removeAllChildren(nullptr);
-		paramValueTree->removeAllProperties(nullptr);
-
-		paramValueTree->setProperty("parameterValue", getValue(), nullptr);
-		paramValueTree->setProperty("defaultValue", getDefaultValue(), nullptr);*/
+		
 		ZenParameter::setValueTree();
 		paramValueTree->setProperty("isSmoothed", getShouldBeSmoothed(), nullptr);
 		paramValueTree->setProperty("minDecibels", getMinDecibels(), nullptr);
